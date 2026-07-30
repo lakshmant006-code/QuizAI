@@ -1,6 +1,6 @@
 {
-  "redirects": [
-    { "source": "/", "destination": "/templates/localhost-app/", "permanent": false },
-    { "source": "/wireframes", "destination": "/templates/localhost-app/wireframes.html", "permanent": false }
+  "rewrites": [
+    { "source": "/", "destination": "/templates/localhost-app/index.html" },
+    { "source": "/wireframes", "destination": "/templates/localhost-app/wireframes.html" }
   ]
 }
