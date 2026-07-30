@@ -16,8 +16,8 @@ function Btn({ label, solid, w = "auto", small }) {
       border: `2px solid ${S.ink}`, borderRadius: 999, background: solid ? S.ink : "#fff", color: solid ? "#fff" : S.ink, fontFamily: S.font, fontSize: small ? 12 : 13 }}>{label}</span>
   );
 }
-function Label({ children, size = 13, mb = 0, muted }) {
-  return <div style={{ fontFamily: S.font, fontSize: size, color: muted ? S.soft : S.ink, marginBottom: mb }}>{children}</div>;
+function Label({ children, size = 13, mb = 0, muted, nowrap }) {
+  return <div style={{ fontFamily: S.font, fontSize: size, color: muted ? S.soft : S.ink, marginBottom: mb, whiteSpace: nowrap ? "nowrap" : "normal" }}>{children}</div>;
 }
 function Box({ children, style, dashed, pad = 14 }) {
   return <div style={{ ...sketch({ borderStyle: dashed ? "dashed" : "solid", padding: pad }), ...style }}>{children}</div>;
@@ -77,7 +77,7 @@ function WLanding() {
   return (
     <div style={{ ...sketch({ overflow: "hidden" }) }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 14, borderBottom: `2px solid ${S.ink}` }}>
-        <Label size={15}>◑ QuizAI</Label>
+        <Label size={15} nowrap>◑ QuizAI</Label>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}><Bar w={54} h={8} /><Bar w={70} h={8} /><Btn label="Sign In" small /><Btn label="Get Started" solid small /></div>
       </div>
       <div style={{ padding: "44px 30px", textAlign: "center", borderBottom: `2px dashed ${S.line}` }}>
@@ -111,7 +111,7 @@ function WLogin() {
   return (
     <div style={{ ...sketch({ minHeight: 420, display: "flex", alignItems: "center", justifyContent: "center", background: "#fbfbfb" }) }}>
       <div style={{ ...sketch({ width: 300, padding: 24, textAlign: "center", borderRadius: 22 }) }}>
-        <Label size={15}>◑ QuizAI</Label>
+        <Label size={15} nowrap>◑ QuizAI</Label>
         <Label size={17} mb={4}>Welcome to QuizAI</Label>
         <Label size={12} muted mb={16}>Sign in to your account</Label>
         <div style={{ ...sketch({ padding: 11, marginBottom: 10 }) }}><Bar w="35%" h={8} /></div>

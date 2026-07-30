@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"QuizAIDesignSystem_ab923d","components":[{"name":"BrainMark","sourcePath":"components/brand/BrainMark.jsx"},{"name":"Logo","sourcePath":"components/brand/BrainMark.jsx"},{"name":"Card","sourcePath":"components/cards/Card.jsx"},{"name":"QuizHistoryItem","sourcePath":"components/cards/QuizHistoryItem.jsx"},{"name":"StatTile","sourcePath":"components/cards/StatTile.jsx"},{"name":"SummaryCard","sourcePath":"components/cards/SummaryCard.jsx"},{"name":"Avatar","sourcePath":"components/core/Avatar.jsx"},{"name":"Badge","sourcePath":"components/core/Badge.jsx"},{"name":"Button","sourcePath":"components/core/Button.jsx"},{"name":"Input","sourcePath":"components/core/Input.jsx"},{"name":"NavBar","sourcePath":"components/core/NavBar.jsx"}],"sourceHashes":{"components/brand/BrainMark.jsx":"c29361905533","components/cards/Card.jsx":"d3d0342dc1f0","components/cards/QuizHistoryItem.jsx":"4f8057a3bd10","components/cards/StatTile.jsx":"d4945ee5c892","components/cards/SummaryCard.jsx":"022c6f3e1c98","components/core/Avatar.jsx":"43523f8d5612","components/core/Badge.jsx":"4859f6f1ec01","components/core/Button.jsx":"7c48c6282410","components/core/Input.jsx":"de2d2544e7fc","components/core/NavBar.jsx":"219fb74f3549","ui_kits/quizai-app/App.jsx":"4177ba817828","ui_kits/quizai-app/DashboardScreen.jsx":"1c3e98d82c4b","ui_kits/quizai-app/LoginScreen.jsx":"61a69442fda8","ui_kits/quizai-app/SummariesScreen.jsx":"59ac631a09fc"},"inlinedExternals":[],"unexposedExports":[]} */
+/* @ds-bundle: {"format":4,"namespace":"QuizAIDesignSystem_ab923d","components":[{"name":"BrainMark","sourcePath":"components/brand/BrainMark.jsx"},{"name":"Logo","sourcePath":"components/brand/BrainMark.jsx"},{"name":"Card","sourcePath":"components/cards/Card.jsx"},{"name":"QuizHistoryItem","sourcePath":"components/cards/QuizHistoryItem.jsx"},{"name":"StatTile","sourcePath":"components/cards/StatTile.jsx"},{"name":"SummaryCard","sourcePath":"components/cards/SummaryCard.jsx"},{"name":"Avatar","sourcePath":"components/core/Avatar.jsx"},{"name":"Badge","sourcePath":"components/core/Badge.jsx"},{"name":"Button","sourcePath":"components/core/Button.jsx"},{"name":"Input","sourcePath":"components/core/Input.jsx"},{"name":"NavBar","sourcePath":"components/core/NavBar.jsx"}],"sourceHashes":{"components/brand/BrainMark.jsx":"c29361905533","components/cards/Card.jsx":"d3d0342dc1f0","components/cards/QuizHistoryItem.jsx":"4f8057a3bd10","components/cards/StatTile.jsx":"d4945ee5c892","components/cards/SummaryCard.jsx":"022c6f3e1c98","components/core/Avatar.jsx":"43523f8d5612","components/core/Badge.jsx":"4859f6f1ec01","components/core/Button.jsx":"7c48c6282410","components/core/Input.jsx":"de2d2544e7fc","components/core/NavBar.jsx":"219fb74f3549","ui_kits/quizai-app/App.jsx":"2fb86f74969f","ui_kits/quizai-app/DashboardScreen.jsx":"1c3e98d82c4b","ui_kits/quizai-app/LoginScreen.jsx":"61a69442fda8","ui_kits/quizai-app/SummariesScreen.jsx":"59ac631a09fc"},"inlinedExternals":[],"unexposedExports":[]} */
 
 (() => {
 
@@ -589,20 +589,7 @@ function NavBar({
 Object.assign(__ds_scope, { NavBar });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/core/NavBar.jsx", error: String((e && e.message) || e) }); }
 
-// Expose components before ui_kit screens destructure them
-__ds_ns.BrainMark = __ds_scope.BrainMark;
-__ds_ns.Logo = __ds_scope.Logo;
-__ds_ns.Card = __ds_scope.Card;
-__ds_ns.QuizHistoryItem = __ds_scope.QuizHistoryItem;
-__ds_ns.StatTile = __ds_scope.StatTile;
-__ds_ns.SummaryCard = __ds_scope.SummaryCard;
-__ds_ns.Avatar = __ds_scope.Avatar;
-__ds_ns.Badge = __ds_scope.Badge;
-__ds_ns.Button = __ds_scope.Button;
-__ds_ns.Input = __ds_scope.Input;
-__ds_ns.NavBar = __ds_scope.NavBar;
-
-// ui_kits/quizai-app/App.jsx — define only; mount after screens exist
+// ui_kits/quizai-app/App.jsx
 try { (() => {
 function App() {
   const [view, setView] = React.useState("login");
@@ -622,7 +609,8 @@ function App() {
     onNav: nav
   });
 }
-window.QuizAIApp = App;
+const rootEl = document.getElementById("root");
+if (rootEl) ReactDOM.createRoot(rootEl).render(/*#__PURE__*/React.createElement(App, null));
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/quizai-app/App.jsx", error: String((e && e.message) || e) }); }
 
 // ui_kits/quizai-app/DashboardScreen.jsx
@@ -964,14 +952,26 @@ function SummariesScreen({
 window.SummariesScreen = SummariesScreen;
 })(); } catch (e) { __ds_ns.__errors.push({ path: "ui_kits/quizai-app/SummariesScreen.jsx", error: String((e && e.message) || e) }); }
 
-// Mount after screens are on window and #root exists
-try {
-  const rootEl = document.getElementById("root");
-  if (rootEl && window.QuizAIApp) {
-    ReactDOM.createRoot(rootEl).render(/*#__PURE__*/React.createElement(window.QuizAIApp, null));
-  }
-} catch (e) {
-  __ds_ns.__errors.push({ path: "ui_kits/quizai-app/mount", error: String((e && e.message) || e) });
-}
+__ds_ns.BrainMark = __ds_scope.BrainMark;
+
+__ds_ns.Logo = __ds_scope.Logo;
+
+__ds_ns.Card = __ds_scope.Card;
+
+__ds_ns.QuizHistoryItem = __ds_scope.QuizHistoryItem;
+
+__ds_ns.StatTile = __ds_scope.StatTile;
+
+__ds_ns.SummaryCard = __ds_scope.SummaryCard;
+
+__ds_ns.Avatar = __ds_scope.Avatar;
+
+__ds_ns.Badge = __ds_scope.Badge;
+
+__ds_ns.Button = __ds_scope.Button;
+
+__ds_ns.Input = __ds_scope.Input;
+
+__ds_ns.NavBar = __ds_scope.NavBar;
 
 })();

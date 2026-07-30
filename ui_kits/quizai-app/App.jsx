@@ -12,4 +12,5 @@ function App() {
   return <window.DashboardScreen active="Dashboard" onNav={nav} />;
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+const rootEl = document.getElementById("root");
+if (rootEl) ReactDOM.createRoot(rootEl).render(<App />);
