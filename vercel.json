@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/ui_kits/quizai-app/index.html" }
+    { "source": "/", "destination": "/templates/localhost-app/index.html" },
+    { "source": "/wireframes", "destination": "/templates/localhost-app/wireframes.html" }
   ]
 }
