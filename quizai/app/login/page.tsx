@@ -87,6 +87,19 @@ function LoginInner() {
     setBusy(false);
   }
 
+  async function forgotPassword() {
+    if (!email) { setError("Enter your email first, then tap “Forgot password”."); return; }
+    setBusy(true);
+    setError("");
+    setNotice("");
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${siteUrl()}/auth/callback?next=/reset-password`,
+    });
+    if (error) setError(error.message);
+    else setNotice(`Password reset link sent to ${email}. Open it to choose a new password.`);
+    setBusy(false);
+  }
+
   return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--surface-maroon-tint)", position: "relative", overflow: "hidden", padding: 20 }}>
       <NeuralCanvas />
@@ -123,6 +136,11 @@ function LoginInner() {
             )}
             <input type="email" required placeholder="you@school.edu" value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} />
             <input type="password" required minLength={6} placeholder="Password (min 6 characters)" value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} />
+            {mode === "signin" && (
+              <button type="button" onClick={forgotPassword} disabled={busy} style={{ alignSelf: "flex-end", background: "none", border: "none", padding: 0, font: "var(--text-small)", color: "var(--asu-maroon)", cursor: "pointer" }}>
+                Forgot password?
+              </button>
+            )}
             {error && <p style={{ font: "var(--text-small)", color: "var(--danger)", margin: 0 }}>{error}</p>}
             <button type="submit" disabled={busy} style={{ width: "100%", padding: "12px 20px", background: "var(--asu-maroon)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 15, cursor: busy ? "not-allowed" : "pointer", opacity: busy ? 0.7 : 1, boxShadow: "var(--shadow-button)" }}>
               {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
