@@ -122,10 +122,12 @@ alter table public.quiz_attempts  enable row level security;
 alter table public.tasks          enable row level security;
 
 -- profiles
-drop policy if exists "own profile read"  on public.profiles;
-drop policy if exists "own profile write" on public.profiles;
-create policy "own profile read"  on public.profiles for select using (auth.uid() = id);
-create policy "own profile write" on public.profiles for update using (auth.uid() = id);
+drop policy if exists "own profile read"   on public.profiles;
+drop policy if exists "own profile write"  on public.profiles;
+drop policy if exists "own profile insert" on public.profiles;
+create policy "own profile read"   on public.profiles for select using (auth.uid() = id);
+create policy "own profile write"  on public.profiles for update using (auth.uid() = id);
+create policy "own profile insert" on public.profiles for insert with check (auth.uid() = id);
 
 -- Helper macro pattern: owner-only full access on user_id tables.
 do $$

@@ -17,7 +17,11 @@ export function ProfileForm({ userId, initialName, email }: { userId: string; in
     setStatus("saving");
     setError("");
     const supabase = createClient();
-    const { error } = await supabase.from("profiles").update({ full_name: trimmed }).eq("id", userId);
+    // Upsert so it works even if the profile row was never created (e.g. the
+    // account predates the auto-profile trigger).
+    const { error } = await supabase
+      .from("profiles")
+      .upsert({ id: userId, email, full_name: trimmed });
     if (error) {
       setError(error.message);
       setStatus("error");
