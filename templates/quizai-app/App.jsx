@@ -1,4 +1,32 @@
-const { Button, Input, Logo, NavBar, StatTile, QuizHistoryItem, SummaryCard } = window.QuizAIDesignSystem_ab923d;
+/* Resolved at render time — the design-system bundle loads asynchronously via ds-base.js. */
+const DS = () => window.QuizAIDesignSystem_ab923d || {};
+function useDsReady() {
+  const [, force] = React.useState(0);
+  React.useEffect(() => {
+    if (window.QuizAIDesignSystem_ab923d) return;
+    let alive = true;
+    const tick = () => {
+      if (!alive) return;
+      if (window.QuizAIDesignSystem_ab923d) force((n) => n + 1);
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    return () => { alive = false; };
+  }, []);
+}
+const dsWrap = (name) => function DSComponent(props) {
+  useDsReady();
+  const C = DS()[name];
+  if (!C) return null;
+  return React.createElement(C, props);
+};
+const Button = dsWrap("Button");
+const Input = dsWrap("Input");
+const Logo = dsWrap("Logo");
+const NavBar = dsWrap("NavBar");
+const StatTile = dsWrap("StatTile");
+const QuizHistoryItem = dsWrap("QuizHistoryItem");
+const SummaryCard = dsWrap("SummaryCard");
 
 function LoginScreen({ onSignIn }) {
   const cardRef = React.useRef(null);

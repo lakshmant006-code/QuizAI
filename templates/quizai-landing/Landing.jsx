@@ -1,4 +1,36 @@
-const { Button, Input, Logo, NavBar, StatTile, QuizHistoryItem, SummaryCard, Badge, Avatar } = window.QuizAIDesignSystem_ab923d;
+/* Design-system components are resolved at RENDER time, not module-evaluation time —
+   the bundle is appended asynchronously by ds-base.js and may not have run yet when
+   this module is evaluated. If it lands after first paint, useDsReady re-renders. */
+const DS = () => window.QuizAIDesignSystem_ab923d || {};
+function useDsReady() {
+  const [, force] = React.useState(0);
+  React.useEffect(() => {
+    if (window.QuizAIDesignSystem_ab923d) return;
+    let alive = true;
+    const tick = () => {
+      if (!alive) return;
+      if (window.QuizAIDesignSystem_ab923d) force((n) => n + 1);
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    return () => { alive = false; };
+  }, []);
+}
+const dsWrap = (name) => function DSComponent(props) {
+  useDsReady();
+  const C = DS()[name];
+  if (!C) return null;
+  return React.createElement(C, props);
+};
+const Button = dsWrap("Button");
+const Input = dsWrap("Input");
+const Logo = dsWrap("Logo");
+const NavBar = dsWrap("NavBar");
+const StatTile = dsWrap("StatTile");
+const QuizHistoryItem = dsWrap("QuizHistoryItem");
+const SummaryCard = dsWrap("SummaryCard");
+const Badge = dsWrap("Badge");
+const Avatar = dsWrap("Avatar");
 
 /* ---- Neural synapse canvas (cursor-reactive; click fires a pulse) ---- */
 function NeuralCanvas({ interactive = false }) {
@@ -239,15 +271,15 @@ function LandingScreen({ onSignIn }) {
         <NeuralCanvas interactive={true} />
         <div style={{ position: "relative", maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}>
           <span data-hero style={{ font: "var(--text-label)", color: "var(--asu-maroon)", background: "var(--surface-gold-tint)", border: "1px solid var(--border-gold-tint)", padding: "6px 16px", borderRadius: "999px" }}>
-            <i className="fa-solid fa-brain" aria-hidden="true" style={{ marginRight: 8 }}></i>AI-powered studying
+            <i className="fa-solid fa-brain" aria-hidden="true" style={{ marginRight: 8 }}></i>Study companion
           </span>
-          <h1 data-hero style={{ font: "var(--text-display)", fontSize: "56px", color: "var(--text-heading)", margin: 0, letterSpacing: "-1px" }}>Every document becomes a study session</h1>
-          <p data-hero style={{ font: "var(--text-body)", fontSize: "18px", color: "var(--gray-2)", maxWidth: 560, margin: 0 }}>Upload notes, PDFs, or links — QuizAI generates quizzes, flashcards, and summaries, then tracks what your brain actually retains.</p>
+          <h1 data-hero style={{ font: "var(--text-display)", fontSize: "56px", color: "var(--text-heading)", margin: 0, letterSpacing: "-1px" }}>Read it once. Remember it properly.</h1>
+          <p data-hero style={{ font: "var(--text-body)", fontSize: "18px", color: "var(--gray-2)", maxWidth: 560, margin: 0 }}>Bring your notes, readings, and slides. Get quizzes, flashcards, and summaries built from them — and a clear view of what stuck.</p>
           <div data-hero style={{ display: "flex", gap: "12px", marginTop: 8 }}>
             <Magnetic style={{ width: 190 }}><Button variant="primary" onClick={onSignIn}>Sign In to QuizAI</Button></Magnetic>
             <Magnetic style={{ width: 170 }}><Button variant="secondary" onClick={onSignIn}>Create Account</Button></Magnetic>
           </div>
-          <span data-hero style={{ font: "var(--text-small)", color: "var(--text-muted)" }}>Click anywhere — fire a synapse.</span>
+          
         </div>
       </header>
 
@@ -261,27 +293,27 @@ function LandingScreen({ onSignIn }) {
         <div style={{ display: "flex", gap: "20px" }}>
           <TiltCard style={featureCard}>
             <i className="fa-solid fa-circle-question" aria-hidden="true" style={{ fontSize: 26, color: "var(--asu-maroon)" }}></i>
-            <h3 style={{ font: "var(--text-h3)", color: "var(--text-heading)", margin: "14px 0 8px" }}>AI Quiz Generator</h3>
+            <h3 style={{ font: "var(--text-h3)", color: "var(--text-heading)", margin: "14px 0 8px" }}>Quizzes</h3>
             <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: 0 }}>Paste text, upload a document, or drop a link. Choose MCQs, flashcards, or short answers and set your difficulty.</p>
           </TiltCard>
           <TiltCard style={featureCard}>
             <i className="fa-regular fa-file-lines" aria-hidden="true" style={{ fontSize: 26, color: "var(--asu-maroon)" }}></i>
-            <h3 style={{ font: "var(--text-h3)", color: "var(--text-heading)", margin: "14px 0 8px" }}>Smart Summaries</h3>
-            <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: 0 }}>Long readings become concise, structured summaries with key terms highlighted and flashcards auto-generated.</p>
+            <h3 style={{ font: "var(--text-h3)", color: "var(--text-heading)", margin: "14px 0 8px" }}>Summaries</h3>
+            <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: 0 }}>Long readings, condensed — with the key terms pulled out and flashcards to match.</p>
           </TiltCard>
           <TiltCard style={featureCard}>
             <i className="fa-solid fa-chart-simple" aria-hidden="true" style={{ fontSize: 26, color: "var(--asu-maroon)" }}></i>
-            <h3 style={{ font: "var(--text-h3)", color: "var(--text-heading)", margin: "14px 0 8px" }}>Progress Insights</h3>
-            <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: 0 }}>Accuracy, retention, and weak topics at a glance — plus XP streaks and badges to keep the loop going.</p>
+            <h3 style={{ font: "var(--text-h3)", color: "var(--text-heading)", margin: "14px 0 8px" }}>Progress</h3>
+            <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: 0 }}>See which topics are solid and which ones need another pass.</p>
           </TiltCard>
         </div>
       </section>
 
       <section id="how" data-reveal style={{ background: "var(--asu-maroon)", padding: "70px 40px" }}>
         <div style={{ maxWidth: 1120, margin: "0 auto", display: "flex", gap: "20px", textAlign: "center" }}>
-          {[["fa-solid fa-upload", "1. Upload", "Notes, PDFs, or links — any study material works."],
-            ["fa-solid fa-bolt", "2. Quiz instantly", "AI writes the questions; you pick the format and difficulty."],
-            ["fa-solid fa-arrows-rotate", "3. Reinforce", "Review weak topics, retake quizzes, watch your score climb."]].map(([icon, title, body]) => (
+          {[["fa-solid fa-upload", "1. Add your material", "Notes, readings, slides, or a link."],
+            ["fa-solid fa-bolt", "2. Get tested", "Choose the format, the length, and how hard it should be."],
+            ["fa-solid fa-arrows-rotate", "3. Come back to it", "Revisit the weak spots and retake what you missed."]].map(([icon, title, body]) => (
             <div key={title} style={{ flex: 1 }}>
               <i className={icon} aria-hidden="true" style={{ fontSize: 26, color: "var(--asu-gold)" }}></i>
               <h3 style={{ font: "var(--text-h3)", color: "#fff", margin: "14px 0 8px" }}>{title}</h3>
@@ -299,7 +331,7 @@ function LandingScreen({ onSignIn }) {
 
       <footer style={{ borderTop: "1px solid var(--gray-6)", padding: "24px 40px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Logo size={16} />
-        <span style={{ font: "var(--text-small)", color: "var(--text-muted)" }}>QuizAI — study smarter, remember longer.</span>
+        <span style={{ font: "var(--text-small)", color: "var(--text-muted)" }}>QuizAI</span>
       </footer>
     </div>
   );
@@ -353,6 +385,29 @@ function SideLink({ icon, label, active, onClick }) {
   );
 }
 
+/* ---- PDF → flashcard mark: a PDF page with a stacked-deck badge ---- */
+function PdfFlashIcon({ size = 44, busy }) {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    if (!busy || !ref.current) return;
+    const t = gsap.to(ref.current.querySelectorAll("[data-layer]"), { y: -3, duration: 0.5, stagger: 0.09, yoyo: true, repeat: -1, ease: "sine.inOut" });
+    return () => t.kill();
+  }, [busy]);
+  const s = size;
+  return (
+    <span ref={ref} style={{ position: "relative", width: s, height: s, flexShrink: 0, display: "inline-block" }}>
+      <span data-layer style={{ position: "absolute", left: s * 0.2, top: s * 0.04, width: s * 0.62, height: s * 0.76, borderRadius: s * 0.14, background: "rgba(140,29,64,0.14)" }}></span>
+      <span data-layer style={{ position: "absolute", left: s * 0.12, top: s * 0.1, width: s * 0.62, height: s * 0.76, borderRadius: s * 0.14, background: "rgba(140,29,64,0.22)" }}></span>
+      <span data-layer style={{ position: "absolute", left: 0, top: s * 0.16, width: s * 0.64, height: s * 0.78, borderRadius: s * 0.14, background: "var(--asu-maroon)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 8px rgba(140,29,64,0.28)" }}>
+        <i className={busy ? "fa-solid fa-brain fa-beat-fade" : "fa-solid fa-file-pdf"} aria-hidden="true" style={{ color: "#fff", fontSize: s * 0.32 }}></i>
+      </span>
+      <span style={{ position: "absolute", right: 0, bottom: 0, width: s * 0.4, height: s * 0.4, borderRadius: "50%", background: "#fff", border: "1.5px solid rgba(140,29,64,0.25)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <i className="fa-solid fa-bolt" aria-hidden="true" style={{ color: "var(--asu-maroon)", fontSize: s * 0.19 }}></i>
+      </span>
+    </span>
+  );
+}
+
 /* ---- Upload dropzone: reads a real file, derives a title, stores it in localStorage ---- */
 function UploadZone({ onAdd }) {
   const [drag, setDrag] = React.useState(false);
@@ -386,18 +441,16 @@ function UploadZone({ onAdd }) {
       onDragLeave={() => setDrag(false)}
       onDrop={(e) => { e.preventDefault(); setDrag(false); handle(e.dataTransfer.files); }}
       onClick={() => inputRef.current.click()}
-      style={{ border: `1.5px dashed ${drag ? "rgba(140,29,64,0.55)" : "rgba(0,0,0,0.14)"}`, borderRadius: 16, padding: "22px 20px", cursor: "pointer",
-        background: drag ? "rgba(140,29,64,0.04)" : "#fff", display: "flex", alignItems: "center", gap: 14, transition: "all .25s cubic-bezier(.4,0,.2,1)" }}>
+      style={{ border: `1.5px dashed ${drag ? "rgba(140,29,64,0.55)" : "rgba(0,0,0,0.14)"}`, borderRadius: 16, padding: "20px 18px", cursor: "pointer", height: "100%", boxSizing: "border-box",
+        background: drag ? "rgba(140,29,64,0.04)" : "#fff", display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center", gap: 14, transition: "all .25s cubic-bezier(.4,0,.2,1)" }}>
       <input ref={inputRef} type="file" accept=".pdf,.txt,.md,.docx" onChange={(e) => handle(e.target.files)} style={{ display: "none" }} />
-      <span style={{ width: 40, height: 40, borderRadius: 12, background: "rgba(140,29,64,0.07)", color: "var(--asu-maroon)", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-        <i className={busy ? "fa-solid fa-brain fa-beat-fade" : "fa-solid fa-arrow-up-from-bracket"} aria-hidden="true"></i>
-      </span>
+      <PdfFlashIcon size={46} busy={!!busy} />
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)" }}>
-          {busy ? `Reading ${busy}…` : "Upload a PDF to create a flashcard"}
+        <div style={{ fontSize: 16, fontWeight: 700, letterSpacing: "-0.015em", color: "var(--gray-1)" }}>
+          {busy ? `Reading ${busy}` : "Add a document"}
         </div>
-        <div style={{ font: "var(--text-small)", color: "var(--gray-3)", marginTop: 2 }}>
-          {busy ? "Detecting title and building your card" : "Drop a file here or click to browse — the title is detected automatically"}
+        <div style={{ font: "var(--text-small)", color: "var(--gray-3)", marginTop: 4, lineHeight: 1.5 }}>
+          {busy ? "One moment" : "PDF, Word, or plain text"}
         </div>
       </div>
     </div>
@@ -465,7 +518,9 @@ function FlashCard({ color, title, date, meta, isNew, onGenerate, onDelete }) {
       <div ref={innerRef} style={{ position: "absolute", inset: 0, transformStyle: "preserve-3d", willChange: "transform" }}>
         <div style={face}>
           <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-            <span style={{ width: 7, height: 7, borderRadius: "50%", background: color, marginTop: 7, flexShrink: 0 }}></span>
+          {isNew
+            ? <span style={{ marginTop: -2, marginRight: 2 }}><PdfFlashIcon size={26} /></span>
+            : <span style={{ width: 7, height: 7, borderRadius: "50%", background: color, marginTop: 7, flexShrink: 0 }}></span>}
             <span style={{ flex: 1, minWidth: 0, overflowWrap: "anywhere", fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)", lineHeight: 1.35 }}>{title}</span>
             <i className="fa-solid fa-xmark" aria-hidden="true" onClick={requestDelete}
               onMouseEnter={(e) => { e.currentTarget.style.color = "var(--danger)"; }}
@@ -587,6 +642,70 @@ function WorkspaceSidebar({ active = "Home", onNav }) {
   );
 }
 
+/* ---- Bento primitives (reference: mixed-size tiles, filled accents, big numbers) ---- */
+const TILE = { borderRadius: 20, padding: 20, display: "flex", flexDirection: "column", boxShadow: "0 1px 2px rgba(0,0,0,0.04)" };
+function Tile({ fill, children, style, span, onClick, hover }) {
+  const ref = React.useRef(null);
+  const bg = fill === "maroon" ? "var(--asu-maroon)" : fill === "ink" ? "#2A1017" : fill === "tint" ? "#F4E9ED" : "#fff";
+  return (
+    <div data-card ref={ref} onClick={onClick}
+      onMouseEnter={() => hover && gsap.to(ref.current, { y: -3, boxShadow: "0 12px 30px rgba(0,0,0,0.09)", duration: 0.28, ease: "power2.out" })}
+      onMouseLeave={() => hover && gsap.to(ref.current, { y: 0, boxShadow: "0 1px 2px rgba(0,0,0,0.04)", duration: 0.32, ease: "power2.out" })}
+      style={{ ...TILE, background: bg, border: fill ? "1px solid transparent" : "1px solid rgba(0,0,0,0.07)", gridColumn: span ? `span ${span}` : undefined, cursor: onClick ? "pointer" : "default", ...style }}>
+      {children}
+    </div>
+  );
+}
+function TileLabel({ children, on }) {
+  return <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: on === "dark" ? "rgba(255,255,255,0.62)" : "var(--gray-3)" }}>{children}</div>;
+}
+function BigNum({ children, on, size = 38 }) {
+  return <div style={{ fontFamily: "var(--font-sans)", fontSize: size, fontWeight: 700, letterSpacing: "-0.035em", lineHeight: 1.05, color: on === "dark" ? "#fff" : "var(--gray-1)" }}>{children}</div>;
+}
+function TrendPill({ children, on }) {
+  return <span style={{ display: "inline-flex", alignItems: "center", gap: 5, alignSelf: "flex-start", background: on === "dark" ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.05)", color: on === "dark" ? "#fff" : "var(--gray-2)", fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, padding: "5px 11px", borderRadius: 999 }}>
+    <i className="fa-solid fa-arrow-trend-up" aria-hidden="true" style={{ fontSize: 10 }}></i>{children}
+  </span>;
+}
+function MiniBars({ data }) {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    gsap.fromTo(ref.current.querySelectorAll("[data-b] > span"), { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.7, stagger: 0.05, ease: "power3.out", delay: 0.2 });
+  }, []);
+  const max = Math.max(...data);
+  return (
+    <div ref={ref} style={{ display: "flex", alignItems: "flex-end", gap: 7, height: 76 }}>
+      {data.map((v, i) => (
+        <div data-b key={i} style={{ flex: 1, height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", gap: 3 }}>
+          <span style={{ display: "block", height: `${(v / max) * 100}%`, background: i === data.length - 1 ? "var(--asu-maroon)" : "rgba(140,29,64,0.22)", borderRadius: 5 }}></span>
+        </div>
+      ))}
+    </div>
+  );
+}
+function ListRow({ icon, title, meta, value, onClick, last }) {
+  return (
+    <div data-act onClick={onClick} style={{ display: "flex", alignItems: "center", gap: 13, padding: "13px 0", borderBottom: last ? "none" : "1px solid rgba(0,0,0,0.06)", cursor: onClick ? "pointer" : "default" }}>
+      <span style={{ width: 34, height: 34, borderRadius: 11, background: "rgba(0,0,0,0.045)", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0, color: "var(--asu-maroon)" }}>
+        <i className={icon} aria-hidden="true" style={{ fontSize: 13 }}></i>
+      </span>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{title}</div>
+        <div style={{ font: "var(--text-small)", color: "var(--gray-3)" }}>{meta}</div>
+      </div>
+      <span style={{ fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 700, color: "var(--gray-1)", flexShrink: 0 }}>{value}</span>
+    </div>
+  );
+}
+function BandHead({ children, action, onAction }) {
+  return (
+    <div data-greet style={{ gridColumn: "1 / -1", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginTop: 6 }}>
+      <h2 style={{ fontFamily: "var(--font-sans)", fontSize: 19, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--gray-1)", margin: 0 }}>{children}</h2>
+      {action ? <span onClick={onAction} style={{ fontFamily: "var(--font-sans)", fontSize: 13, fontWeight: 700, color: "var(--asu-maroon)", cursor: "pointer" }}>{action}</span> : null}
+    </div>
+  );
+}
+
 function DashboardScreen({ onNav, tasks, onToggle, onStar, onOpenSummary, onGenerateQuiz, uploads, onAddUpload, onRemoveUpload }) {
   const rootRef = React.useRef(null);
   React.useEffect(() => {
@@ -618,9 +737,13 @@ function DashboardScreen({ onNav, tasks, onToggle, onStar, onOpenSummary, onGene
     setPending(null);
   };
 
-  const sectionLabel = { display: "flex", alignItems: "center", gap: 9, fontFamily: "var(--font-sans)", fontSize: 13, fontWeight: 700, letterSpacing: "0.02em", color: "var(--gray-3)", margin: "0 0 14px" };
-  const panel = { background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 16, padding: "6px 18px 12px", boxShadow: "0 1px 2px rgba(0,0,0,0.04)" };
-  const noteCard = { background: "#fff", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 16, padding: 18, display: "flex", flexDirection: "column", gap: 10, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" };
+  const done = tasks.filter((t) => t.done).length;
+  const pct = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
+  const barRef = React.useRef(null);
+  React.useEffect(() => {
+    if (barRef.current) gsap.to(barRef.current, { width: `${pct}%`, duration: 0.9, ease: "power3.out", delay: 0.3 });
+  }, [pct]);
+
   const chip = () => ({ background: "rgba(0,0,0,0.045)", color: "var(--gray-2)", fontFamily: "var(--font-sans)", fontSize: 12, padding: "5px 11px", borderRadius: 7 });
 
   return (
@@ -631,74 +754,106 @@ function DashboardScreen({ onNav, tasks, onToggle, onStar, onOpenSummary, onGene
         <WorkspaceSidebar active="Home" onNav={onNav} />
 
         {/* Main */}
-        <main style={{ flex: 1, padding: "36px 40px 44px", display: "grid", gridTemplateColumns: "minmax(0,1.55fr) minmax(0,1fr)", gap: 40, alignContent: "start", background: "#FBFBFD", overflow: "auto" }}>
-          <h1 data-greet style={{ gridColumn: "1 / -1", fontFamily: "var(--font-sans)", fontSize: 34, fontWeight: 700, letterSpacing: "-0.025em", color: "var(--gray-1)", margin: 0 }}>Welcome back, Lakshman</h1>
+        <main style={{ flex: 1, padding: "34px 34px 44px", display: "grid", gridTemplateColumns: "repeat(12,minmax(0,1fr))", gap: 14, alignContent: "start", background: "#FBFBFD", overflow: "auto" }}>
+          <h1 data-greet style={{ gridColumn: "1 / -1", fontFamily: "var(--font-sans)", fontSize: 30, fontWeight: 700, letterSpacing: "-0.03em", color: "var(--gray-1)", margin: 0 }}>Welcome back, Lakshman</h1>
 
-          <section>
-            <h2 style={sectionLabel}>My quizzes</h2>
-            <div style={{ marginBottom: 16 }}><UploadZone onAdd={onAddUpload} /></div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 18 }}>
-              {uploads.map((u) => (
-                <FlashCard key={u.id} color={DOT.a} title={u.title} meta={`${u.date} · ${u.size}`} isNew
-                  onGenerate={onGenerateQuiz} onDelete={() => setPending({ kind: "upload", id: u.id, title: u.title })} />
-              ))}
-              {BUILT_IN.filter(([, t]) => !deleted.includes(t)).map(([c, t, d]) => (
-                <FlashCard key={t + d} color={c} title={t} date={d} onGenerate={onGenerateQuiz} onDelete={(title) => setPending({ kind: "builtin", title })} />
-              ))}
+          {/* ---------- Band 1 · Quizzes ---------- */}
+          <BandHead action="New quiz →" onAction={() => onNav("Quizzes")}>Quizzes</BandHead>
+
+          <div style={{ gridColumn: "span 4" }}><UploadZone onAdd={onAddUpload} /></div>
+
+          <Tile span={5} style={{ gap: 14 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <TileLabel>This week</TileLabel>
+              <TrendPill>+12%</TrendPill>
             </div>
-          </section>
-
-          <section data-panel>
-            <h2 style={sectionLabel}>My tasks</h2>
-            <div style={panel}>
-              {tasks.slice(0, 5).map((t) => <TaskRow key={t.id} task={t} onToggle={toggle} onStar={starT} />)}
-              <div onClick={() => onNav("Tasks")} style={{ padding: "12px 4px 4px", font: "var(--text-small)", fontWeight: 700, color: "var(--asu-maroon)", cursor: "pointer" }}>View all tasks →</div>
+            <MiniBars data={[4, 7, 3, 9, 6, 11, 14]} />
+            <div style={{ display: "flex", gap: 28 }}>
+              <div><TileLabel>Attempted</TileLabel><BigNum size={26}>37</BigNum></div>
+              <div><TileLabel>Avg. score</TileLabel><BigNum size={26}>72%</BigNum></div>
             </div>
-          </section>
+          </Tile>
 
-          <section data-panel>
-            <h2 style={sectionLabel}>My summaries</h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 16 }}>
-              <div onClick={() => onOpenSummary(1)} style={{ ...noteCard, cursor: "pointer" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", font: "var(--text-small)", color: "var(--gray-3)" }}><span>4/14/2025</span><i className="fa-solid fa-ellipsis" aria-hidden="true"></i></div>
-                <div style={{ fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)" }}>GR00T N1 — open foundation model for humanoid robots</div>
-                <p style={{ font: "var(--text-small)", color: "var(--gray-2)", margin: 0, lineHeight: 1.6 }}>General-purpose robots require both a versatile body and an intelligent mind. NVIDIA's dual-system architecture pairs a vision-language planner with…</p>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <span style={chip()}>Robotics</span>
-                  <span style={chip()}>Whitepaper</span>
-                </div>
+          <Tile span={3} fill="maroon" hover onClick={() => onNav("Quizzes")} style={{ gap: 10, justifyContent: "space-between" }}>
+            <TileLabel on="dark">Flashcard decks</TileLabel>
+            <div>
+              <BigNum on="dark" size={44}>{uploads.length + BUILT_IN.filter(([, t]) => !deleted.includes(t)).length}</BigNum>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "rgba(255,255,255,0.72)", marginTop: 4 }}>decks</div>
+            </div>
+            <TrendPill on="dark">3 new</TrendPill>
+          </Tile>
+
+          <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginTop: 8 }}>
+            <TileLabel>Decks</TileLabel>
+          </div>
+          <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: 14 }}>
+            {uploads.map((u) => (
+              <FlashCard key={u.id} color={DOT.a} title={u.title} meta={`${u.date} · ${u.size}`} isNew
+                onGenerate={onGenerateQuiz} onDelete={() => setPending({ kind: "upload", id: u.id, title: u.title })} />
+            ))}
+            {BUILT_IN.filter(([, t]) => !deleted.includes(t)).map(([c, t, d]) => (
+              <FlashCard key={t + d} color={c} title={t} date={d} onGenerate={onGenerateQuiz} onDelete={(title) => setPending({ kind: "builtin", title })} />
+            ))}
+          </div>
+
+          {/* ---------- Band 2 · Summaries ---------- */}
+          <BandHead action="All summaries →" onAction={() => onNav("Summaries")}>Summaries</BandHead>
+
+          <Tile span={3} fill="ink" hover onClick={() => onNav("Summaries")} style={{ gap: 10, justifyContent: "space-between" }}>
+            <TileLabel on="dark">Documents studied</TileLabel>
+            <div>
+              <BigNum on="dark" size={44}>12</BigNum>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "rgba(255,255,255,0.72)", marginTop: 4 }}>184 pages total</div>
+            </div>
+          </Tile>
+
+          <Tile span={9} style={{ padding: "6px 20px 8px" }}>
+            <ListRow icon="fa-solid fa-robot" title="GR00T N1 — open foundation model for humanoid robots" meta="4/14/2025 · Robotics" value="18 pp" onClick={() => onOpenSummary(1)} />
+            <ListRow icon="fa-solid fa-bolt" title="Electromagnetic induction — key terms" meta="10/11/2024 · Physics" value="9 pp" onClick={() => onOpenSummary(2)} />
+            <ListRow icon="fa-solid fa-fire" title="Thermodynamics Ch. 3 — entropy and the second law" meta="9/28/2024 · Physics" value="14 pp" onClick={() => onOpenSummary(3)} />
+            <ListRow icon="fa-solid fa-superscript" title="Matrix transformations and eigenvalues" meta="3/02/2025 · Maths" value="11 pp" onClick={() => onOpenSummary(4)} last />
+          </Tile>
+
+          {/* ---------- Band 3 · Tasks ---------- */}
+          <BandHead action="Open board →" onAction={() => onNav("Tasks")}>Tasks</BandHead>
+
+          <Tile span={8} style={{ padding: "6px 20px 10px" }}>
+            {tasks.slice(0, 5).map((t) => <TaskRow key={t.id} task={t} onToggle={toggle} onStar={starT} />)}
+          </Tile>
+
+          <Tile span={4} style={{ gap: 16, justifyContent: "space-between" }}>
+            <div>
+              <TileLabel>Completed this week</TileLabel>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 7, marginTop: 2 }}>
+                <BigNum size={34}>{done}</BigNum>
+                <span style={{ fontFamily: "var(--font-sans)", fontSize: 17, fontWeight: 700, color: "var(--gray-4)" }}>/ {tasks.length}</span>
               </div>
-              <div onClick={() => onOpenSummary(2)} style={{ ...noteCard, cursor: "pointer" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", font: "var(--text-small)", color: "var(--gray-3)" }}><span>10/11/2024</span><i className="fa-solid fa-ellipsis" aria-hidden="true"></i></div>
-                <div style={{ fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)" }}>Electromagnetic induction — key terms</div>
-                <p style={{ font: "var(--text-small)", color: "var(--gray-2)", margin: 0, lineHeight: 1.6 }}>Magnetic flux, Faraday's law, Lenz's law, and self-inductance, with worked examples for each and the three formulas most likely to appear…</p>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <span style={chip()}>Reviewed</span>
-                  <span style={chip()}>Physics</span>
-                </div>
+            </div>
+            <div>
+              <div style={{ height: 8, background: "rgba(0,0,0,0.06)", borderRadius: 999, overflow: "hidden" }}>
+                <div ref={barRef} style={{ height: "100%", width: 0, background: "var(--asu-maroon)", borderRadius: 999 }}></div>
               </div>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: 12, color: "var(--gray-3)", marginTop: 8 }}>{pct}% done</div>
             </div>
-          </section>
+          </Tile>
 
-          <section data-panel>
-            <h2 style={sectionLabel}>Recent activity</h2>
-            <div style={panel}>
-              {[["MH", "Maya Hayes", "Shared Design challenges quiz", "27 Apr"],
-                ["CM", "Cassie Melendez", "Scored 92% on Thermodynamics", "27 Apr"],
-                ["RS", "Ronny Schultz", "Added notes to Electromagnet", "26 Apr"],
-                ["AF", "Amanda Finnegan", "Created study group: Physics II", "26 Apr"],
-                ["RH", "Rob Houghton", "Summarized GR00T whitepaper", "25 Apr"]].map(([ini, name, act, date]) => (
-                <div data-act key={name} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 4px", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
-                  <Avatar initials={ini} size={34} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)" }}>{name}</div>
-                    <div style={{ font: "var(--text-small)", color: "var(--gray-3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{act}</div>
-                  </div>
-                  <span style={{ font: "var(--text-small)", color: "var(--gray-3)" }}>{date}</span>
+          {/* ---------- Activity ---------- */}
+          <BandHead>Recent activity</BandHead>
+          <Tile span={12} style={{ padding: "6px 20px 8px" }}>
+            {[["MH", "Maya Hayes", "Shared Design challenges quiz", "27 Apr"],
+              ["CM", "Cassie Melendez", "Scored 92% on Thermodynamics", "27 Apr"],
+              ["RS", "Ronny Schultz", "Added notes to Electromagnet", "26 Apr"],
+              ["AF", "Amanda Finnegan", "Created study group: Physics II", "26 Apr"]].map(([ini, name, act, date], i, arr) => (
+              <div data-act key={name} style={{ display: "flex", alignItems: "center", gap: 13, padding: "12px 0", borderBottom: i === arr.length - 1 ? "none" : "1px solid rgba(0,0,0,0.06)" }}>
+                <Avatar initials={ini} size={34} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)" }}>{name}</div>
+                  <div style={{ font: "var(--text-small)", color: "var(--gray-3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{act}</div>
                 </div>
-              ))}
-            </div>
-          </section>
+                <span style={{ font: "var(--text-small)", color: "var(--gray-3)" }}>{date}</span>
+              </div>
+            ))}
+          </Tile>
         </main>
       </div>
     </div>
@@ -736,7 +891,7 @@ function TasksScreen({ onNav, tasks, onToggle, onStar, onMove, onOpenSummary }) 
           <div data-greet style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24 }}>
             <div>
               <h1 style={{ fontFamily: "var(--font-sans)", fontSize: 34, fontWeight: 700, letterSpacing: "-0.025em", color: "var(--gray-1)", margin: 0 }}>Tasks</h1>
-              <p style={{ font: "var(--text-body)", color: "var(--gray-3)", margin: "6px 0 0" }}>Your study pipeline — each task links back to the quiz or summary it came from.</p>
+              <p style={{ font: "var(--text-body)", color: "var(--gray-3)", margin: "6px 0 0" }}>Things you’ve set aside to review.</p>
             </div>
             <div style={{ width: 150 }}><Button variant="secondary" icon="fa-solid fa-plus">New task</Button></div>
           </div>
@@ -944,7 +1099,7 @@ function QuizzesScreen({ onNav, presetSource }) {
         <main style={{ flex: 1, padding: "36px 40px 44px", background: "#FBFBFD", overflow: "auto", display: "flex", flexDirection: "column", gap: 26 }}>
           <div data-greet>
             <h1 style={{ fontFamily: "var(--font-sans)", fontSize: 34, fontWeight: 700, letterSpacing: "-0.025em", color: "var(--gray-1)", margin: 0 }}>Generate a quiz</h1>
-            <p style={{ font: "var(--text-body)", color: "var(--gray-3)", margin: "6px 0 0" }}>Tell QuizAI what you want and it writes the questions from your material.</p>
+            <p style={{ font: "var(--text-body)", color: "var(--gray-3)", margin: "6px 0 0" }}>Pick your material and how you want to be tested.</p>
           </div>
 
           {step === "config" ? (
@@ -1183,7 +1338,7 @@ function SummariesScreen({ onNav, focusId, onGenerateQuiz }) {
           <div data-greet style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 24 }}>
             <div>
               <h1 style={{ fontFamily: "var(--font-sans)", fontSize: 34, fontWeight: 700, letterSpacing: "-0.025em", color: "var(--gray-1)", margin: 0 }}>Summaries</h1>
-              <p style={{ font: "var(--text-body)", color: "var(--gray-3)", margin: "6px 0 0" }}>Every document you've studied, in one place.</p>
+              <p style={{ font: "var(--text-body)", color: "var(--gray-3)", margin: "6px 0 0" }}>Everything you’ve read so far.</p>
             </div>
             <div style={{ width: 168 }}><Button variant="secondary" icon="fa-solid fa-plus">New summary</Button></div>
           </div>

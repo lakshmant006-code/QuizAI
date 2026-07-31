@@ -1,6 +1,26 @@
 repo: lakshmant006-code/QuizAI
 branch: main
 
+## Pending push
+
+These changes exist **only in this project** — they have not been committed or pushed. I have read-only GitHub access, so run the commands below from the repository root to publish them.
+
+```bash
+git add .
+git commit -m "Bento dashboard, PDF-to-flashcard mark, plainer copy, deploy config"
+git push
+```
+
+Changed since the last sync:
+
+- **Dashboard rebuilt as a bento grid** (`templates/quizai-landing/Landing.jsx`) — 12-column layout split into labelled Quizzes / Summaries / Tasks bands, mixed tile sizes, filled maroon and ink accent tiles carrying the headline numbers, an animated 7-day bar chart, and a task-progress bar driven by real completion state.
+- **New `PdfFlashIcon`** — a maroon PDF page fronting a stacked deck with a bolt badge; used in the upload zone (layers float while a file is read) and on uploaded flashcards in place of the subject dot.
+- **Upload zone promoted** to a 4-column tile leading the Quizzes band, with a vertical layout that fills the row.
+- **Copy rewritten throughout** — removed AI-boasting and instructional filler. "Turn a PDF into a flashcard / drop a file or click to browse, the title is detected automatically" → "Add a document / PDF, Word, or plain text". Landing headline → "Read it once. Remember it properly."; badge "AI-powered studying" → "Study companion"; feature headings lost their adjectives; dropped the "fire a synapse" and "study smarter, remember longer" lines.
+- **Fixed a fatal load-order race** — `Landing.jsx` and `templates/quizai-app/App.jsx` destructured the design-system namespace at module-evaluation time, before `ds-base.js` had appended the bundle; the throw aborted evaluation and the page rendered nothing. Components now resolve at render time, with a `useDsReady` hook that re-renders if the bundle lands after first paint.
+- **`ds-base.js` deduped** — links only `styles.css` (which `@import`s the tokens) and guards the bundle append, so repeat loads are no-ops.
+- **Deploy config** — `vercel.json` now routes `/` to the full landing+app (was pointing at the old UI kit) and adds `/wireframes`; added `DEPLOY.md` and a `.gitignore` that excludes `motion/node_modules/`.
+
 ## Last sync
 
 date: 2026-07-30T17:41:20Z
