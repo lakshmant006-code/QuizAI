@@ -1,0 +1,26 @@
+# Render Blueprint — auto-configures the QuizAI web service.
+# In Render: New + → Blueprint → connect this repo → Apply.
+# Then fill in the two values marked "sync: false" in the dashboard.
+services:
+  - type: web
+    name: quizai
+    runtime: node
+    plan: free
+    rootDir: quizai            # the Next.js app lives in this subfolder
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    autoDeploy: true           # redeploy on every push to the default branch
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Supabase publishable values (safe to commit — protected by RLS):
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://czgzfqjfjfxrwlxostnj.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        value: sb_publishable_p2lsbeZvy2r74kK6bx86Cw_NRUxeqsD
+      # Secret — enter in the Render dashboard, never committed:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      # Set to your Render URL after the first deploy (e.g. https://quizai.onrender.com):
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
