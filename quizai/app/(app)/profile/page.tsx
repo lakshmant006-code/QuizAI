@@ -44,7 +44,7 @@ export default async function ProfilePage() {
         <ProfileForm userId={user!.id} initialName={name} email={email} />
       </Tile>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14 }}>
         <Tile style={{ gap: 6 }}>
           <TileLabel><i className="fa-solid fa-file-pdf" style={{ marginRight: 6, color: "var(--asu-maroon)" }} />Documents</TileLabel>
           <BigNum>{docCount.count ?? 0}</BigNum>

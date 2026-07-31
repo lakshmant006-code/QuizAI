@@ -84,7 +84,7 @@ export default async function DashboardPage() {
       {documents.length === 0 ? (
         <Tile span={12}><span style={{ font: "var(--text-body)", color: "var(--text-muted)" }}>No documents yet — upload a PDF above to generate your first quiz and summary.</span></Tile>
       ) : (
-        <div className="dash-decks" style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: 14 }}>
+        <div className="dash-decks" style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: 14 }}>
           {documents.slice(0, 6).map((d) => (
             <Tile key={d.id} hover style={{ gap: 12 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -159,10 +159,10 @@ export default async function DashboardPage() {
       </Tile>
 
       <style>{`
-        @media (max-width: 900px){
-          .dash-upload{grid-column:1 / -1!important}
-          .dash-grid > *{grid-column:1 / -1!important}
-          .dash-decks{grid-template-columns:1fr!important}
+        /* Tablet: collapse the 12-col spans to a simple 6-col rhythm */
+        @media (max-width: 1024px){
+          .dash-grid > *{ grid-column:1 / -1 !important; }
+          .dash-upload{ grid-column:1 / -1 !important; }
         }
       `}</style>
     </div>

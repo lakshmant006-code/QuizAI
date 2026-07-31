@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Logo, Avatar } from "@/components/ui";
+import { Avatar } from "@/components/ui";
 
 const NAV = [
-  { href: "/dashboard", label: "Home", icon: "⌂" },
-  { href: "/summaries", label: "Summaries", icon: "≡" },
-  { href: "/quizzes", label: "Quizzes", icon: "?" },
-  { href: "/tasks", label: "Tasks", icon: "✓" },
-  { href: "/profile", label: "Profile", icon: "☺" },
+  { href: "/dashboard", label: "Home", icon: "fa-solid fa-house" },
+  { href: "/summaries", label: "Summaries", icon: "fa-regular fa-file-lines" },
+  { href: "/quizzes", label: "Quizzes", icon: "fa-solid fa-circle-question" },
+  { href: "/tasks", label: "Tasks", icon: "fa-solid fa-circle-check" },
+  { href: "/profile", label: "Profile", icon: "fa-regular fa-user" },
 ];
 
 export function AppShell({
@@ -34,129 +34,118 @@ export function AppShell({
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--surface-app)", padding: 16 }}>
-      <div
-        className="qa-shell"
-        style={{
-          display: "flex",
-          background: "#fff",
-          borderRadius: "var(--radius-xl)",
-          overflow: "hidden",
-          boxShadow: "var(--shadow-elevated)",
-          minHeight: "calc(100vh - 32px)",
-        }}
-      >
-        <aside
-          className="qa-side"
-          style={{
-            width: 220,
-            borderRight: "1px solid var(--hairline)",
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-            flexShrink: 0,
-          }}
-        >
-          <div style={{ padding: "6px 8px 14px" }}>
-            <Logo size={20} />
+    <div className="qa-root">
+      <div className="qa-shell">
+        <aside className="qa-side">
+          <div className="qa-brand">
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: "var(--asu-maroon)" }}>
+              <span aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: "var(--surface-maroon-tint)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}><i className="fa-solid fa-brain" /></span>
+              QuizAI
+            </span>
           </div>
 
-          <Link
-            href="/dashboard?upload=1"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              padding: "10px 12px",
-              background: "var(--asu-maroon)",
-              color: "#fff",
-              borderRadius: "var(--radius-md)",
-              font: "var(--text-label)",
-              marginBottom: 8,
-              boxShadow: "var(--shadow-button)",
-            }}
-          >
-            + New upload
+          <Link href="/dashboard?upload=1" className="qa-new">
+            <i className="fa-solid fa-plus" /> <span className="qa-new-label">New upload</span>
           </Link>
 
-          {NAV.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "9px 12px",
-                  borderRadius: "var(--radius-sm)",
-                  font: "var(--text-body)",
-                  fontWeight: active ? 700 : 400,
-                  color: active ? "var(--asu-maroon)" : "var(--gray-2)",
-                  background: active ? "var(--surface-chip)" : "transparent",
-                }}
-              >
-                <span aria-hidden style={{ width: 16, textAlign: "center" }}>{item.icon}</span>
-                {item.label}
-              </Link>
-            );
-          })}
+          <nav className="qa-nav">
+            {NAV.map((item) => {
+              const active = pathname === item.href;
+              return (
+                <Link key={item.href} href={item.href} className={`qa-link${active ? " qa-link-active" : ""}`}>
+                  <i className={item.icon} style={{ width: 16, textAlign: "center" }} aria-hidden />
+                  <span className="qa-link-label">{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
 
-          <div style={{ marginTop: "auto", borderTop: "1px solid var(--hairline)", paddingTop: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "4px 8px" }}>
+          <div className="qa-foot">
+            <div className="qa-user">
               <Avatar initials={initials} size={34} />
               <div style={{ minWidth: 0 }}>
-                <div style={{ font: "var(--text-label)", color: "var(--gray-1)" }}>{name}</div>
-                <div
-                  style={{
-                    font: "var(--text-small)",
-                    color: "var(--text-muted)",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {email}
-                </div>
+                <div style={{ font: "var(--text-label)", color: "var(--gray-1)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</div>
+                <div style={{ font: "var(--text-small)", color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{email}</div>
               </div>
             </div>
-            <button
-              onClick={signOut}
-              style={{
-                width: "100%",
-                marginTop: 8,
-                padding: "8px 12px",
-                background: "transparent",
-                border: "1px solid var(--gray-5)",
-                borderRadius: "var(--radius-sm)",
-                color: "var(--gray-2)",
-                font: "var(--text-label)",
-              }}
-            >
-              Sign out
+            <button onClick={signOut} className="qa-signout" title="Sign out">
+              <i className="fa-solid fa-arrow-right-from-bracket" />
+              <span className="qa-signout-label">Sign out</span>
             </button>
           </div>
         </aside>
 
-        <main
-          className="qa-main"
-          style={{ flex: 1, padding: "32px 32px 40px", background: "var(--surface-panel)", overflow: "auto" }}
-        >
-          {children}
+        <main className="qa-main">
+          <div className="qa-main-inner">{children}</div>
         </main>
       </div>
 
       <style>{`
-        @media (max-width: 640px){
-          .qa-shell{flex-direction:column!important;min-height:0!important}
-          .qa-side{width:100%!important;border-right:none!important;border-bottom:1px solid var(--hairline)!important}
-          .qa-main{padding:20px 16px 28px!important}
+        .qa-root{ min-height:100vh; background:var(--surface-app); padding:16px; }
+        .qa-shell{
+          display:flex; background:#fff; border-radius:var(--radius-xl); overflow:hidden;
+          box-shadow:var(--shadow-elevated); min-height:calc(100vh - 32px);
+          max-width:1600px; margin:0 auto;
         }
-        @media (min-width:641px) and (max-width:1024px){
-          .qa-side{width:190px!important}
+        .qa-side{
+          width:230px; flex-shrink:0; border-right:1px solid var(--hairline);
+          padding:16px; display:flex; flex-direction:column; gap:4px;
+        }
+        .qa-brand{ padding:6px 8px 14px; }
+        .qa-new{
+          display:flex; align-items:center; justify-content:center; gap:8px;
+          padding:10px 12px; background:var(--asu-maroon); color:#fff;
+          border-radius:var(--radius-md); font:var(--text-label); margin-bottom:8px;
+          box-shadow:var(--shadow-button); white-space:nowrap;
+        }
+        .qa-nav{ display:flex; flex-direction:column; gap:4px; }
+        .qa-link{
+          display:flex; align-items:center; gap:12px; padding:9px 12px;
+          border-radius:var(--radius-sm); font:var(--text-body); color:var(--gray-2);
+          white-space:nowrap;
+        }
+        .qa-link-active{ font-weight:700; color:var(--asu-maroon); background:var(--surface-chip); }
+        .qa-foot{ margin-top:auto; border-top:1px solid var(--hairline); padding-top:12px; }
+        .qa-user{ display:flex; align-items:center; gap:10px; padding:4px 8px; }
+        .qa-signout{
+          width:100%; margin-top:8px; padding:8px 12px; background:transparent;
+          border:1px solid var(--gray-5); border-radius:var(--radius-sm);
+          color:var(--gray-2); font:var(--text-label);
+          display:flex; align-items:center; justify-content:center; gap:8px;
+        }
+        .qa-main{ flex:1; min-width:0; padding:32px; background:var(--surface-panel); overflow:auto; }
+        .qa-main-inner{ max-width:1280px; margin:0 auto; width:100%; }
+
+        /* Tablet */
+        @media (max-width:1024px){
+          .qa-side{ width:200px; }
+          .qa-main{ padding:24px; }
+        }
+
+        /* Mobile: sidebar becomes a horizontal top bar */
+        @media (max-width:760px){
+          .qa-root{ padding:0; }
+          .qa-shell{ flex-direction:column; border-radius:0; min-height:100vh; box-shadow:none; }
+          .qa-side{
+            width:100%; flex-direction:row; align-items:center; gap:8px;
+            overflow-x:auto; border-right:none; border-bottom:1px solid var(--hairline);
+            padding:10px 12px; position:sticky; top:0; background:rgba(255,255,255,0.96);
+            backdrop-filter:blur(8px); z-index:20;
+          }
+          .qa-brand{ padding:0 4px 0 0; flex-shrink:0; }
+          .qa-new{ margin-bottom:0; padding:9px 12px; flex-shrink:0; }
+          .qa-new-label{ display:none; }
+          .qa-nav{ flex-direction:row; gap:4px; flex-shrink:0; }
+          .qa-link{ padding:8px 12px; }
+          .qa-foot{ margin-top:0; margin-left:auto; border-top:none; padding-top:0; flex-shrink:0; display:flex; align-items:center; gap:8px; }
+          .qa-user{ display:none; }
+          .qa-signout{ width:auto; margin-top:0; padding:8px 10px; }
+          .qa-signout-label{ display:none; }
+          .qa-main{ padding:16px; }
+        }
+        @media (max-width:400px){
+          .qa-link-label{ display:none; }   /* icons only on very small screens */
+          .qa-main{ padding:12px; }
         }
       `}</style>
     </div>
