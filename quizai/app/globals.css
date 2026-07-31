@@ -1,0 +1,23 @@
+@import "./tokens.css";
+
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+html{height:100%;-webkit-text-size-adjust:100%}
+html,body{max-width:100vw;overflow-x:hidden}
+body{
+  min-height:100%;
+  font-family:var(--font-sans);
+  color:var(--text-body);
+  background:var(--white);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+img,video,canvas,svg{max-width:100%}
+:focus-visible{outline:2px solid var(--asu-maroon);outline-offset:2px}
+
+@keyframes qa-fade-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.qa-fade-up{animation:qa-fade-up var(--duration-base) var(--ease-standard) both}
+@keyframes qa-spin{to{transform:rotate(360deg)}}
+.qa-spin{display:inline-block;animation:qa-spin .8s linear infinite}

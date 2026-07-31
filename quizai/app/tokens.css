@@ -1,0 +1,48 @@
+/* QuizAI design tokens — ported from the design system */
+:root{
+  --asu-maroon:#8C1D40;--asu-maroon-dark:#6E1733;--asu-maroon-darker:#501025;
+  --asu-gold:#FFC627;--asu-rich-black:#000000;--asu-white:#FFFFFF;
+  --asu-green:#78BE20;--asu-blue:#00A3E0;--asu-orange:#FF7F32;--asu-gray:#747474;--asu-copper:#AF674B;--asu-turquoise:#4AB7C4;--asu-pink:#E74973;
+  --gray-1:#191919;--gray-2:#484848;--gray-3:#747474;--gray-4:#BFBFBF;--gray-5:#D0D0D0;--gray-6:#E8E8E8;--gray-7:#FAFAFA;
+  --white:#FFFFFF;
+  --surface-maroon-tint:#F1E4E8;--border-maroon-tint:#D1A5B3;
+  --surface-gold-tint:#FFF6DF;--border-gold-tint:#FFE59E;
+  --surface-white:#FFFFFF;
+  --surface-app:#F5F5F7;--surface-panel:#FBFBFD;--surface-chip:rgba(0,0,0,0.045);
+  --hairline:rgba(0,0,0,0.07);--hairline-strong:rgba(0,0,0,0.14);--hairline-selected:rgba(140,29,64,0.35);
+  --success:#4C7A14;--success-bg:#EBF5DE;
+  --danger:#C62828;--danger-bg:#FBEAEA;
+  --accent-badge-bg:var(--surface-gold-tint);--accent-badge-text:var(--asu-maroon);
+  --text-heading:var(--asu-maroon);--text-body:var(--gray-1);--text-muted:var(--gray-3);
+  --brand-primary:var(--asu-maroon);--brand-primary-hover:var(--asu-maroon-dark);--brand-primary-active:var(--asu-maroon-darker);
+  --border-default:var(--gray-4);--border-subtle:var(--gray-6);
+  --bg-page:var(--surface-app);--bg-surface:var(--white);
+
+  --font-sans:Arial,Helvetica,sans-serif;
+  --font-mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --fs-xs:12px;--fs-sm:13px;--fs-base:15px;--fs-md:17px;--fs-lg:20px;--fs-xl:26px;--fs-2xl:34px;--fs-3xl:44px;
+  --ls-tight:-0.025em;--ls-snug:-0.01em;--ls-wide:0.02em;--ls-caps:0.04em;
+  --fw-regular:400;--fw-semibold:700;--fw-bold:700;
+  --lh-tight:1.2;--lh-normal:1.5;--lh-loose:1.65;
+  --text-display:var(--fw-bold) var(--fs-3xl)/var(--lh-tight) var(--font-sans);
+  --text-h1:var(--fw-bold) var(--fs-2xl)/var(--lh-tight) var(--font-sans);
+  --text-h2:var(--fw-bold) var(--fs-xl)/var(--lh-tight) var(--font-sans);
+  --text-h3:var(--fw-semibold) var(--fs-lg)/var(--lh-tight) var(--font-sans);
+  --text-body:var(--fw-regular) var(--fs-base)/var(--lh-normal) var(--font-sans);
+  --text-small:var(--fw-regular) var(--fs-sm)/var(--lh-normal) var(--font-sans);
+  --text-label:var(--fw-semibold) var(--fs-sm)/var(--lh-normal) var(--font-sans);
+
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;
+  --radius-sm:8px;--radius-md:10px;--radius-lg:16px;--radius-xl:20px;--radius-pill:999px;--radius-round:50%;
+  --container-max:1120px;
+
+  --border-width:1px;
+  --shadow-card:0 1px 2px rgba(0,0,0,0.04);
+  --shadow-raised:0 8px 24px rgba(0,0,0,0.07);
+  --shadow-elevated:0 1px 3px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.05);
+  --shadow-modal:0 24px 60px rgba(0,0,0,0.22);
+  --shadow-button:0 2px 6px rgba(140,29,64,0.18);
+  --ease-standard:cubic-bezier(.4,0,.2,1);
+  --ease-out-back:cubic-bezier(.34,1.56,.64,1);
+  --duration-fast:150ms;--duration-base:240ms;--duration-slow:420ms;
+}
