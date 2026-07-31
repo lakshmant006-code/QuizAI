@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { Tile, TileLabel, BigNum } from "@/components/bento";
 import { Avatar } from "@/components/ui";
+import { ProfileForm } from "@/components/ProfileForm";
 import type { QuizAttempt } from "@/lib/types";
 
 export default async function ProfilePage() {
@@ -34,6 +35,13 @@ export default async function ProfilePage() {
             Member since {profile ? new Date(profile.created_at).toLocaleDateString() : "—"}
           </div>
         </div>
+      </Tile>
+
+      <Tile style={{ gap: 16, padding: 24 }}>
+        <h2 style={{ font: "var(--text-h3)", color: "var(--gray-1)", margin: 0 }}>
+          <i className="fa-solid fa-pen" style={{ marginRight: 10, color: "var(--asu-maroon)" }} />Edit profile
+        </h2>
+        <ProfileForm userId={user!.id} initialName={name} email={email} />
       </Tile>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 14 }}>
