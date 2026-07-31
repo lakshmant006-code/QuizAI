@@ -2,8 +2,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { type EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 
-// Handles the magic-link redirect. Supports both the PKCE `code` flow and the
-// `token_hash` flow depending on the Supabase email template in use.
+// Handles the magic-link redirect. Exchanges the code (or token_hash) for a
+// session, then sends the user to `next` (default: the dashboard). Uses
+// x-forwarded-host so the redirect targets the public domain behind Vercel's
+// proxy instead of the internal origin.
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const code = searchParams.get("code");
@@ -12,13 +14,20 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get("next") || "/dashboard";
 
   const supabase = await createClient();
-
+  let ok = false;
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(`${origin}${next}`);
+    ok = !error;
   } else if (tokenHash && type) {
     const { error } = await supabase.auth.verifyOtp({ type, token_hash: tokenHash });
-    if (!error) return NextResponse.redirect(`${origin}${next}`);
+    ok = !error;
+  }
+
+  if (ok) {
+    const forwardedHost = request.headers.get("x-forwarded-host");
+    const isLocal = process.env.NODE_ENV === "development";
+    const base = isLocal ? origin : forwardedHost ? `https://${forwardedHost}` : origin;
+    return NextResponse.redirect(`${base}${next}`);
   }
 
   return NextResponse.redirect(`${origin}/login?error=auth`);
