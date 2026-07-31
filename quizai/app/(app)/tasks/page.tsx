@@ -16,7 +16,7 @@ export default async function TasksPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
       <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--gray-1)", margin: 0 }}>
-        Tasks &amp; accountability
+        <i className="fa-solid fa-circle-check" style={{ marginRight: 10, color: "var(--asu-maroon)" }} />Tasks &amp; accountability
       </h1>
       <TasksBoard userId={user!.id} initial={(data ?? []) as Task[]} />
     </div>

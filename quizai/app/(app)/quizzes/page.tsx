@@ -1,13 +1,11 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Card, Badge } from "@/components/ui";
+import { Tile } from "@/components/bento";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
 
 export default async function QuizzesPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   const { data: quizzes } = await supabase
     .from("quizzes")
@@ -17,54 +15,38 @@ export default async function QuizzesPage() {
   const list = quizzes ?? [];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       <RealtimeRefresh userId={user!.id} />
       <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--gray-1)", margin: 0 }}>
-        Quizzes
+        <i className="fa-solid fa-circle-question" style={{ marginRight: 10, color: "var(--asu-maroon)" }} />Quizzes
       </h1>
 
       {list.length === 0 ? (
-        <Card>
-          <p style={{ font: "var(--text-body)", color: "var(--text-muted)", margin: 0 }}>
-            No quizzes yet. Upload a PDF from the dashboard to generate one.
-          </p>
-        </Card>
+        <Tile><span style={{ font: "var(--text-body)", color: "var(--text-muted)" }}>No quizzes yet. Upload a PDF from the dashboard to generate one.</span></Tile>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
           {list.map((q) => {
-            // Supabase returns aggregate as array of {count}
             const count = Array.isArray(q.questions) ? (q.questions[0]?.count ?? 0) : 0;
             const attempts = Array.isArray(q.quiz_attempts) ? q.quiz_attempts : [];
-            const best =
-              attempts.length > 0
-                ? Math.max(...attempts.map((a) => (a.total ? Math.round((a.score / a.total) * 100) : 0)))
-                : null;
+            const best = attempts.length ? Math.max(...attempts.map((a) => (a.total ? Math.round((a.score / a.total) * 100) : 0))) : null;
             return (
-              <Card key={q.id} style={{ padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+              <Tile key={q.id} hover style={{ gap: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 8 }}>
-                  <h2 style={{ font: "var(--text-h3)", color: "var(--gray-1)", margin: 0 }}>{q.title}</h2>
-                  <Badge tone="neutral">{q.difficulty}</Badge>
+                  <h2 style={{ display: "flex", alignItems: "center", gap: 10, font: "var(--text-h3)", color: "var(--gray-1)", margin: 0 }}>
+                    <span style={{ width: 34, height: 34, borderRadius: 11, background: "var(--surface-maroon-tint)", color: "var(--asu-maroon)", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <i className="fa-solid fa-circle-question" style={{ fontSize: 14 }} />
+                    </span>
+                    {q.title}
+                  </h2>
+                  <span style={{ font: "var(--text-label)", fontSize: 11, padding: "3px 9px", borderRadius: 999, background: "var(--surface-chip)", color: "var(--gray-2)" }}>{q.difficulty}</span>
                 </div>
                 <div style={{ font: "var(--text-small)", color: "var(--text-muted)" }}>
-                  {count} questions
-                  {best !== null && <> · best {best}%</>}
+                  {count} questions{best !== null && <> · best {best}%</>}
                 </div>
-                <Link
-                  href={`/quizzes/${q.id}`}
-                  style={{
-                    marginTop: "auto",
-                    display: "inline-block",
-                    textAlign: "center",
-                    padding: "9px 14px",
-                    background: "var(--asu-maroon)",
-                    color: "#fff",
-                    borderRadius: "var(--radius-md)",
-                    font: "var(--text-label)",
-                  }}
-                >
+                <Link href={`/quizzes/${q.id}`} style={{ marginTop: "auto", display: "inline-block", textAlign: "center", padding: "9px 14px", background: "var(--asu-maroon)", color: "#fff", borderRadius: "var(--radius-md)", font: "var(--text-label)", boxShadow: "var(--shadow-button)" }}>
                   {attempts.length ? "Retake quiz" : "Start quiz"}
                 </Link>
-              </Card>
+              </Tile>
             );
           })}
         </div>
