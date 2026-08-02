@@ -28,7 +28,7 @@ export interface Summary {
   created_at: string;
 }
 
-export type QuestionKind = "mcq" | "tf" | "short";
+export type QuestionKind = "mcq" | "tf" | "short" | "match" | "order" | "flashcard";
 export type Difficulty = "easy" | "medium" | "hard";
 
 export interface Question {
@@ -36,6 +36,7 @@ export interface Question {
   quiz_id: string;
   position: number;
   kind: QuestionKind;
+  model: string | null;
   prompt: string;
   options: string[] | null;
   answer: string;

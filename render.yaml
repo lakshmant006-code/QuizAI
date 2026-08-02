@@ -24,6 +24,9 @@ services:
       # Set to your Render URL after the first deploy (e.g. https://quizai.onrender.com):
       - key: NEXT_PUBLIC_SITE_URL
         sync: false
+      # URL of the offline quiz-engine service (e.g. https://quiz-engine-xxxx.onrender.com):
+      - key: QUIZ_ENGINE_URL
+        sync: false
 
   # Offline quiz engine (Python FastAPI, no LLM / no tokens).
   - type: web
