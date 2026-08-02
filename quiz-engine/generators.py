@@ -82,11 +82,11 @@ def _valid_span(sent) -> bool:
         return False
     if not re.search(r"[a-z]", txt):  # ALL-CAPS heading
         return False
-    # Needs a real predicate + a subject.
+    # Needs a real predicate + a noun. (Subject is required only for the
+    # structured "facts" path, not for a sentence to be usable.)
     has_verb = any(t.pos_ in ("VERB", "AUX") for t in sent)
     has_noun = any(t.pos_ in ("NOUN", "PROPN") for t in sent)
-    has_subj = any(t.dep_ in ("nsubj", "nsubjpass") for t in sent)
-    return has_verb and has_noun and has_subj
+    return has_verb and has_noun
 
 
 def _valid_text(s: str) -> bool:
@@ -310,25 +310,39 @@ def _q(model, kind, prompt, options, answer, explanation):
 # ---------------------------------------------------------------------------
 # Generators
 # ---------------------------------------------------------------------------
+def _make_cloze(ctx, text, term, used):
+    if not term or term.lower() in used:
+        return None
+    if not re.search(rf"\b{re.escape(term)}\b", text, re.I):
+        return None
+    blank = re.sub(rf"\b{re.escape(term)}\b", "______", text, count=1, flags=re.I)
+    if blank.count("______") != 1:
+        return None
+    d = _distractors(ctx["terms"], term, ctx, avoid=blank, n=3)
+    if len(d) < 3:
+        return None
+    opts = d + [term]
+    random.shuffle(opts)
+    used.add(term.lower())
+    return _q("cloze", "mcq", f"Fill in the blank: {blank}", opts, term, f"The correct term is “{term}”.")
+
+
 def gen_cloze(ctx, k):
-    """Single-blank gap-fill on the key answer term of a clean sentence."""
+    """Single-blank gap-fill. Uses parsed facts first, then falls back to any
+    valid sentence containing a key term (robust on messy PDFs)."""
     out, used = [], set()
     for f in ctx["facts"]:
-        target = f["answer"] or f["subject"]
-        if not target or target.lower() in used:
-            continue
-        if not re.search(rf"\b{re.escape(target)}\b", f["text"], re.I):
-            continue
-        blank = re.sub(rf"\b{re.escape(target)}\b", "______", f["text"], count=1, flags=re.I)
-        if blank.count("______") != 1:
-            continue
-        d = _distractors(ctx["terms"], target, ctx, avoid=blank, n=3)
-        if len(d) < 3:
-            continue
-        opts = d + [target]
-        random.shuffle(opts)
-        used.add(target.lower())
-        out.append(_q("cloze", "mcq", f"Fill in the blank: {blank}", opts, target, f"The correct term is “{target}”."))
+        q = _make_cloze(ctx, f["text"], f["answer"] or f["subject"], used)
+        if q:
+            out.append(q)
+        if len(out) >= k:
+            return out
+    for s in ctx["sentences"]:  # fallback
+        for term in s["terms"]:
+            q = _make_cloze(ctx, s["text"], term, used)
+            if q:
+                out.append(q)
+                break
         if len(out) >= k:
             break
     return out
@@ -399,24 +413,34 @@ def gen_def_to_term(ctx, k):
     return out
 
 
+def _make_tf(ctx, text, key, used):
+    if not key or key.lower() in used:
+        return None
+    used.add(key.lower())
+    if random.random() < 0.5:
+        swap = next(iter(_distractors(ctx["terms"], key, ctx, avoid="", n=1)), None)
+        if swap and re.search(rf"\b{re.escape(key)}\b", text, re.I):
+            stmt = re.sub(rf"\b{re.escape(key)}\b", swap, text, count=1, flags=re.I)
+            return _q("true_false", "tf", f"Is this statement correct? {stmt}", ["Yes", "No"], "No",
+                      f"No — the source says “{key}”, not “{swap}”.")
+    return _q("true_false", "tf", f"Is this statement correct? {text}", ["Yes", "No"], "Yes",
+              "Yes — this matches the source.")
+
+
 def gen_true_false(ctx, k):
-    """Yes/No factual questions from clean sentences (controlled alteration)."""
+    """Yes/No factual questions. Facts first, then any valid sentence."""
     out, used = [], set()
     for f in ctx["facts"]:
-        key = f["answer"] or f["subject"]
-        if not key or key.lower() in used:
-            continue
-        used.add(key.lower())
-        if random.random() < 0.5 and f["answer"]:
-            swap = next(iter(_distractors(ctx["terms"], f["answer"], ctx, avoid=f["subject"], n=1)), None)
-            if not swap:
-                continue
-            stmt = re.sub(rf"\b{re.escape(f['answer'])}\b", swap, f["text"], count=1, flags=re.I)
-            out.append(_q("true_false", "tf", f"Is this statement correct? {stmt}", ["Yes", "No"], "No",
-                          f"No — the source says “{f['answer']}”, not “{swap}”."))
-        else:
-            out.append(_q("true_false", "tf", f"Is this statement correct? {f['text']}", ["Yes", "No"], "Yes",
-                          "Yes — this matches the source."))
+        q = _make_tf(ctx, f["text"], f["answer"] or f["subject"], used)
+        if q:
+            out.append(q)
+        if len(out) >= k:
+            return out
+    for s in ctx["sentences"]:  # fallback
+        if s["terms"]:
+            q = _make_tf(ctx, s["text"], s["terms"][0], used)
+            if q:
+                out.append(q)
         if len(out) >= k:
             break
     return out
