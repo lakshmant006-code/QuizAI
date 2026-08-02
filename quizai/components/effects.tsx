@@ -13,7 +13,7 @@ export function NeuralCanvas() {
     const host = canvas.parentElement!;
     const ctx = canvas.getContext("2d")!;
     let w = 0, h = 0, raf = 0;
-    const N = 70;
+    const N = 38;
     const nodes: { x: number; y: number; vx: number; vy: number; r: number; gold: boolean; pulse: number; excite: number }[] = [];
     const pulses: { x: number; y: number; r: number }[] = [];
     let lastRx = -999, lastRy = -999;
