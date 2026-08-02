@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Tile } from "@/components/bento";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
+import { DeleteButton } from "@/components/DeleteButton";
 
 export default async function QuizzesPage() {
   const supabase = await createClient();
@@ -38,7 +39,10 @@ export default async function QuizzesPage() {
                     </span>
                     {q.title}
                   </h2>
-                  <span style={{ font: "var(--text-label)", fontSize: 11, padding: "3px 9px", borderRadius: 999, background: "var(--surface-chip)", color: "var(--gray-2)" }}>{q.difficulty}</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ font: "var(--text-label)", fontSize: 11, padding: "3px 9px", borderRadius: 999, background: "var(--surface-chip)", color: "var(--gray-2)" }}>{q.difficulty}</span>
+                    <DeleteButton kind="quiz" id={q.id} />
+                  </span>
                 </div>
                 <div style={{ font: "var(--text-small)", color: "var(--text-muted)" }}>
                   {count} questions{best !== null && <> · best {best}%</>}

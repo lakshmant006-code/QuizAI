@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { Tile } from "@/components/bento";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
+import { DeleteButton } from "@/components/DeleteButton";
 import type { Summary } from "@/lib/types";
 
 export default async function SummariesPage() {
@@ -30,7 +31,10 @@ export default async function SummariesPage() {
               <h2 style={{ display: "flex", alignItems: "center", gap: 10, font: "var(--text-h3)", color: "var(--asu-maroon)", margin: 0 }}>
                 <i className="fa-solid fa-file-pdf" />{s.documents?.title ?? "Untitled"}
               </h2>
-              <span style={{ font: "var(--text-label)", fontSize: 12, padding: "4px 10px", borderRadius: 999, background: "var(--surface-gold-tint)", color: "var(--asu-maroon)" }}>{new Date(s.created_at).toLocaleDateString()}</span>
+              <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ font: "var(--text-label)", fontSize: 12, padding: "4px 10px", borderRadius: 999, background: "var(--surface-gold-tint)", color: "var(--asu-maroon)" }}>{new Date(s.created_at).toLocaleDateString()}</span>
+                <DeleteButton kind="summary" id={s.id} />
+              </span>
             </div>
             <p style={{ font: "var(--text-body)", color: "var(--gray-1)", margin: "0 0 16px", lineHeight: 1.6 }}>{s.overview}</p>
 

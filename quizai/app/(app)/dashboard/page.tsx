@@ -3,6 +3,7 @@ import { UploadCard } from "@/components/UploadCard";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
 import { Tile, TileLabel, BigNum, TrendPill, MiniBars, ListRow, BandHead } from "@/components/bento";
 import { Mascot } from "@/components/Mascot";
+import { DeleteButton } from "@/components/DeleteButton";
 import type { Document, QuizAttempt, Summary, Task } from "@/lib/types";
 
 function fmtDate(iso: string) {
@@ -106,7 +107,10 @@ export default async function DashboardPage() {
                   <div style={{ font: "var(--text-small)", color: "var(--gray-3)" }}>{fmtDate(d.created_at)}{d.page_count ? ` · ${d.page_count} pp` : ""}</div>
                 </div>
               </div>
-              <span style={{ alignSelf: "flex-start", font: "var(--text-label)", fontSize: 11, padding: "3px 9px", borderRadius: 999, background: d.status === "ready" ? "var(--success-bg)" : d.status === "failed" ? "var(--danger-bg)" : "var(--surface-gold-tint)", color: d.status === "ready" ? "var(--success)" : d.status === "failed" ? "var(--danger)" : "var(--asu-maroon)" }}>{d.status}</span>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                <span style={{ font: "var(--text-label)", fontSize: 11, padding: "3px 9px", borderRadius: 999, background: d.status === "ready" ? "var(--success-bg)" : d.status === "failed" ? "var(--danger-bg)" : "var(--surface-gold-tint)", color: d.status === "ready" ? "var(--success)" : d.status === "failed" ? "var(--danger)" : "var(--asu-maroon)" }}>{d.status}</span>
+                <DeleteButton kind="document" id={d.id} storagePath={d.storage_path} />
+              </div>
             </Tile>
           ))}
         </div>
