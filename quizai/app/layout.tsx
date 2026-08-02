@@ -2,15 +2,52 @@ import type { Metadata, Viewport } from "next";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./globals.css";
 
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://quizai.help";
+const TITLE = "QuizAI — Turn any PDF into quizzes, flashcards & summaries";
+const DESCRIPTION =
+  "QuizAI turns your notes, PDFs, and readings into quizzes, flashcards, and summaries — instantly and free. Study smarter, test what you actually remember, and track your progress.";
+
 export const metadata: Metadata = {
-  title: "QuizAI — study smarter, remember longer",
-  description:
-    "Upload notes, PDFs, or links — QuizAI generates quizzes, flashcards, and summaries, then tracks what your brain actually retains.",
+  metadataBase: new URL(SITE),
+  title: {
+    default: TITLE,
+    template: "%s · QuizAI",
+  },
+  description: DESCRIPTION,
+  applicationName: "QuizAI",
+  keywords: [
+    "quiz generator", "PDF to quiz", "flashcards", "study app", "summaries",
+    "AI study tool", "practice questions", "test prep", "exam revision",
+    "free quiz maker", "study companion",
+  ],
+  authors: [{ name: "QuizAI" }],
+  creator: "QuizAI",
+  alternates: { canonical: "/" },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+  },
+  openGraph: {
+    type: "website",
+    url: SITE,
+    siteName: "QuizAI",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  icons: { icon: "/icon.svg" },
+  category: "education",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
   themeColor: "#8C1D40",
 };
 

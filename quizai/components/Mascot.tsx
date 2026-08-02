@@ -127,6 +127,11 @@ export function Mascot({
           box-shadow:var(--shadow-raised); border:1px solid var(--hairline);
           animation: mascot-pop .45s cubic-bezier(.34,1.56,.64,1) both;
         }
+        /* Shrink on phones so it never covers content. */
+        @media (max-width: 640px){
+          .mascot-anim{ width: 104px !important; }
+          .mascot-msg{ max-width: 150px; font-size: 11.5px; }
+        }
       `}</style>
     </div>
   );
