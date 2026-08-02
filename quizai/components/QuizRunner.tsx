@@ -8,14 +8,13 @@ import type { Question } from "@/lib/types";
 
 const MODEL_LABELS: Record<string, string> = {
   cloze: "Fill in the blank",
+  wh_question: "Direct question",
   term_to_def: "Term → definition",
   def_to_term: "Definition → term",
-  true_false: "True / False",
+  true_false: "Yes / No",
   match: "Match the pairs",
-  odd_one_out: "Odd one out",
   sequence: "Put in order",
   short_answer: "Short answer",
-  sentence_completion: "Sentence completion",
   flashcards: "Flashcards",
 };
 

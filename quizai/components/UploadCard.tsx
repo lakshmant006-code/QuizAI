@@ -14,8 +14,9 @@ const KINDS: { key: QuestionKind; label: string }[] = [
 
 // Offline question types the user can choose, each mapped to engine models.
 const OFFLINE_TYPES: { key: string; label: string; models: string[] }[] = [
-  { key: "mcq", label: "Multiple choice", models: ["cloze", "term_to_def", "def_to_term", "sentence_completion", "odd_one_out"] },
-  { key: "tf", label: "True / false", models: ["true_false"] },
+  { key: "mcq", label: "Multiple choice", models: ["cloze", "wh_question", "term_to_def", "def_to_term"] },
+  { key: "direct", label: "Direct questions", models: ["wh_question"] },
+  { key: "tf", label: "Yes / No", models: ["true_false"] },
   { key: "short", label: "Short answer", models: ["short_answer"] },
   { key: "match", label: "Match", models: ["match"] },
   { key: "order", label: "Put in order", models: ["sequence"] },
