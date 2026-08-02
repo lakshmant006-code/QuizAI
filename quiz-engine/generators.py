@@ -486,9 +486,54 @@ def gen_flashcards(ctx, k):
                json.dumps([{"front": t, "back": d} for t, d in items]), "Review and self-rate each card.")]
 
 
+def _predicate(f) -> str:
+    subj = f["subject"]
+    m = re.match(rf"\s*(?:the\s+|a\s+|an\s+)?{re.escape(subj)}\b(.*)$", f["text"].strip(), re.I | re.S)
+    p = (m.group(1) if m else f["text"]).strip().rstrip(".!").strip()
+    return p
+
+
+def gen_multi_select(ctx, k):
+    """Grounded 'select all that apply' (2-3 correct) — true statements about a
+    subject vs. statements that belong to other subjects. Spec Type B."""
+    by_subj: dict[str, list] = {}
+    for f in ctx["facts"]:
+        by_subj.setdefault(f["subject"].lower(), []).append(f)
+    all_preds = [(f["subject"].lower(), _predicate(f)) for f in ctx["facts"]]
+    out = []
+    for _, fs in by_subj.items():
+        if len(fs) < 2:
+            continue
+        subj = fs[0]["subject"]
+        correct = []
+        for f in fs:
+            p = _predicate(f)
+            if 3 <= len(p.split()) <= 16 and p not in correct:
+                correct.append(p)
+            if len(correct) >= 3:
+                break
+        if len(correct) < 2:
+            continue
+        distpool = [p for (s, p) in all_preds if s != subj.lower() and 3 <= len(p.split()) <= 16 and p not in correct]
+        random.shuffle(distpool)
+        dist = distpool[:2]
+        if len(dist) < 2:
+            continue
+        opts = correct + dist
+        random.shuffle(opts)
+        out.append(_q("multi_select", "multi",
+                      f"Select all that are true of “{subj}” ({len(correct)} correct):",
+                      opts, json.dumps(correct),
+                      f"These statements about {subj} come directly from the source."))
+        if len(out) >= k:
+            break
+    return out
+
+
 MODELS: dict[str, Callable] = {
     "cloze": gen_cloze,
     "wh_question": gen_wh,
+    "multi_select": gen_multi_select,
     "term_to_def": gen_term_to_def,
     "def_to_term": gen_def_to_term,
     "true_false": gen_true_false,
@@ -501,6 +546,7 @@ MODELS: dict[str, Callable] = {
 MODEL_LABELS = {
     "cloze": "Fill in the blank",
     "wh_question": "Direct question",
+    "multi_select": "Select all that apply",
     "term_to_def": "Term → definition",
     "def_to_term": "Definition → term",
     "true_false": "Yes / No",
@@ -608,11 +654,12 @@ def generate(
     }
 
 
-def summarize(text: str, max_points: int = 6, max_terms: int = 8) -> dict:
+def summarize(text: str, max_points: int = 6, max_terms: int = 5) -> dict:
     ctx = analyze(text)
     top = ctx["top_sentences"]
-    overview_sents = sorted(top[:3], key=lambda s: s["start"])
-    overview = " ".join(s["text"] for s in overview_sents) or ctx["text"][:300]
+    # TL;DR: the 1-2 strongest sentences, in document order.
+    overview_sents = sorted(top[:2], key=lambda s: s["start"])
+    overview = " ".join(s["text"] for s in overview_sents) or ctx["text"][:280]
     chosen, seen = [], {s["text"] for s in overview_sents}
     for s in top:
         if s["text"] in seen:

@@ -9,6 +9,7 @@ import type { Question } from "@/lib/types";
 const MODEL_LABELS: Record<string, string> = {
   cloze: "Fill in the blank",
   wh_question: "Direct question",
+  multi_select: "Select all that apply",
   term_to_def: "Term → definition",
   def_to_term: "Definition → term",
   true_false: "Yes / No",
@@ -80,6 +81,11 @@ export function QuizRunner({ quizId, questions }: { quizId: string; questions: Q
       const given = orders[q.id] ?? q.options ?? [];
       return correct.length > 0 && correct.length === given.length && correct.every((c, i) => norm(c) === norm(given[i]));
     }
+    if (q.kind === "multi") {
+      const correct = parse<string[]>(q.answer, []).map(norm).sort();
+      const sel = parse<string[]>(answers[q.id] ?? "[]", []).map(norm).sort();
+      return correct.length > 0 && correct.length === sel.length && correct.every((c, i) => c === sel[i]);
+    }
     const given = answers[q.id];
     if (!given) return false;
     if (q.kind === "short") return norm(given) === norm(q.answer) || norm(q.answer).includes(norm(given));
@@ -144,6 +150,34 @@ export function QuizRunner({ quizId, questions }: { quizId: string; questions: Q
                   return (
                     <button key={opt} disabled={submitted} onClick={() => setAnswers((a) => ({ ...a, [q.id]: opt }))}
                       style={optStyle(selected, isAns)}>{opt}</button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* ---- Multi-select ---- */}
+            {q.kind === "multi" && (
+              <div style={{ display: "grid", gap: 8 }}>
+                {(q.options ?? []).map((opt) => {
+                  const sel = parse<string[]>(answers[q.id] ?? "[]", []);
+                  const checked = sel.includes(opt);
+                  const isAns = submitted && parse<string[]>(q.answer, []).map(norm).includes(norm(opt));
+                  return (
+                    <button
+                      key={opt}
+                      disabled={submitted}
+                      onClick={() => {
+                        const cur = parse<string[]>(answers[q.id] ?? "[]", []);
+                        const next = cur.includes(opt) ? cur.filter((x) => x !== opt) : [...cur, opt];
+                        setAnswers((a) => ({ ...a, [q.id]: JSON.stringify(next) }));
+                      }}
+                      style={{ ...optStyle(checked, isAns), display: "flex", alignItems: "center", gap: 10 }}
+                    >
+                      <span style={{ width: 18, height: 18, borderRadius: 5, border: "1.5px solid", borderColor: isAns ? "var(--success)" : checked ? "var(--asu-maroon)" : "var(--gray-4)", background: checked ? "var(--asu-maroon)" : "transparent", color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, flexShrink: 0 }}>
+                        {checked && <i className="fa-solid fa-check" />}
+                      </span>
+                      {opt}
+                    </button>
                   );
                 })}
               </div>
@@ -234,6 +268,7 @@ export function QuizRunner({ quizId, questions }: { quizId: string; questions: Q
 function shortAnswer(q: Question): string {
   if (q.kind === "match") return parse<{ term: string; definition: string }[]>(q.answer, []).map((p) => `${p.term} → ${p.definition}`).join("; ");
   if (q.kind === "order") return parse<string[]>(q.answer, []).map((s, i) => `${i + 1}. ${s}`).join("  ");
+  if (q.kind === "multi") return parse<string[]>(q.answer, []).join("; ");
   return q.answer;
 }
 
