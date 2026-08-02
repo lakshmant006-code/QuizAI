@@ -4,20 +4,21 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const DEFAULT_MESSAGES = [
-  "Ready for a quiz? 🐙",
+  "Quiz yourself! 🐙",
   "Turn a PDF into a summary!",
-  "Keep your study streak going!",
-  "Let's test what you learned!",
+  "Keep your streak going!",
+  "Test what you learned!",
 ];
 
 /**
- * Floating octopus mascot. Autoplays (muted) and sways side to side, shows
- * rotating encouragement, and links to quizzes/summaries. Dismissible.
+ * Floating octopus mascot — transparent (no bubble around it), autoplays and
+ * sweeps ~50px side to side, with an encouragement bubble that pops on top of
+ * the video. Dismissible.
  */
 export function Mascot({
   href = "/quizzes",
   messages = DEFAULT_MESSAGES,
-  size = 78,
+  size = 92,
 }: {
   href?: string;
   messages?: string[];
@@ -28,7 +29,7 @@ export function Mascot({
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    const t = setInterval(() => setI((v) => (v + 1) % messages.length), 3800);
+    const t = setInterval(() => setI((v) => (v + 1) % messages.length), 3600);
     return () => clearInterval(t);
   }, [messages.length]);
 
@@ -38,90 +39,95 @@ export function Mascot({
     <div
       style={{
         position: "fixed",
-        right: 18,
-        bottom: 18,
+        right: 40,
+        bottom: 22,
         zIndex: 60,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-end",
-        gap: 8,
+        width: size,
+        height: size,
         pointerEvents: "none",
       }}
     >
-      <div key={i} className="mascot-bubble">{messages[i]}</div>
-
-      <div style={{ position: "relative", pointerEvents: "auto" }}>
-        <button
-          onClick={() => router.push(href)}
-          title="Take a quiz"
-          aria-label="QuizAI mascot — take a quiz"
-          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "block" }}
-        >
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-          <video
-            className="mascot-video"
-            src="/octopus.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            width={size}
-            height={size}
-            style={{
-              width: size,
-              height: size,
-              borderRadius: "50%",
-              objectFit: "cover",
-              background: "#fff",
-              border: "2px solid var(--asu-gold)",
-              boxShadow: "var(--shadow-raised)",
-              display: "block",
-            }}
-          />
-        </button>
-        <button
-          onClick={() => setHidden(true)}
-          aria-label="Hide mascot"
-          style={{
-            position: "absolute",
-            top: -6,
-            right: -6,
-            width: 20,
-            height: 20,
-            borderRadius: "50%",
-            background: "var(--gray-1)",
-            color: "#fff",
-            border: "2px solid #fff",
-            cursor: "pointer",
-            fontSize: 11,
-            lineHeight: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <i className="fa-solid fa-xmark" />
-        </button>
+      {/* Message bubble pops on top of the video */}
+      <div
+        key={i}
+        className="mascot-msg"
+        style={{
+          position: "absolute",
+          bottom: size - 8,
+          left: "50%",
+          transform: "translateX(-50%)",
+          whiteSpace: "nowrap",
+          pointerEvents: "none",
+        }}
+      >
+        {messages[i]}
       </div>
 
+      {/* Bare video — transparent, no circle/border, sweeps side to side */}
+      <button
+        onClick={() => router.push(href)}
+        title="Take a quiz"
+        aria-label="QuizAI mascot — take a quiz"
+        style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "block", pointerEvents: "auto" }}
+      >
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video
+          className="mascot-video"
+          src="/octopus.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          width={size}
+          height={size}
+          style={{ width: size, height: size, objectFit: "contain", background: "transparent", display: "block", filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.18))" }}
+        />
+      </button>
+
+      <button
+        onClick={() => setHidden(true)}
+        aria-label="Hide mascot"
+        style={{
+          position: "absolute",
+          top: -4,
+          right: -4,
+          width: 20,
+          height: 20,
+          borderRadius: "50%",
+          background: "var(--gray-1)",
+          color: "#fff",
+          border: "2px solid #fff",
+          cursor: "pointer",
+          fontSize: 11,
+          lineHeight: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "auto",
+        }}
+      >
+        <i className="fa-solid fa-xmark" />
+      </button>
+
       <style>{`
-        @keyframes mascot-sway {
-          0%   { transform: translateX(-7px) rotate(-5deg); }
-          50%  { transform: translateX(7px)  rotate(5deg); }
-          100% { transform: translateX(-7px) rotate(-5deg); }
+        @keyframes mascot-sweep {
+          0%   { transform: translateX(-25px) rotate(-3deg); }
+          50%  { transform: translateX(25px)  rotate(3deg); }
+          100% { transform: translateX(-25px) rotate(-3deg); }
         }
-        .mascot-video{ animation: mascot-sway 3s ease-in-out infinite; }
+        .mascot-video{ animation: mascot-sweep 3.2s ease-in-out infinite; }
         @media (prefers-reduced-motion: reduce){ .mascot-video{ animation: none; } }
 
-        @keyframes mascot-pop { from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:none; } }
-        .mascot-bubble{
-          pointer-events:auto; max-width:210px; background:#fff; color:var(--gray-1);
-          border:1px solid var(--hairline); box-shadow:var(--shadow-raised);
-          border-radius:14px 14px 4px 14px; padding:9px 13px;
-          font:var(--text-small); font-weight:600; animation: mascot-pop .4s ease;
+        @keyframes mascot-pop {
+          0%   { opacity:0; transform:translateX(-50%) translateY(6px) scale(0.8); }
+          60%  { opacity:1; transform:translateX(-50%) translateY(0) scale(1.06); }
+          100% { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
         }
-        @media (max-width:640px){
-          .mascot-bubble{ max-width:150px; font-size:12px; }
+        .mascot-msg{
+          background:#fff; color:var(--gray-1); font:var(--text-label); font-size:12.5px;
+          padding:7px 12px; border-radius:14px 14px 14px 3px;
+          box-shadow:var(--shadow-raised); border:1px solid var(--hairline);
+          animation: mascot-pop .45s cubic-bezier(.34,1.56,.64,1) both;
         }
       `}</style>
     </div>
