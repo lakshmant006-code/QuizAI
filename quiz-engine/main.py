@@ -1,17 +1,17 @@
-"""QuizAI offline quiz engine — FastAPI service. No LLM, no tokens."""
+"""QuizAI offline quiz + summary engine — FastAPI. No LLM, no tokens."""
 from __future__ import annotations
 
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from generators import MODELS, MODEL_LABELS, generate
+from generators import MODELS, MODEL_LABELS, generate, summarize
+from pdf import extract_pdf
 
-app = FastAPI(title="QuizAI Offline Quiz Engine", version="1.0")
+app = FastAPI(title="QuizAI Offline Quiz Engine", version="2.0")
 
-# Allow the Next.js app (and local dev) to call this service.
 _origins = os.environ.get("ALLOWED_ORIGINS", "*").split(",")
 app.add_middleware(
     CORSMiddleware,
@@ -25,6 +25,7 @@ class GenerateRequest(BaseModel):
     text: str
     models: list[str] | None = None
     per_model: int = 3
+    summary: bool = False
 
 
 @app.get("/health")
@@ -38,6 +39,42 @@ def list_models():
 
 
 @app.post("/generate")
-def generate_quiz(req: GenerateRequest):
+def generate_from_text(req: GenerateRequest):
     per = max(1, min(req.per_model, 10))
-    return generate(req.text, req.models, per)
+    result = generate(req.text, req.models, per)
+    if req.summary:
+        result["summary"] = summarize(req.text)
+    return result
+
+
+@app.post("/summarize")
+def summarize_text(req: GenerateRequest):
+    return summarize(req.text)
+
+
+@app.post("/generate-pdf")
+async def generate_from_pdf(
+    file: UploadFile = File(...),
+    models: str | None = Form(None),
+    per_model: int = Form(3),
+    summary: bool = Form(True),
+):
+    """Python reads the PDF directly (PyMuPDF), then builds quiz + summary."""
+    data = await file.read()
+    if not data:
+        raise HTTPException(status_code=400, detail="Empty file.")
+    try:
+        text, pages = extract_pdf(data)
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=f"Could not read PDF: {e}")
+    if len(text.strip()) < 80:
+        raise HTTPException(status_code=422, detail="Not enough readable text (scanned/image PDF?).")
+
+    model_list = [m.strip() for m in models.split(",")] if models else None
+    per = max(1, min(int(per_model), 10))
+    result = generate(text, model_list, per)
+    result["pages"] = pages
+    result["char_count"] = len(text)
+    if summary:
+        result["summary"] = summarize(text)
+    return result

@@ -12,6 +12,16 @@ const KINDS: { key: QuestionKind; label: string }[] = [
   { key: "short", label: "Short answer" },
 ];
 
+// Offline question types the user can choose, each mapped to engine models.
+const OFFLINE_TYPES: { key: string; label: string; models: string[] }[] = [
+  { key: "mcq", label: "Multiple choice", models: ["cloze", "term_to_def", "def_to_term", "sentence_completion", "odd_one_out"] },
+  { key: "tf", label: "True / false", models: ["true_false"] },
+  { key: "short", label: "Short answer", models: ["short_answer"] },
+  { key: "match", label: "Match", models: ["match"] },
+  { key: "order", label: "Put in order", models: ["sequence"] },
+  { key: "flash", label: "Flashcards", models: ["flashcards"] },
+];
+
 type Phase = "idle" | "uploading" | "generating" | "done" | "error";
 type Method = "offline" | "ai";
 
@@ -24,6 +34,7 @@ export function UploadCard({ userId }: { userId: string }) {
   const [numQuestions, setNumQuestions] = useState(8);
   const [perModel, setPerModel] = useState(2);
   const [kinds, setKinds] = useState<QuestionKind[]>(["mcq"]);
+  const [offlineTypes, setOfflineTypes] = useState<string[]>(["mcq", "tf"]);
   const [phase, setPhase] = useState<Phase>("idle");
   const [message, setMessage] = useState("");
 
@@ -74,9 +85,12 @@ export function UploadCard({ userId }: { userId: string }) {
     );
 
     const endpoint = method === "offline" ? "/api/generate-offline" : "/api/generate";
+    const offlineModels = Array.from(
+      new Set(OFFLINE_TYPES.filter((t) => offlineTypes.includes(t.key)).flatMap((t) => t.models)),
+    );
     const payload =
       method === "offline"
-        ? { documentId: docId, perModel }
+        ? { documentId: docId, perModel, models: offlineModels.length ? offlineModels : undefined }
         : { documentId: docId, difficulty, numQuestions, kinds: kinds.length ? kinds : ["mcq"] };
 
     const res = await fetch(endpoint, {
@@ -183,11 +197,22 @@ export function UploadCard({ userId }: { userId: string }) {
             </div>
           </>
         ) : (
-          <div>
-            <div style={{ font: "var(--text-label)", color: "var(--gray-2)", marginBottom: 6 }}>Questions per style</div>
-            <input type="number" min={1} max={5} value={perModel} onChange={(e) => setPerModel(Number(e.target.value))} style={numInput} />
-            <div style={{ font: "var(--text-small)", color: "var(--text-muted)", marginTop: 4 }}>Up to {perModel * 10} questions across 10 styles.</div>
-          </div>
+          <>
+            <div>
+              <div style={{ font: "var(--text-label)", color: "var(--gray-2)", marginBottom: 6 }}>Question types</div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {OFFLINE_TYPES.map((t) => (
+                  <button key={t.key}
+                    onClick={() => setOfflineTypes((cur) => cur.includes(t.key) ? cur.filter((x) => x !== t.key) : [...cur, t.key])}
+                    style={optBtn(offlineTypes.includes(t.key))}>{t.label}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div style={{ font: "var(--text-label)", color: "var(--gray-2)", marginBottom: 6 }}>Per type</div>
+              <input type="number" min={1} max={5} value={perModel} onChange={(e) => setPerModel(Number(e.target.value))} style={numInput} />
+            </div>
+          </>
         )}
       </div>
 
