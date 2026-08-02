@@ -45,7 +45,7 @@ export function Mascot({
         pointerEvents: "none",
       }}
     >
-      <div style={{ position: "relative", display: "inline-block" }}>
+      <div className="mascot-group" style={{ position: "relative", display: "inline-block" }}>
         {/* Encouragement bubble pops on top of the octopus */}
         <div
           key={i}
@@ -107,13 +107,14 @@ export function Mascot({
       </div>
 
       <style>{`
-        @keyframes mascot-sweep {
-          0%   { transform: translateX(-25px) rotate(-3deg); }
-          50%  { transform: translateX(25px)  rotate(3deg); }
-          100% { transform: translateX(-25px) rotate(-3deg); }
+        @keyframes mascot-slide {
+          0%   { transform: translateX(-25px); }
+          50%  { transform: translateX(25px); }
+          100% { transform: translateX(-25px); }
         }
-        .mascot-anim{ animation: mascot-sweep 3.2s ease-in-out infinite; }
-        @media (prefers-reduced-motion: reduce){ .mascot-anim{ animation: none; } }
+        /* Move the whole group (octopus + bubble) horizontally, no wiggle. */
+        .mascot-group{ animation: mascot-slide 3.2s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce){ .mascot-group{ animation: none; } }
 
         @keyframes mascot-pop {
           0%   { opacity:0; transform:translateX(-50%) translateY(6px) scale(0.8); }
