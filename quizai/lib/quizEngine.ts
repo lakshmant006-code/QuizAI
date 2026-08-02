@@ -37,12 +37,14 @@ function base() {
 export async function generateFromPdf(
   file: Blob,
   filename: string,
-  opts?: { models?: string[]; perModel?: number; summary?: boolean },
+  opts?: { models?: string[]; perModel?: number; total?: number; weights?: Record<string, number>; summary?: boolean },
 ): Promise<EngineResult> {
   const form = new FormData();
   form.append("file", file, filename || "document.pdf");
   if (opts?.models?.length) form.append("models", opts.models.join(","));
   form.append("per_model", String(opts?.perModel ?? 3));
+  if (opts?.total) form.append("total", String(opts.total));
+  if (opts?.weights) form.append("weights", JSON.stringify(opts.weights));
   form.append("summary", String(opts?.summary ?? true));
 
   const res = await fetch(`${base()}/generate-pdf`, {

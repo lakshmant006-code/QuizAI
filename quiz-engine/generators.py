@@ -487,9 +487,85 @@ MODEL_LABELS = {
 }
 
 
-def generate(text: str, models: list[str] | None = None, per_model: int = 3) -> dict:
+def generate(
+    text: str,
+    models: list[str] | None = None,
+    per_model: int = 3,
+    total: int | None = None,
+    weights: dict[str, float] | None = None,
+) -> dict:
+    """Generate questions.
+
+    If `total` is given, the engine auto-distributes that many questions across
+    the chosen types for a good MIX, favouring higher-`weights` models (from the
+    user's thumbs up/down) and skipping down-voted ones. Candidate pools are
+    shuffled so repeated runs produce different questions.
+    """
     ctx = analyze(text)
+    # Variety: shuffle candidate pools so re-generation differs.
+    random.shuffle(ctx["facts"])
+    ditems = list(ctx["defs"].items())
+    random.shuffle(ditems)
+    ctx["defs"] = dict(ditems)
+
     chosen = [m for m in (models or list(MODELS.keys())) if m in MODELS]
+    weights = weights or {}
+
+    if total:
+        target = max(1, min(int(total), 40))
+        pools: dict[str, list] = {}
+        seen: set[str] = set()
+        for m in chosen:
+            try:
+                qs = MODELS[m](ctx, max(6, target))
+            except Exception:
+                qs = []
+            qs = [q for q in qs if q["prompt"] not in seen and not seen.add(q["prompt"])]
+            if qs:
+                pools[m] = qs
+        active = [m for m in chosen if m in pools and weights.get(m, 1.0) > 0]
+        if not active:
+            active = list(pools.keys())
+
+        # Weighted rotation → mix of types, favouring liked models.
+        rotation: list[str] = []
+        for m in active:
+            rotation += [m] * max(1, int(round(weights.get(m, 1.0) * 2)))
+        random.shuffle(rotation)
+
+        result, taken, exhausted, idx, i, guard = [], set(), set(), {m: 0 for m in active}, 0, 0
+        while len(result) < target and len(exhausted) < len(active) and guard < 20000:
+            guard += 1
+            m = rotation[i % len(rotation)]
+            i += 1
+            if m in exhausted:
+                continue
+            pool = pools[m]
+            q = None
+            while idx[m] < len(pool):
+                cand = pool[idx[m]]
+                idx[m] += 1
+                if cand["prompt"] not in taken:
+                    q = cand
+                    break
+            if q is None:
+                exhausted.add(m)
+                continue
+            taken.add(q["prompt"])
+            result.append(q)
+
+        used: dict[str, int] = {}
+        for q in result:
+            used[q["model"]] = used.get(q["model"], 0) + 1
+        return {
+            "count": len(result),
+            "per_model": used,
+            "terms_found": len(ctx["terms"]),
+            "definitions_found": len(ctx["defs"]),
+            "questions": result,
+        }
+
+    # Fixed per-model path (legacy).
     questions, used, seen = [], {}, set()
     for name in chosen:
         try:

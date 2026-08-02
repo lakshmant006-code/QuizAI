@@ -16,8 +16,16 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
   const documentId: string | undefined = body.documentId;
   const models: string[] | undefined = Array.isArray(body.models) && body.models.length ? body.models : undefined;
-  const perModel: number = Math.min(Math.max(Number(body.perModel) || 3, 1), 10);
+  const total: number = Math.min(Math.max(Number(body.total) || 10, 1), 40);
   if (!documentId) return NextResponse.json({ error: "documentId required" }, { status: 400 });
+
+  // Turn the user's thumbs up/down into per-model weights, so generation
+  // favours the styles they like and suppresses the ones they don't.
+  const { data: ratings } = await supabase.from("model_ratings").select("model, rating");
+  const weights: Record<string, number> = {};
+  for (const r of ratings ?? []) {
+    weights[r.model as string] = r.rating === 1 ? 2.5 : r.rating === -1 ? 0.3 : 1;
+  }
 
   const { data: doc, error: docErr } = await supabase
     .from("documents")
@@ -32,7 +40,12 @@ export async function POST(request: NextRequest) {
     const { data: file, error: dlErr } = await supabase.storage.from("pdfs").download(doc.storage_path);
     if (dlErr || !file) throw new Error("Could not download the uploaded PDF.");
 
-    const result = await generateFromPdf(file, `${doc.title}.pdf`, { models, perModel, summary: true });
+    const result = await generateFromPdf(file, `${doc.title}.pdf`, {
+      models,
+      total,
+      weights: Object.keys(weights).length ? weights : undefined,
+      summary: true,
+    });
     if (!result.questions.length) {
       throw new Error("The engine couldn't build questions from this document. Try a text-richer PDF.");
     }

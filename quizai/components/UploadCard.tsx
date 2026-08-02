@@ -33,7 +33,7 @@ export function UploadCard({ userId }: { userId: string }) {
   const [method, setMethod] = useState<Method>("offline");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [numQuestions, setNumQuestions] = useState(8);
-  const [perModel, setPerModel] = useState(2);
+  const [total, setTotal] = useState(10);
   const [kinds, setKinds] = useState<QuestionKind[]>(["mcq"]);
   const [offlineTypes, setOfflineTypes] = useState<string[]>(["mcq", "tf"]);
   const [phase, setPhase] = useState<Phase>("idle");
@@ -91,7 +91,7 @@ export function UploadCard({ userId }: { userId: string }) {
     );
     const payload =
       method === "offline"
-        ? { documentId: docId, perModel, models: offlineModels.length ? offlineModels : undefined }
+        ? { documentId: docId, total, models: offlineModels.length ? offlineModels : undefined }
         : { documentId: docId, difficulty, numQuestions, kinds: kinds.length ? kinds : ["mcq"] };
 
     const res = await fetch(endpoint, {
@@ -210,8 +210,15 @@ export function UploadCard({ userId }: { userId: string }) {
               </div>
             </div>
             <div>
-              <div style={{ font: "var(--text-label)", color: "var(--gray-2)", marginBottom: 6 }}>Per type</div>
-              <input type="number" min={1} max={5} value={perModel} onChange={(e) => setPerModel(Number(e.target.value))} style={numInput} />
+              <div style={{ font: "var(--text-label)", color: "var(--gray-2)", marginBottom: 6 }}>Number of questions</div>
+              <div style={{ display: "flex", gap: 6 }}>
+                {[5, 10, 15, 20].map((n) => (
+                  <button key={n} onClick={() => setTotal(n)} style={optBtn(total === n)}>{n}</button>
+                ))}
+              </div>
+              <div style={{ font: "var(--text-small)", color: "var(--text-muted)", marginTop: 4 }}>
+                We&apos;ll pick the best mix across your chosen types.
+              </div>
             </div>
           </>
         )}
