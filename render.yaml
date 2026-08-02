@@ -24,3 +24,18 @@ services:
       # Set to your Render URL after the first deploy (e.g. https://quizai.onrender.com):
       - key: NEXT_PUBLIC_SITE_URL
         sync: false
+
+  # Offline quiz engine (Python FastAPI, no LLM / no tokens).
+  - type: web
+    name: quiz-engine
+    runtime: python
+    plan: free
+    rootDir: quiz-engine
+    buildCommand: pip install -r requirements.txt && python -m spacy download en_core_web_sm
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: ALLOWED_ORIGINS
+        value: "*"
