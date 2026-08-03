@@ -1,19 +1,32 @@
-"use client";
+import Link from "next/link";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { NeuralCanvas } from "@/components/effects";
-
-/* ---- Brand mark ---- */
-function Brand({ size = 20 }: { size?: number }) {
+/* Brand-colored gradient mesh — replaces the reference's stock artwork. */
+function Mesh({ height = 460 }: { height?: number }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 9, fontWeight: 700, fontSize: size, letterSpacing: "-0.02em", color: "var(--asu-maroon)" }}>
-      <span
-        aria-hidden
-        style={{ width: size * 1.5, height: size * 1.5, borderRadius: 9, background: "var(--surface-maroon-tint)", color: "var(--asu-maroon)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.82 }}
-      >
+    <div
+      className="ql-mesh"
+      style={{
+        position: "relative",
+        width: "100%",
+        height,
+        borderRadius: 24,
+        overflow: "hidden",
+        background: "#2A1017",
+      }}
+    >
+      <span className="ql-blob ql-b1" />
+      <span className="ql-blob ql-b2" />
+      <span className="ql-blob ql-b3" />
+      <span className="ql-blob ql-b4" />
+      <span style={{ position: "absolute", inset: 0, backdropFilter: "blur(28px)" }} />
+    </div>
+  );
+}
+
+function Brand({ size = 22 }: { size?: number }) {
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 9, fontFamily: "var(--font-display)", fontWeight: 700, fontSize: size, letterSpacing: "-0.02em", color: "var(--asu-maroon)" }}>
+      <span aria-hidden style={{ width: size * 1.45, height: size * 1.45, borderRadius: 9, background: "var(--asu-maroon)", color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.8 }}>
         <i className="fa-solid fa-brain" />
       </span>
       QuizAI
@@ -21,199 +34,145 @@ function Brand({ size = 20 }: { size?: number }) {
   );
 }
 
-/* ---- Magnetic wrapper: children drift toward the cursor ---- */
-function Magnetic({ children, strength = 0.35, style }: { children: React.ReactNode; strength?: number; style?: React.CSSProperties }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const onMove = (e: React.MouseEvent) => {
-    const rc = ref.current!.getBoundingClientRect();
-    gsap.to(ref.current, { x: (e.clientX - rc.left - rc.width / 2) * strength, y: (e.clientY - rc.top - rc.height / 2) * strength, duration: 0.3, ease: "power2.out" });
-  };
-  const onLeave = () => gsap.to(ref.current, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1,0.4)" });
-  return <div ref={ref} onMouseMove={onMove} onMouseLeave={onLeave} style={style}>{children}</div>;
-}
+const btn: React.CSSProperties = {
+  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+  fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 16,
+  padding: "13px 26px", borderRadius: 14, background: "var(--asu-maroon)", color: "#fff",
+  boxShadow: "0 8px 22px rgba(140,29,64,0.28)",
+};
+const btnGhost: React.CSSProperties = {
+  ...btn, background: "#fff", color: "var(--gray-1)", border: "1px solid var(--gray-5)", boxShadow: "none",
+};
 
-/* ---- 3D tilt card ---- */
-function TiltCard({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const onMove = (e: React.MouseEvent) => {
-    const rc = ref.current!.getBoundingClientRect();
-    const px = (e.clientX - rc.left) / rc.width - 0.5, py = (e.clientY - rc.top) / rc.height - 0.5;
-    gsap.to(ref.current, { rotateY: px * 10, rotateX: -py * 10, scale: 1.02, boxShadow: "var(--shadow-elevated)", duration: 0.3, ease: "power2.out", transformPerspective: 700 });
-  };
-  const onLeave = () => gsap.to(ref.current, { rotateY: 0, rotateX: 0, scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)", duration: 0.5, ease: "power3.out" });
-  return <div ref={ref} onMouseMove={onMove} onMouseLeave={onLeave} style={{ ...style, willChange: "transform" }}>{children}</div>;
-}
+const STEPS = [
+  { n: "01", title: "Upload your material", body: "Drop in a PDF of your notes, readings, or slides. QuizAI reads it carefully — offline, no credits — and pulls out the concepts that matter." },
+  { n: "02", title: "Generate quizzes & summaries", body: "Get multiple-choice, select-all, yes/no, fill-in-the-blank, and flashcards in one balanced set, plus a concise summary with key terms." },
+  { n: "03", title: "Track & improve", body: "Take quizzes, watch your scores and streaks in the dashboard, and thumbs-up the styles you like so future quizzes adapt to you." },
+];
 
-/* ---- Chat demo: types itself when scrolled into view ---- */
-function ChatDemo() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [typed, setTyped] = useState("");
-  const [phase, setPhase] = useState(0);
-  const msg = "Turn Electromagnet.pdf into an 8-question quiz";
-  const started = useRef(false);
-  useEffect(() => {
-    const el = rootRef.current!;
-    let timers: ReturnType<typeof setTimeout>[] = [];
-    const run = () => {
-      setPhase(1);
-      msg.split("").forEach((_, i) => timers.push(setTimeout(() => setTyped(msg.slice(0, i + 1)), 350 + i * 32)));
-      timers.push(setTimeout(() => setPhase(2), 350 + msg.length * 32 + 250));
-      timers.push(setTimeout(() => setPhase(3), 350 + msg.length * 32 + 1500));
-    };
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !started.current) { started.current = true; run(); io.disconnect(); }
-    }, { threshold: 0.4 });
-    io.observe(el);
-    return () => { io.disconnect(); timers.forEach(clearTimeout); };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  useEffect(() => {
-    if (phase === 3 && rootRef.current) {
-      const card = rootRef.current.querySelector("[data-answer]")!;
-      gsap.fromTo(card, { y: 18, opacity: 0, scale: 0.97 }, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.6)" });
-      gsap.fromTo(card.querySelectorAll("[data-chip]"), { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, stagger: 0.09, delay: 0.25, ease: "power2.out" });
-    }
-  }, [phase]);
-  return (
-    <div ref={rootRef} style={{ background: "#FBFBFD", border: "1px solid rgba(0,0,0,0.07)", borderRadius: 20, padding: 28, display: "flex", flexDirection: "column", gap: 14, minHeight: 300, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ width: 30, height: 30, borderRadius: "50%", background: "rgba(0,0,0,0.05)", color: "var(--gray-1)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 13 }}><i className="fa-solid fa-brain" /></span>
-        <span style={{ fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)" }}>QuizAI</span>
-        <span style={{ font: "var(--text-small)", color: "var(--gray-3)" }}>Your study operator</span>
-      </div>
-      {phase >= 1 && (
-        <div style={{ alignSelf: "flex-end", background: "var(--gray-1)", color: "#fff", fontFamily: "var(--font-sans)", fontSize: 14.5, letterSpacing: "-0.01em", padding: "12px 18px", borderRadius: "18px 18px 5px 18px", maxWidth: 420, minHeight: 21 }}>
-          {typed}<span style={{ opacity: phase === 1 ? 1 : 0, borderRight: "2px solid #fff", marginLeft: 1 }}>&#8203;</span>
-        </div>
-      )}
-      {phase === 2 && (
-        <div style={{ alignSelf: "flex-start", background: "#fff", border: "1px solid rgba(0,0,0,0.07)", padding: "14px 18px", borderRadius: "18px 18px 18px 5px", font: "var(--text-small)", color: "var(--gray-3)" }}>
-          <i className="fa-solid fa-wand-magic-sparkles fa-fade" style={{ marginRight: 8 }} />Reading Electromagnet.pdf…
-        </div>
-      )}
-      {phase === 3 && (
-        <div data-answer style={{ alignSelf: "flex-start", background: "#fff", border: "1px solid rgba(0,0,0,0.07)", padding: "18px 20px", borderRadius: "18px 18px 18px 5px", maxWidth: 470, display: "flex", flexDirection: "column", gap: 10, boxShadow: "0 1px 2px rgba(0,0,0,0.04)" }}>
-          <span style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)" }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--asu-maroon)" }} />Quiz ready — 8 questions
-          </span>
-          <span style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--gray-2)", lineHeight: 1.6 }}>Multiple choice · difficulty: medium · covers magnetic flux, induction, and Faraday&apos;s law</span>
-          <div style={{ display: "flex", gap: 8 }}>
-            {["MCQs", "Flashcards", "Short answers"].map((c) => (
-              <span data-chip key={c} style={{ background: "rgba(0,0,0,0.045)", color: "var(--gray-2)", fontFamily: "var(--font-sans)", fontSize: 12.5, padding: "5px 12px", borderRadius: 8 }}>{c}</span>
-            ))}
-          </div>
-        </div>
-      )}
-      <span style={{ font: "var(--text-small)", color: "var(--text-muted)", textAlign: "center", marginTop: "auto" }}>No re-reading. No highlighting rituals. Just say what you need.</span>
-    </div>
-  );
-}
-
-const btnPrimary: React.CSSProperties = { width: "100%", padding: "12px 22px", background: "var(--asu-maroon)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 15, letterSpacing: "-0.01em", boxShadow: "var(--shadow-button)" };
-const btnSecondary: React.CSSProperties = { width: "100%", padding: "12px 22px", background: "#fff", color: "var(--gray-1)", border: "1px solid var(--gray-5)", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 15, letterSpacing: "-0.01em" };
+const FEATURES = [
+  { icon: "fa-solid fa-circle-question", title: "Ten quiz styles", body: "Fill-in-the-blank, direct questions, select-all, yes/no, match, ordering, flashcards, and more — a real mix every time." },
+  { icon: "fa-regular fa-file-lines", title: "Smart summaries", body: "Every document becomes a tight TL;DR with key points and defined terms — grounded only in your source." },
+  { icon: "fa-solid fa-chart-simple", title: "Progress that adapts", body: "Accuracy, streaks, and per-style ratings tune what you get next. The more you use it, the better it fits." },
+];
 
 export default function Landing() {
-  const router = useRouter();
-  const heroRef = useRef<HTMLElement>(null);
-  const go = () => router.push("/login");
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    if (heroRef.current) {
-      gsap.fromTo(heroRef.current.querySelectorAll("[data-hero]"), { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.12, ease: "power3.out" });
-    }
-    document.querySelectorAll("[data-reveal]").forEach((el) => {
-      gsap.fromTo(el, { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 85%" } });
-    });
-    return () => ScrollTrigger.getAll().forEach((s) => s.kill());
-  }, []);
-
-  const sectionH: React.CSSProperties = { font: "var(--text-h1)", color: "var(--text-heading)", margin: "0 0 12px", textAlign: "center" };
-  const featureCard: React.CSSProperties = { flex: 1, background: "var(--white)", border: "1px solid var(--gray-6)", borderRadius: 14, padding: 28 };
-
   return (
-    <div style={{ background: "var(--white)", minHeight: "100vh", fontFamily: "var(--font-sans)" }}>
-      <nav className="ql-nav" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 40px", borderBottom: "1px solid var(--gray-6)", position: "sticky", top: 0, background: "rgba(255,255,255,0.92)", backdropFilter: "blur(8px)", zIndex: 10 }}>
+    <div className="ql" style={{ background: "var(--white)", minHeight: "100vh", fontFamily: "var(--font-display), var(--font-sans)", color: "var(--gray-1)" }}>
+      {/* Nav */}
+      <nav className="ql-nav" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 40px", position: "sticky", top: 0, background: "rgba(255,255,255,0.85)", backdropFilter: "blur(10px)", borderBottom: "1px solid var(--gray-6)", zIndex: 20 }}>
         <Brand />
-        <div className="ql-nav-links" style={{ display: "flex", alignItems: "center", gap: 28 }}>
-          <a href="#features" style={{ font: "var(--text-label)", color: "var(--gray-2)" }}>Features</a>
-          <a href="#how" style={{ font: "var(--text-label)", color: "var(--gray-2)" }}>How It Works</a>
-          <button onClick={go} style={{ ...btnSecondary, width: 100, padding: "8px 14px", fontSize: 13 }}>Sign In</button>
-          <button onClick={go} style={{ ...btnPrimary, width: 130, padding: "8px 14px", fontSize: 13 }}>Get Started</button>
+        <div className="ql-nav-links" style={{ display: "flex", alignItems: "center", gap: 26 }}>
+          <a href="#how" style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 15, color: "var(--gray-2)" }}>How it works</a>
+          <a href="#features" style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 15, color: "var(--gray-2)" }}>Features</a>
+          <Link href="/login" style={{ ...btn, padding: "9px 18px", fontSize: 14 }}>Get started</Link>
         </div>
       </nav>
 
-      <header ref={heroRef} className="ql-hero" style={{ position: "relative", overflow: "hidden", padding: "96px 40px 110px", textAlign: "center", cursor: "crosshair" }}>
-        <NeuralCanvas />
-        <div style={{ position: "relative", maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
-          <span data-hero style={{ font: "var(--text-label)", color: "var(--asu-maroon)", background: "var(--surface-gold-tint)", border: "1px solid var(--border-gold-tint)", padding: "6px 16px", borderRadius: 999 }}>
-            <i className="fa-solid fa-brain" style={{ marginRight: 8 }} />Study companion
+      {/* Hero */}
+      <header className="ql-hero" style={{ maxWidth: 1180, margin: "0 auto", padding: "72px 40px 40px", display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: 56, alignItems: "center" }}>
+        <div>
+          <span style={{ display: "inline-block", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 13, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--asu-maroon)", background: "var(--surface-gold-tint)", border: "1px solid var(--border-gold-tint)", padding: "6px 14px", borderRadius: 999, marginBottom: 22 }}>
+            Study companion
           </span>
-          <h1 data-hero style={{ font: "var(--text-display)", fontSize: 56, color: "var(--text-heading)", margin: 0, letterSpacing: "-1px" }}>Read it once. Remember it properly.</h1>
-          <p data-hero style={{ font: "var(--text-body)", fontSize: 18, color: "var(--gray-2)", maxWidth: 560, margin: 0 }}>Bring your notes, readings, and slides. Get quizzes, flashcards, and summaries built from them — and a clear view of what stuck.</p>
-          <div data-hero style={{ display: "flex", gap: 12, marginTop: 8 }}>
-            <Magnetic style={{ width: 190 }}><button onClick={go} style={btnPrimary}>Sign In to QuizAI</button></Magnetic>
-            <Magnetic style={{ width: 170 }}><button onClick={go} style={btnSecondary}>Create Account</button></Magnetic>
+          <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 54, lineHeight: 1.08, letterSpacing: "-0.03em", margin: "0 0 18px", color: "var(--gray-1)" }}>
+            Read it once.<br />Remember it properly.
+          </h1>
+          <p style={{ fontSize: 19, lineHeight: 1.6, color: "var(--gray-2)", margin: "0 0 30px", maxWidth: 520 }}>
+            Turn any PDF into quizzes, flashcards, and summaries — instantly and free. QuizAI builds a balanced set of questions from your own material and tracks what actually sticks.
+          </p>
+          <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+            <Link href="/login" style={btn}>Get started for free</Link>
+            <a href="#how" style={btnGhost}>See how it works</a>
           </div>
         </div>
+        <Mesh height={420} />
       </header>
 
-      <section data-reveal style={{ maxWidth: 880, margin: "0 auto", padding: "0 40px 90px" }}>
-        <ChatDemo />
-      </section>
-
-      <section id="features" data-reveal style={{ maxWidth: 1120, margin: "0 auto", padding: "0 40px 90px" }}>
-        <h2 style={sectionH}>Built around how memory works</h2>
-        <p style={{ font: "var(--text-body)", color: "var(--gray-2)", textAlign: "center", margin: "0 0 40px" }}>Three tools, one loop: encode, test, reinforce.</p>
-        <div className="ql-row" style={{ display: "flex", gap: 20 }}>
-          {[
-            { icon: "fa-solid fa-circle-question", title: "Quizzes", body: "Paste text, upload a document, or drop a link. Choose MCQs, flashcards, or short answers and set your difficulty." },
-            { icon: "fa-regular fa-file-lines", title: "Summaries", body: "Long readings, condensed — with the key terms pulled out and flashcards to match." },
-            { icon: "fa-solid fa-chart-simple", title: "Progress", body: "See which topics are solid and which ones need another pass." },
-          ].map((f) => (
-            <TiltCard key={f.title} style={featureCard}>
-              <i className={f.icon} style={{ fontSize: 26, color: "var(--asu-maroon)" }} />
-              <h3 style={{ font: "var(--text-h3)", color: "var(--text-heading)", margin: "14px 0 8px" }}>{f.title}</h3>
-              <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: 0 }}>{f.body}</p>
-            </TiltCard>
-          ))}
+      {/* How it works — reference layout: mesh left, numbered steps right */}
+      <section id="how" style={{ maxWidth: 1180, margin: "0 auto", padding: "64px 40px" }}>
+        <div className="ql-how" style={{ display: "grid", gridTemplateColumns: "0.95fr 1.05fr", gap: 56, alignItems: "center" }}>
+          <Mesh height={520} />
+          <div>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 34, letterSpacing: "-0.02em", margin: "0 0 8px" }}>How it works</h2>
+            <p style={{ fontSize: 17, color: "var(--gray-2)", margin: "0 0 34px" }}>From a PDF to a study session in three steps — no credits, no waiting.</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 30 }}>
+              {STEPS.map((s) => (
+                <div key={s.n} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 18 }}>
+                  <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 14, color: "var(--gray-4)", marginTop: 6 }}>{s.n}</span>
+                  <div>
+                    <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 22, letterSpacing: "-0.01em", margin: "0 0 6px", color: "var(--gray-1)" }}>{s.title}</h3>
+                    <p style={{ fontSize: 16, lineHeight: 1.6, color: "var(--gray-2)", margin: 0 }}>{s.body}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 34 }}>
+              <Link href="/login" style={btn}>Get started for free</Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section id="how" data-reveal style={{ background: "var(--asu-maroon)", padding: "70px 40px" }}>
-        <div className="ql-row" style={{ maxWidth: 1120, margin: "0 auto", display: "flex", gap: 20, textAlign: "center" }}>
-          {[
-            ["fa-solid fa-upload", "1. Add your material", "Notes, readings, slides, or a link."],
-            ["fa-solid fa-bolt", "2. Get tested", "Choose the format, the length, and how hard it should be."],
-            ["fa-solid fa-arrows-rotate", "3. Come back to it", "Revisit the weak spots and retake what you missed."],
-          ].map(([icon, title, body]) => (
-            <div key={title} style={{ flex: 1 }}>
-              <i className={icon} style={{ fontSize: 26, color: "var(--asu-gold)" }} />
-              <h3 style={{ font: "var(--text-h3)", color: "#fff", margin: "14px 0 8px" }}>{title}</h3>
-              <p style={{ font: "var(--text-body)", color: "rgba(255,255,255,0.85)", margin: 0 }}>{body}</p>
+      {/* Features */}
+      <section id="features" style={{ maxWidth: 1180, margin: "0 auto", padding: "40px 40px 90px" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 34, letterSpacing: "-0.02em", textAlign: "center", margin: "0 0 8px" }}>Built around how memory works</h2>
+        <p style={{ fontSize: 17, color: "var(--gray-2)", textAlign: "center", margin: "0 0 44px" }}>Encode, test, reinforce — one loop.</p>
+        <div className="ql-feat" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 22 }}>
+          {FEATURES.map((f) => (
+            <div key={f.title} style={{ background: "var(--surface-panel)", border: "1px solid var(--gray-6)", borderRadius: 18, padding: 28 }}>
+              <span style={{ width: 46, height: 46, borderRadius: 13, background: "var(--surface-maroon-tint)", color: "var(--asu-maroon)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
+                <i className={f.icon} />
+              </span>
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 20, letterSpacing: "-0.01em", margin: "16px 0 8px" }}>{f.title}</h3>
+              <p style={{ fontSize: 15.5, lineHeight: 1.6, color: "var(--gray-2)", margin: 0 }}>{f.body}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section data-reveal style={{ textAlign: "center", padding: "90px 40px" }}>
-        <h2 style={sectionH}>Ready when your brain is</h2>
-        <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: "0 0 28px" }}>Sign in and turn today&apos;s reading into tomorrow&apos;s recall.</p>
-        <Magnetic style={{ width: 220, margin: "0 auto" }}><button onClick={go} style={btnPrimary}>Sign In to QuizAI</button></Magnetic>
+      {/* Final CTA */}
+      <section style={{ maxWidth: 1180, margin: "0 auto 80px", padding: "0 40px" }}>
+        <div className="ql-cta" style={{ position: "relative", borderRadius: 28, overflow: "hidden", padding: "64px 48px", textAlign: "center", background: "#2A1017" }}>
+          <span className="ql-blob ql-b1" />
+          <span className="ql-blob ql-b3" />
+          <span style={{ position: "absolute", inset: 0, backdropFilter: "blur(40px)", background: "rgba(20,8,12,0.35)" }} />
+          <div style={{ position: "relative" }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 38, letterSpacing: "-0.02em", color: "#fff", margin: "0 0 12px" }}>Ready when your brain is</h2>
+            <p style={{ fontSize: 18, color: "rgba(255,255,255,0.82)", margin: "0 0 28px" }}>Turn today&apos;s reading into tomorrow&apos;s recall.</p>
+            <Link href="/login" style={{ ...btn, background: "#fff", color: "var(--asu-maroon)", boxShadow: "0 8px 24px rgba(0,0,0,0.25)" }}>Get started for free</Link>
+          </div>
+        </div>
       </section>
 
-      <footer style={{ borderTop: "1px solid var(--gray-6)", padding: "24px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-        <Brand size={16} />
-        <span style={{ font: "var(--text-small)", color: "var(--text-muted)" }}>QuizAI — study smarter, remember longer.</span>
+      <footer style={{ borderTop: "1px solid var(--gray-6)", padding: "28px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, maxWidth: 1180, margin: "0 auto" }}>
+        <Brand size={17} />
+        <span style={{ fontSize: 14, color: "var(--text-muted)" }}>QuizAI — study smarter, remember longer.</span>
       </footer>
 
       <style>{`
-        @media (max-width: 700px){
-          .ql-nav{padding:14px 18px!important}
-          .ql-nav-links a{display:none!important}
-          .ql-hero{padding:64px 18px 72px!important}
-          .ql-hero h1{font-size:34px!important}
-          .ql-row{flex-direction:column!important}
+        .ql-blob{ position:absolute; border-radius:50%; filter:blur(2px); opacity:0.95; }
+        .ql-b1{ width:60%; height:60%; left:-8%; top:-10%; background:radial-gradient(circle at 30% 30%, #8C1D40, transparent 70%); }
+        .ql-b2{ width:55%; height:55%; right:-6%; top:8%; background:radial-gradient(circle at 60% 40%, #FFC627, transparent 70%); }
+        .ql-b3{ width:70%; height:70%; left:6%; bottom:-18%; background:radial-gradient(circle at 50% 50%, #E74973, transparent 70%); }
+        .ql-b4{ width:50%; height:50%; right:-4%; bottom:-6%; background:radial-gradient(circle at 40% 60%, #6E1733, transparent 70%); }
+        .ql-mesh .ql-blob, .ql-cta .ql-blob{ animation: ql-drift 14s ease-in-out infinite alternate; }
+        .ql-b2{ animation-delay:-4s !important; } .ql-b3{ animation-delay:-7s !important; } .ql-b4{ animation-delay:-2s !important; }
+        @keyframes ql-drift{ from{ transform:translate(0,0) scale(1); } to{ transform:translate(6%,4%) scale(1.12); } }
+        @media (prefers-reduced-motion: reduce){ .ql-blob{ animation:none !important; } }
+
+        @media (max-width: 900px){
+          .ql-nav{ padding:14px 20px !important; }
+          .ql-nav-links a[href="#how"], .ql-nav-links a[href="#features"]{ display:none; }
+          .ql-hero, .ql-how{ grid-template-columns:1fr !important; gap:32px !important; }
+          .ql-hero{ padding:48px 20px 24px !important; }
+          .ql-hero h1{ font-size:40px !important; }
+          .ql-how img, .ql-how .ql-mesh{ order:-1; }
+          .ql-feat{ grid-template-columns:1fr !important; }
+          section{ padding-left:20px !important; padding-right:20px !important; }
+        }
+        @media (max-width: 480px){
+          .ql-hero h1{ font-size:33px !important; }
         }
       `}</style>
     </div>

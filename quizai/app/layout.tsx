@@ -1,6 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Poppins } from "next/font/google";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./globals.css";
+
+// Modern geometric sans for landing headings + buttons (matches the reference).
+const display = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://quizai.help";
 const TITLE = "QuizAI — Turn any PDF into quizzes, flashcards & summaries";
@@ -55,7 +64,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={display.variable} suppressHydrationWarning>
       <body suppressHydrationWarning>{children}</body>
     </html>
   );
