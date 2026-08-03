@@ -287,8 +287,12 @@ def _defs_regex(sentences: list[str], defs: dict[str, str]) -> None:
 
 
 def _distractors(pool: list[str], correct: str, ctx: dict, avoid: str = "", n: int = 3) -> list[str]:
+    """Plausible, homogeneous distractors: same entity type where possible,
+    then same word-count and similar length as the answer (so options look
+    alike and don't give the answer away by shape)."""
     label = ctx["term_label"].get(correct.lower())
     cl = len(correct)
+    cw = len(correct.split())
     cand = []
     for x in pool:
         xl = x.lower()
@@ -297,10 +301,14 @@ def _distractors(pool: list[str], correct: str, ctx: dict, avoid: str = "", n: i
         if avoid and re.search(rf"\b{re.escape(x)}\b", avoid, re.I):
             continue
         cand.append(x)
-    same = [x for x in cand if label and ctx["term_label"].get(x.lower()) == label]
-    same.sort(key=lambda x: abs(len(x) - cl))
-    rest = sorted([x for x in cand if x not in same], key=lambda x: abs(len(x) - cl))
-    return (same + rest)[:n]
+    # Rank: same NER label first, then matching word-count, then similar length.
+    def key(x: str):
+        return (
+            0 if (label and ctx["term_label"].get(x.lower()) == label) else 1,
+            abs(len(x.split()) - cw),
+            abs(len(x) - cl),
+        )
+    return sorted(cand, key=key)[:n]
 
 
 def _q(model, kind, prompt, options, answer, explanation):
@@ -312,6 +320,8 @@ def _q(model, kind, prompt, options, answer, explanation):
 # ---------------------------------------------------------------------------
 def _make_cloze(ctx, text, term, used):
     if not term or term.lower() in used:
+        return None
+    if len(text.split()) > 26:  # keep stems concise
         return None
     if not re.search(rf"\b{re.escape(term)}\b", text, re.I):
         return None
@@ -362,8 +372,8 @@ def gen_wh(ctx, k):
         if not m:
             continue
         predicate = m.group(1).strip().rstrip(".!").strip()
-        # Must start with a verb-like predicate and be substantial.
-        if len(predicate.split()) < 3 or not re.match(r"[a-z]", predicate):
+        # Must start with a verb-like predicate; keep the question concise.
+        if not (3 <= len(predicate.split()) <= 18) or not re.match(r"[a-z]", predicate):
             continue
         wh = "Who" if f["subject_label"] == "PERSON" else "What"
         prompt = f"{wh} {predicate}?"
