@@ -31,9 +31,15 @@ def _nlp():
     try:
         import spacy
 
-        try:
-            _NLP = spacy.load("en_core_web_sm", disable=["lemmatizer"])
-        except Exception:
+        # Prefer the vector model (en_core_web_md) for semantic distractors;
+        # fall back to sm, then a blank sentencizer.
+        for model in ("en_core_web_md", "en_core_web_sm"):
+            try:
+                _NLP = spacy.load(model, disable=["lemmatizer"])
+                break
+            except Exception:
+                continue
+        if _NLP is None:
             _NLP = spacy.blank("en")
             if "sentencizer" not in _NLP.pipe_names:
                 _NLP.add_pipe("sentencizer")
@@ -124,6 +130,7 @@ def analyze(text: str) -> dict:
     freq: Counter = Counter()
     terms_score: dict[str, float] = {}
     term_label: dict[str, str] = {}
+    term_vec: dict = {}
     defs: dict[str, str] = {}
     facts: list[dict] = []          # structured clean sentences
     sentences: list[dict] = []      # {text, score, start, terms}
@@ -137,6 +144,8 @@ def analyze(text: str) -> dict:
                 t = _clean_term(nc.text)
                 if t:
                     terms_score[t] = terms_score.get(t, 0) + 1.3 * (1 + 0.3 * (len(t.split()) - 1))
+                    if nc.has_vector and t.lower() not in term_vec:
+                        term_vec[t.lower()] = nc.vector
         except Exception:
             pass
         for ent in getattr(doc, "ents", []):
@@ -144,6 +153,8 @@ def analyze(text: str) -> dict:
             if t:
                 terms_score[t] = terms_score.get(t, 0) + 2.0
                 term_label[t.lower()] = ent.label_
+                if ent.has_vector and t.lower() not in term_vec:
+                    term_vec[t.lower()] = ent.vector
         low = text.lower()
         for t in list(terms_score):
             terms_score[t] *= 1 + math.log1p(low.count(t.lower()))
@@ -195,6 +206,7 @@ def analyze(text: str) -> dict:
         "facts": facts,
         "terms": terms,
         "term_label": term_label,
+        "term_vectors": term_vec,
         "defs": defs,
         "freq": freq,
         "paragraphs": [p.strip() for p in re.split(r"\n\s*\n", text) if len(p.strip()) > 60] or [text],
@@ -286,10 +298,30 @@ def _defs_regex(sentences: list[str], defs: dict[str, str]) -> None:
                 break
 
 
+def _cosine(a, b) -> float:
+    """Cosine similarity between two spaCy vectors (numpy arrays)."""
+    try:
+        import numpy as np
+
+        na = float(np.linalg.norm(a))
+        nb = float(np.linalg.norm(b))
+        if na == 0.0 or nb == 0.0:
+            return -1.0
+        return float(np.dot(a, b) / (na * nb))
+    except Exception:
+        return -1.0
+
+
 def _distractors(pool: list[str], correct: str, ctx: dict, avoid: str = "", n: int = 3) -> list[str]:
-    """Plausible, homogeneous distractors: same entity type where possible,
-    then same word-count and similar length as the answer (so options look
-    alike and don't give the answer away by shape)."""
+    """Plausible, homogeneous distractors.
+
+    When word vectors are available (en_core_web_md), rank candidates by
+    semantic similarity to the answer — the *most confusable* terms come
+    first (e.g. answer "mitochondria" → "ribosome", "nucleus"), while
+    near-synonyms/duplicates (sim ≈ 1) are dropped so no option is secretly
+    correct. Without vectors we fall back to a shape heuristic: same entity
+    type, then matching word-count and similar length so the options look
+    alike and don't give the answer away by their shape."""
     label = ctx["term_label"].get(correct.lower())
     cl = len(correct)
     cw = len(correct.split())
@@ -301,7 +333,30 @@ def _distractors(pool: list[str], correct: str, ctx: dict, avoid: str = "", n: i
         if avoid and re.search(rf"\b{re.escape(x)}\b", avoid, re.I):
             continue
         cand.append(x)
-    # Rank: same NER label first, then matching word-count, then similar length.
+
+    vecs = ctx.get("term_vectors") or {}
+    cvec = vecs.get(correct.lower())
+
+    if cvec is not None:
+        sims: dict[str, float] = {}
+        for x in cand:
+            xv = vecs.get(x.lower())
+            sims[x] = _cosine(cvec, xv) if xv is not None else -1.0
+        # Drop near-identical terms (likely synonyms/plural forms → also correct).
+        cand = [x for x in cand if sims[x] < 0.985]
+        if any(sims[x] > 0 for x in cand):
+            # Rank: same NER label first, then most semantically similar,
+            # then similar shape as tiebreakers.
+            def vkey(x: str):
+                return (
+                    0 if (label and ctx["term_label"].get(x.lower()) == label) else 1,
+                    -sims[x],
+                    abs(len(x.split()) - cw),
+                    abs(len(x) - cl),
+                )
+            return sorted(cand, key=vkey)[:n]
+
+    # Fallback (no vectors): same NER label, matching word-count, similar length.
     def key(x: str):
         return (
             0 if (label and ctx["term_label"].get(x.lower()) == label) else 1,
