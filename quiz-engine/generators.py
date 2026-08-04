@@ -595,9 +595,58 @@ def gen_multi_select(ctx, k):
     return out
 
 
+def gen_association(ctx, k):
+    """Concept-association MCQ powered by word vectors.
+
+    'Which concept is most closely related to X?' — the answer is X's nearest
+    vector neighbour in the material, distractors are clearly unrelated terms.
+    Only fires when the nearest term is distinctly closer than the distractors
+    (a margin), so questions have one defensible answer rather than being
+    'everything relates to everything'. Requires en_core_web_md; degrades to
+    nothing when vectors are unavailable."""
+    vecs = ctx.get("term_vectors") or {}
+    if not vecs:
+        return []
+    terms = [t for t in ctx["terms"] if t.lower() in vecs]
+    if len(terms) < 5:
+        return []
+    out, used = [], set()
+    for term in terms:
+        if term.lower() in used:
+            continue
+        tv = vecs[term.lower()]
+        scored = []
+        for other in terms:
+            ol = other.lower()
+            if ol == term.lower() or term.lower() in ol or ol in term.lower():
+                continue
+            scored.append((_cosine(tv, vecs[ol]), other))
+        if len(scored) < 4:
+            continue
+        scored.sort(reverse=True)
+        best_s, best = scored[0]
+        # Distractors: terms clearly less related than the winner.
+        far = [t for s, t in scored if s <= best_s - 0.25 and t.lower() != best.lower()]
+        if not (0.45 <= best_s < 0.985) or len(far) < 3:
+            continue
+        random.shuffle(far)
+        opts = far[:3] + [best]
+        random.shuffle(opts)
+        used.add(term.lower())
+        used.add(best.lower())
+        out.append(_q("association", "mcq",
+                      f"Which concept is most closely related to “{term}”?",
+                      opts, best,
+                      f"“{best}” is the most closely related concept to “{term}” in this material."))
+        if len(out) >= k:
+            break
+    return out
+
+
 MODELS: dict[str, Callable] = {
     "cloze": gen_cloze,
     "wh_question": gen_wh,
+    "association": gen_association,
     "multi_select": gen_multi_select,
     "term_to_def": gen_term_to_def,
     "def_to_term": gen_def_to_term,
@@ -611,6 +660,7 @@ MODELS: dict[str, Callable] = {
 MODEL_LABELS = {
     "cloze": "Fill in the blank",
     "wh_question": "Direct question",
+    "association": "Related concepts",
     "multi_select": "Select all that apply",
     "term_to_def": "Term → definition",
     "def_to_term": "Definition → term",

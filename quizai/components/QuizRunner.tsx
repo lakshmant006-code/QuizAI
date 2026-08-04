@@ -9,6 +9,7 @@ import type { Question } from "@/lib/types";
 const MODEL_LABELS: Record<string, string> = {
   cloze: "Fill in the blank",
   wh_question: "Direct question",
+  association: "Related concepts",
   multi_select: "Select all that apply",
   term_to_def: "Term → definition",
   def_to_term: "Definition → term",
