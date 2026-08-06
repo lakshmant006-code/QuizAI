@@ -115,9 +115,6 @@ export default function Landing() {
       {/* Hero */}
       <header className="ql-hero" style={{ maxWidth: 1180, margin: "0 auto", padding: "72px 40px 40px", display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: 56, alignItems: "center" }}>
         <div>
-          <span style={{ display: "inline-block", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 13, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--asu-maroon)", background: "var(--surface-gold-tint)", border: "1px solid var(--border-gold-tint)", padding: "6px 14px", borderRadius: 999, marginBottom: 22 }}>
-            Free · Offline · No credit card
-          </span>
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 54, lineHeight: 1.08, letterSpacing: "-0.03em", margin: "0 0 18px", color: "var(--gray-1)" }}>
             Turn any PDF into a quiz that makes it stick.
           </h1>
