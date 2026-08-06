@@ -69,26 +69,33 @@ export default async function DashboardPage() {
 
       <div className="dash-upload" style={{ gridColumn: "span 5" }}><UploadCard userId={userId} /></div>
 
-      <Tile span={4} style={{ gap: 14 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <TileLabel>This week</TileLabel>
-          {allAttempts.length > 0 && <TrendPill>{allAttempts.length} attempts</TrendPill>}
-        </div>
-        <MiniBars data={week} />
-        <div style={{ display: "flex", gap: 28 }}>
-          <div><TileLabel>Attempted</TileLabel><BigNum size={26}>{allAttempts.length}</BigNum></div>
-          <div><TileLabel>Avg. score</TileLabel><BigNum size={26}>{avgScore === null ? "—" : `${avgScore}%`}</BigNum></div>
-        </div>
-      </Tile>
+      <div className="dash-stats-col" style={{ gridColumn: "span 7", display: "flex", flexDirection: "column", gap: 14 }}>
+        <div className="dash-stats" style={{ display: "grid", gridTemplateColumns: "4fr 3fr", gap: 14 }}>
+          <Tile style={{ gap: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <TileLabel>This week</TileLabel>
+              {allAttempts.length > 0 && <TrendPill>{allAttempts.length} attempts</TrendPill>}
+            </div>
+            <MiniBars data={week} />
+            <div style={{ display: "flex", gap: 28 }}>
+              <div><TileLabel>Attempted</TileLabel><BigNum size={26}>{allAttempts.length}</BigNum></div>
+              <div><TileLabel>Avg. score</TileLabel><BigNum size={26}>{avgScore === null ? "—" : `${avgScore}%`}</BigNum></div>
+            </div>
+          </Tile>
 
-      <Tile span={3} fill="maroon" hover style={{ gap: 10, justifyContent: "space-between" }}>
-        <TileLabel on="dark">Quizzes generated</TileLabel>
-        <div>
-          <BigNum on="dark" size={44}>{totalQuizzes}</BigNum>
-          <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "rgba(255,255,255,0.72)", marginTop: 4 }}>ready to take</div>
+          <Tile fill="maroon" hover style={{ gap: 8, justifyContent: "space-between" }}>
+            <TileLabel on="dark">Quizzes generated</TileLabel>
+            <div>
+              <BigNum on="dark" size={40}>{totalQuizzes}</BigNum>
+              <div style={{ fontFamily: "var(--font-sans)", fontSize: 13, color: "rgba(255,255,255,0.72)", marginTop: 4 }}>ready to take</div>
+            </div>
+            <TrendPill on="dark">{documents.length} docs</TrendPill>
+          </Tile>
         </div>
-        <TrendPill on="dark">{documents.length} docs</TrendPill>
-      </Tile>
+
+        {/* New plain card — blank for now */}
+        <Tile style={{ flex: 1, minHeight: 96 }}>{null}</Tile>
+      </div>
 
       {/* Documents */}
       <div style={{ gridColumn: "1 / -1", marginTop: 8 }}><TileLabel>Your documents</TileLabel></div>
@@ -177,6 +184,9 @@ export default async function DashboardPage() {
         @media (max-width: 1024px){
           .dash-grid > *{ grid-column:1 / -1 !important; }
           .dash-upload{ grid-column:1 / -1 !important; }
+        }
+        @media (max-width: 560px){
+          .dash-stats{ grid-template-columns:1fr !important; }
         }
       `}</style>
     </div>
