@@ -69,29 +69,28 @@ export function DashMascotCard() {
         }}
       />
 
-      <div className="dash-bubble" aria-live="polite" style={{ position: "relative", zIndex: 1, marginTop: 18 }}>
-        {text}
-        <span className="dash-caret">▋</span>
-      </div>
+      {/* Octopus + bubble move together, gliding across the waves */}
+      <div className="dash-group" style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginBottom: 8 }}>
+        <div className="dash-bubble" aria-live="polite">
+          {text}
+          <span className="dash-caret">▋</span>
+        </div>
 
-      {/* Transparent octopus (no background), stationary, sitting on the waves */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        className="dash-octo"
-        src="/octopus.apng"
-        alt="QuizAI octopus mascot"
-        onClick={() => router.push("/quizzes")}
-        style={{
-          position: "relative",
-          zIndex: 1,
-          width: 160,
-          height: "auto",
-          display: "block",
-          cursor: "pointer",
-          marginBottom: 6,
-          filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.15))",
-        }}
-      />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className="dash-octo"
+          src="/octopus.apng"
+          alt="QuizAI octopus mascot"
+          onClick={() => router.push("/quizzes")}
+          style={{
+            width: 160,
+            height: "auto",
+            display: "block",
+            cursor: "pointer",
+            filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.15))",
+          }}
+        />
+      </div>
 
       <style>{`
         .dash-bubble{
@@ -119,6 +118,15 @@ export function DashMascotCard() {
         }
         .dash-caret{ margin-left: 1px; animation: dash-blink 1s steps(1) infinite; }
         @keyframes dash-blink{ 50%{ opacity: 0; } }
+
+        /* Octopus + bubble glide together on the x-axis (no wiggle). */
+        @keyframes dash-swim{
+          0%   { transform: translateX(-18px); }
+          50%  { transform: translateX(18px); }
+          100% { transform: translateX(-18px); }
+        }
+        .dash-group{ animation: dash-swim 3.6s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce){ .dash-group{ animation: none; } }
       `}</style>
     </div>
   );
