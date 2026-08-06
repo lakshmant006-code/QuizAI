@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./globals.css";
+import { Analytics } from "@/components/Analytics";
 
 // Modern geometric sans for landing headings + buttons (matches the reference).
 const display = Poppins({
@@ -12,9 +13,9 @@ const display = Poppins({
 });
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://quizai.help";
-const TITLE = "QuizAI — Turn any PDF into quizzes, flashcards & summaries";
+const TITLE = "QuizAI — Free AI Quiz Generator from any PDF";
 const DESCRIPTION =
-  "QuizAI turns your notes, PDFs, and readings into quizzes, flashcards, and summaries — instantly and free. Study smarter, test what you actually remember, and track your progress.";
+  "QuizAI is a free AI quiz generator that turns any PDF, notes, or readings into quizzes, flashcards, and summaries in seconds. Make a practice quiz online, study smarter, and remember more — no sign-up cost.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
@@ -25,9 +26,10 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   applicationName: "QuizAI",
   keywords: [
-    "quiz generator", "PDF to quiz", "flashcards", "study app", "summaries",
+    "quiz AI", "AI quiz", "AI quiz generator", "quiz generator", "quiz maker",
+    "PDF to quiz", "make a quiz online", "flashcards", "study app", "summaries",
     "AI study tool", "practice questions", "test prep", "exam revision",
-    "free quiz maker", "study companion",
+    "free quiz maker", "study companion", "generate quiz from PDF",
   ],
   authors: [{ name: "QuizAI" }],
   creator: "QuizAI",
@@ -51,6 +53,9 @@ export const metadata: Metadata = {
   },
   icons: { icon: "/icon.svg" },
   category: "education",
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {
@@ -65,7 +70,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={display.variable} suppressHydrationWarning>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
