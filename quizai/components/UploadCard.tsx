@@ -38,10 +38,12 @@ type Method = "offline" | "ai" | "local";
 
 // Tell the dashboard octopus a quiz just finished (celebration cue). Uses a
 // live event for same-page listeners + sessionStorage to survive router.refresh.
-function signalQuizReady() {
+// Carries the question count so the octopus can announce the real number.
+function signalQuizReady(count?: number) {
   try {
-    sessionStorage.setItem("quizai:justGenerated", String(Date.now()));
-    window.dispatchEvent(new CustomEvent("quizai:quiz-ready"));
+    const payload = JSON.stringify({ ts: Date.now(), count: count ?? null });
+    sessionStorage.setItem("quizai:justGenerated", payload);
+    window.dispatchEvent(new CustomEvent("quizai:quiz-ready", { detail: { count: count ?? null } }));
   } catch {
     /* no-op */
   }
@@ -214,7 +216,7 @@ export function UploadCard({ userId }: { userId: string }) {
         setMessage(`Done — ${rows.length} questions ready.`);
         setFile(null);
         if (inputRef.current) inputRef.current.value = "";
-        signalQuizReady();
+        signalQuizReady(rows.length);
         router.refresh();
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Local generation failed.";
@@ -260,7 +262,7 @@ export function UploadCard({ userId }: { userId: string }) {
     setMessage(`Done — ${data.questionCount} questions ready.`);
     setFile(null);
     if (inputRef.current) inputRef.current.value = "";
-    signalQuizReady();
+    signalQuizReady(typeof data.questionCount === "number" ? data.questionCount : undefined);
     router.refresh();
   }
 
