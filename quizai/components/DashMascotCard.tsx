@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const MESSAGES = [
@@ -16,42 +16,9 @@ const MESSAGES = [
  */
 export function DashMascotCard() {
   const router = useRouter();
-  const groupRef = useRef<HTMLDivElement>(null);
   const [msgIdx, setMsgIdx] = useState(0);
   const [text, setText] = useState("");
   const [deleting, setDeleting] = useState(false);
-
-  // Smooth random wander: ease toward a random target, pick a new one on arrival.
-  useEffect(() => {
-    const el = groupRef.current;
-    if (!el) return;
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
-
-    const RX = 42; // horizontal range (px)
-    const UP = 30; // how far up it can drift
-    const DOWN = 16; // how far down it can drift
-    const cur = { x: 0, y: 0 };
-    let target = { x: 0, y: 0 };
-    let raf = 0;
-
-    const pick = () => {
-      target = {
-        x: (Math.random() * 2 - 1) * RX,
-        y: Math.random() * (UP + DOWN) - UP,
-      };
-    };
-    pick();
-
-    const tick = () => {
-      cur.x += (target.x - cur.x) * 0.018;
-      cur.y += (target.y - cur.y) * 0.018;
-      el.style.transform = `translate(${cur.x.toFixed(2)}px, ${cur.y.toFixed(2)}px)`;
-      if (Math.abs(target.x - cur.x) < 1.2 && Math.abs(target.y - cur.y) < 1.2) pick();
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
 
   useEffect(() => {
     const full = MESSAGES[msgIdx];
@@ -81,7 +48,7 @@ export function DashMascotCard() {
         justifyContent: "flex-end",
         gap: 14,
         height: "100%",
-        minHeight: 220,
+        minHeight: 360,
         overflow: "hidden",
       }}
     >
@@ -102,8 +69,8 @@ export function DashMascotCard() {
         }}
       />
 
-      {/* Octopus + bubble move together, gliding across the waves */}
-      <div ref={groupRef} className="dash-group" style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginBottom: 34, willChange: "transform" }}>
+      {/* Octopus + bubble, static */}
+      <div className="dash-group" style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginBottom: 20 }}>
         <div className="dash-bubble" aria-live="polite">
           {text}
           <span className="dash-caret">▋</span>
@@ -116,7 +83,8 @@ export function DashMascotCard() {
           alt="QuizAI octopus mascot"
           onClick={() => router.push("/quizzes")}
           style={{
-            width: 160,
+            width: 320,
+            maxWidth: "100%",
             height: "auto",
             display: "block",
             cursor: "pointer",

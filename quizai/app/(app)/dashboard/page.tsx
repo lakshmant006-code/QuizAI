@@ -85,7 +85,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Octopus reminder card */}
-        <Tile style={{ flex: 1, minHeight: 220, padding: 0, overflow: "hidden" }}><DashMascotCard /></Tile>
+        <Tile style={{ flex: 1, minHeight: 360, padding: 0, overflow: "hidden" }}><DashMascotCard /></Tile>
       </div>
 
       {/* Documents */}
