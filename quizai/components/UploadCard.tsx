@@ -36,6 +36,17 @@ const OFFLINE_TYPES: { key: string; label: string; models: string[] }[] = [
 type Phase = "idle" | "uploading" | "generating" | "done" | "error";
 type Method = "offline" | "ai" | "local";
 
+// Tell the dashboard octopus a quiz just finished (celebration cue). Uses a
+// live event for same-page listeners + sessionStorage to survive router.refresh.
+function signalQuizReady() {
+  try {
+    sessionStorage.setItem("quizai:justGenerated", String(Date.now()));
+    window.dispatchEvent(new CustomEvent("quizai:quiz-ready"));
+  } catch {
+    /* no-op */
+  }
+}
+
 export function UploadCard({ userId }: { userId: string }) {
   const router = useRouter();
   const [supabase] = useState(() => createClient());
@@ -203,6 +214,7 @@ export function UploadCard({ userId }: { userId: string }) {
         setMessage(`Done — ${rows.length} questions ready.`);
         setFile(null);
         if (inputRef.current) inputRef.current.value = "";
+        signalQuizReady();
         router.refresh();
       } catch (e) {
         const msg = e instanceof Error ? e.message : "Local generation failed.";
@@ -248,6 +260,7 @@ export function UploadCard({ userId }: { userId: string }) {
     setMessage(`Done — ${data.questionCount} questions ready.`);
     setFile(null);
     if (inputRef.current) inputRef.current.value = "";
+    signalQuizReady();
     router.refresh();
   }
 
