@@ -35,6 +35,18 @@ export function DashMascotCard() {
   const [deleting, setDeleting] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
+  const [wonCount, setWonCount] = useState<number | null>(null);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  // Read the user's motion preference once, and keep it in sync if it changes.
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => setReduceMotion(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   // Typewriter — paused while celebrating so the announcement stays put.
   useEffect(() => {
@@ -60,36 +72,60 @@ export function DashMascotCard() {
   useEffect(() => {
     let reset: ReturnType<typeof setTimeout>;
 
-    const celebrate = () => {
-      setParticles(
-        Array.from({ length: 18 }, (_, i) => ({
-          id: `${i}-${Date.now()}`,
-          emoji: CONFETTI[i % CONFETTI.length],
-          x: (Math.random() * 2 - 1) * 170,
-          y: -40 - Math.random() * 150,
-          r: (Math.random() * 2 - 1) * 240,
-          d: 0.9 + Math.random() * 0.7,
-        })),
-      );
+    // Respect the user's motion preference: skip confetti + octopus wobble, but
+    // still show the announcement so the moment isn't lost. Read fresh at
+    // call time so a late preference change is honored.
+    const prefersReduced = () =>
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const celebrate = (count: number | null) => {
+      setWonCount(count);
+      if (!prefersReduced()) {
+        setParticles(
+          Array.from({ length: 18 }, (_, i) => ({
+            id: `${i}-${Date.now()}`,
+            emoji: CONFETTI[i % CONFETTI.length],
+            x: (Math.random() * 2 - 1) * 170,
+            y: -40 - Math.random() * 150,
+            r: (Math.random() * 2 - 1) * 240,
+            d: 0.9 + Math.random() * 0.7,
+          })),
+        );
+      }
       setCelebrating(true);
       clearTimeout(reset);
       reset = setTimeout(() => {
         setCelebrating(false);
         setParticles([]);
+        setWonCount(null);
         setText("");
         setDeleting(false);
       }, 4200);
     };
 
-    const onEvent = () => celebrate();
+    const onEvent = (e: Event) => {
+      const detail = (e as CustomEvent<{ count?: number | null }>).detail;
+      celebrate(typeof detail?.count === "number" ? detail.count : null);
+    };
     window.addEventListener("quizai:quiz-ready", onEvent);
 
     // Fired during a prior render / just before refresh?
     try {
-      const ts = Number(sessionStorage.getItem("quizai:justGenerated") || 0);
-      if (ts && Date.now() - ts < 15000) {
+      const raw = sessionStorage.getItem("quizai:justGenerated");
+      if (raw) {
         sessionStorage.removeItem("quizai:justGenerated");
-        celebrate();
+        let ts = 0;
+        let count: number | null = null;
+        try {
+          const parsed = JSON.parse(raw);
+          ts = Number(parsed?.ts) || 0;
+          count = typeof parsed?.count === "number" ? parsed.count : null;
+        } catch {
+          ts = Number(raw) || 0; // legacy: bare timestamp string
+        }
+        if (ts && Date.now() - ts < 15000) celebrate(count);
       }
     } catch {
       /* no-op */
@@ -157,11 +193,13 @@ export function DashMascotCard() {
         <motion.div
           className={`dash-bubble${celebrating ? " celebrate" : ""}`}
           aria-live="polite"
-          animate={celebrating ? { scale: [1, 1.22, 1] } : { scale: 1 }}
+          animate={celebrating && !reduceMotion ? { scale: [1, 1.22, 1] } : { scale: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
           {celebrating ? (
-            "Quiz generated! 🎉"
+            wonCount && wonCount > 0
+              ? `${wonCount} question${wonCount === 1 ? "" : "s"} ready! 🎉`
+              : "Quiz generated! 🎉"
           ) : (
             <>
               {text}
@@ -176,7 +214,7 @@ export function DashMascotCard() {
           src="/octopus.apng"
           alt="QuizAI octopus mascot"
           onClick={() => router.push("/quizzes")}
-          animate={celebrating ? { rotate: [0, -6, 6, -4, 4, 0], y: [0, -10, 0] } : {}}
+          animate={celebrating && !reduceMotion ? { rotate: [0, -6, 6, -4, 4, 0], y: [0, -10, 0] } : {}}
           transition={{ duration: 0.7, ease: "easeInOut" }}
           style={{
             width: 320,
