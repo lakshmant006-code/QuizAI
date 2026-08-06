@@ -4,3 +4,7 @@ pydantic==2.10.4
 python-multipart==0.0.20
 spacy==3.8.2
 pymupdf==1.24.14
+# OCR fallback for scanned / image-only PDFs (pip-only, no system packages).
+# Pulls onnxruntime + opencv; the build swaps opencv-python for the headless
+# build so it runs without libGL on Render's native runtime.
+rapidocr-onnxruntime==1.3.24

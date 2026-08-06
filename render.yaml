@@ -35,7 +35,9 @@ services:
     plan: free
     rootDir: quiz-engine
     # en_core_web_md ships word vectors → semantic distractors. (~40 MB)
-    buildCommand: pip install -r requirements.txt && python -m spacy download en_core_web_md
+    # Swap full opencv (needs libGL) for headless so RapidOCR runs on the
+    # native runtime without system packages.
+    buildCommand: pip install -r requirements.txt && python -m spacy download en_core_web_md && pip uninstall -y opencv-python && pip install opencv-python-headless==4.10.0.84
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     autoDeploy: true
     envVars:
