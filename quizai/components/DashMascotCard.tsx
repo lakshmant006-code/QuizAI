@@ -47,7 +47,7 @@ export function DashMascotCard() {
         justifyContent: "center",
         gap: 14,
         height: "100%",
-        minHeight: 150,
+        minHeight: 180,
       }}
     >
       <div className="dash-bubble" aria-live="polite">
@@ -55,7 +55,7 @@ export function DashMascotCard() {
         <span className="dash-caret">▋</span>
       </div>
 
-      {/* Transparent animated octopus (no background) */}
+      {/* Transparent octopus (no background), stationary */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         className="dash-octo"
@@ -63,7 +63,7 @@ export function DashMascotCard() {
         alt="QuizAI octopus mascot"
         onClick={() => router.push("/quizzes")}
         style={{
-          width: 120,
+          width: 150,
           height: "auto",
           display: "block",
           cursor: "pointer",
@@ -97,14 +97,6 @@ export function DashMascotCard() {
         }
         .dash-caret{ margin-left: 1px; animation: dash-blink 1s steps(1) infinite; }
         @keyframes dash-blink{ 50%{ opacity: 0; } }
-
-        @keyframes dash-octo-sway{
-          0%   { transform: translateX(-10px); }
-          50%  { transform: translateX(10px); }
-          100% { transform: translateX(-10px); }
-        }
-        .dash-octo{ animation: dash-octo-sway 3.4s ease-in-out infinite; }
-        @media (prefers-reduced-motion: reduce){ .dash-octo{ animation: none; } }
       `}</style>
     </div>
   );
