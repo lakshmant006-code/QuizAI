@@ -41,21 +41,40 @@ export function DashMascotCard() {
   return (
     <div
       style={{
+        position: "relative",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-end",
         gap: 14,
         height: "100%",
-        minHeight: 180,
+        minHeight: 220,
+        overflow: "hidden",
       }}
     >
-      <div className="dash-bubble" aria-live="polite">
+      {/* Underwater scene background (waves at the bottom) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/octopus-card.svg"
+        alt=""
+        aria-hidden
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center bottom",
+          pointerEvents: "none",
+        }}
+      />
+
+      <div className="dash-bubble" aria-live="polite" style={{ position: "relative", zIndex: 1, marginTop: 18 }}>
         {text}
         <span className="dash-caret">▋</span>
       </div>
 
-      {/* Transparent octopus (no background), stationary */}
+      {/* Transparent octopus (no background), stationary, sitting on the waves */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         className="dash-octo"
@@ -63,10 +82,13 @@ export function DashMascotCard() {
         alt="QuizAI octopus mascot"
         onClick={() => router.push("/quizzes")}
         style={{
-          width: 150,
+          position: "relative",
+          zIndex: 1,
+          width: 160,
           height: "auto",
           display: "block",
           cursor: "pointer",
+          marginBottom: 6,
           filter: "drop-shadow(0 6px 10px rgba(0,0,0,0.15))",
         }}
       />
