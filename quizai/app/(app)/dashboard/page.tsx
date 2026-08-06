@@ -3,6 +3,7 @@ import { UploadCard } from "@/components/UploadCard";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
 import { Tile, TileLabel, BigNum, TrendPill, MiniBars, ListRow, BandHead } from "@/components/bento";
 import { Mascot } from "@/components/Mascot";
+import { DashMascotCard } from "@/components/DashMascotCard";
 import { DeleteButton } from "@/components/DeleteButton";
 import type { Document, QuizAttempt, Summary, Task } from "@/lib/types";
 
@@ -93,8 +94,8 @@ export default async function DashboardPage() {
           </Tile>
         </div>
 
-        {/* New plain card — blank for now */}
-        <Tile style={{ flex: 1, minHeight: 96 }}>{null}</Tile>
+        {/* Octopus reminder card */}
+        <Tile style={{ flex: 1, minHeight: 150, justifyContent: "center" }}><DashMascotCard /></Tile>
       </div>
 
       {/* Documents */}
