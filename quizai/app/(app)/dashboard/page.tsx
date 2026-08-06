@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { UploadCard } from "@/components/UploadCard";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
 import { Tile, TileLabel, BigNum, TrendPill, MiniBars, ListRow, BandHead } from "@/components/bento";
-import { Mascot } from "@/components/Mascot";
 import { DashMascotCard } from "@/components/DashMascotCard";
 import { DeleteButton } from "@/components/DeleteButton";
 import type { Document, QuizAttempt, Summary, Task } from "@/lib/types";
@@ -51,15 +50,6 @@ export default async function DashboardPage() {
   return (
     <div className="dash-grid" style={{ display: "grid", gridTemplateColumns: "repeat(12,minmax(0,1fr))", gap: 14, alignContent: "start" }}>
       <RealtimeRefresh userId={userId} />
-      <Mascot
-        href="/quizzes"
-        messages={[
-          "Time for a quiz? 🐙",
-          "Upload a PDF — I'll make a summary!",
-          "Retake a quiz to boost your score!",
-          "Check off a study task today!",
-        ]}
-      />
 
       <h1 style={{ gridColumn: "1 / -1", fontSize: 30, fontWeight: 700, letterSpacing: "-0.03em", color: "var(--gray-1)", margin: 0 }}>
         Welcome back, {name}
