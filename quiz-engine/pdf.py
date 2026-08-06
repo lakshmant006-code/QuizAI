@@ -1,19 +1,14 @@
-"""High-quality PDF text extraction with cleanup + optional OCR fallback.
+"""High-quality PDF text extraction with cleanup.
 
-Text-layer extraction (PyMuPDF) handles normal digital PDFs. Pages that have
-little or no extractable text (scanned documents, image-only slides) fall back
-to OCR when an OCR backend is installed — RapidOCR (pip, no system deps) or
-Tesseract (via pytesseract). OCR is lazy: the model only loads the first time a
-page actually needs it, so idle memory is unaffected. Disable with ENABLE_OCR=0.
+Text-layer extraction (PyMuPDF) handles normal digital PDFs. Scanned or
+image-only PDFs have no text layer; those return little text and the caller
+surfaces a clear "not enough readable text" message rather than running OCR.
+OCR was removed to keep the engine light enough for its runtime memory budget.
 """
 from __future__ import annotations
 
-import os
 import re
 
-# Below this many alphanumeric characters, a page is treated as "no text layer"
-# and sent to OCR (if available).
-_OCR_MIN_CHARS = 24
 _BULLETS = "•▪◦‣●·∙"
 
 
@@ -22,24 +17,12 @@ def extract_pdf(data: bytes) -> tuple[str, int]:
     import fitz  # PyMuPDF
 
     doc = fitz.open(stream=data, filetype="pdf")
-    ocr_on = os.getenv("ENABLE_OCR", "1") != "0"
-    raw_pages: list[str] = []
-    for page in doc:
-        text = _page_text(page)
-        if ocr_on and _alnum(text) < _OCR_MIN_CHARS:
-            ocr = _ocr_page(page)
-            if _alnum(ocr) > _alnum(text):
-                text = ocr
-        raw_pages.append(text)
+    raw_pages = [_page_text(page) for page in doc]
     page_count = doc.page_count
     doc.close()
 
     pages = _strip_running_headers(raw_pages)
     return clean_text("\n\n".join(pages)), page_count
-
-
-def _alnum(s: str) -> int:
-    return sum(c.isalnum() for c in s)
 
 
 def _page_text(page) -> str:
@@ -84,63 +67,6 @@ def _strip_running_headers(pages: list[str]) -> list[str]:
             kept.append(l)
         out.append("\n".join(kept))
     return out
-
-
-# ---------------------------------------------------------------------------
-# OCR fallback — tries RapidOCR, then Tesseract. Whichever is installed wins;
-# if neither is present, returns "" and text-layer extraction stands.
-# ---------------------------------------------------------------------------
-_RAPID = None
-_RAPID_TRIED = False
-
-
-def _ocr_page(page) -> str:
-    try:
-        pix = page.get_pixmap(dpi=200)
-    except Exception:
-        return ""
-    return _ocr_rapid(pix) or _ocr_tesseract(pix)
-
-
-def _ocr_rapid(pix) -> str:
-    global _RAPID, _RAPID_TRIED
-    try:
-        import numpy as np
-        from rapidocr_onnxruntime import RapidOCR
-    except Exception:
-        return ""
-    try:
-        if _RAPID is None and not _RAPID_TRIED:
-            _RAPID_TRIED = True
-            _RAPID = RapidOCR()
-        if _RAPID is None:
-            return ""
-        img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
-        if pix.n >= 4:
-            img = img[:, :, :3]
-        result, _ = _RAPID(img)
-        if not result:
-            return ""
-        # result rows: [box, text, score]; order top-to-bottom, then left-to-right.
-        rows = sorted(result, key=lambda r: (round(r[0][0][1] / 12), r[0][0][0]))
-        return "\n".join(r[1] for r in rows)
-    except Exception:
-        return ""
-
-
-def _ocr_tesseract(pix) -> str:
-    try:
-        import io
-
-        import pytesseract
-        from PIL import Image
-    except Exception:
-        return ""
-    try:
-        img = Image.open(io.BytesIO(pix.tobytes("png")))
-        return pytesseract.image_to_string(img) or ""
-    except Exception:
-        return ""
 
 
 # ---------------------------------------------------------------------------
