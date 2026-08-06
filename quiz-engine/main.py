@@ -30,6 +30,11 @@ class GenerateRequest(BaseModel):
     summary: bool = False
 
 
+@app.get("/")
+def root():
+    return {"ok": True, "service": "QuizAI Offline Quiz Engine", "docs": "/docs"}
+
+
 @app.get("/health")
 def health():
     return {"ok": True, "model_count": len(MODELS)}
