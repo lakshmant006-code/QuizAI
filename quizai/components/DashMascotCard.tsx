@@ -70,7 +70,7 @@ export function DashMascotCard() {
       />
 
       {/* Octopus + bubble move together, gliding across the waves */}
-      <div className="dash-group" style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginBottom: 8 }}>
+      <div className="dash-group" style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginBottom: 34 }}>
         <div className="dash-bubble" aria-live="polite">
           {text}
           <span className="dash-caret">▋</span>
