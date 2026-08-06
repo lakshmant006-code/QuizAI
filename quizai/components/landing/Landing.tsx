@@ -44,28 +44,71 @@ const btnGhost: React.CSSProperties = {
   ...btn, background: "#fff", color: "var(--gray-1)", border: "1px solid var(--gray-5)", boxShadow: "none",
 };
 
+/* Value-prop strip — the four objections we kill on sight. */
+const BENEFITS = [
+  { icon: "fa-solid fa-bolt", title: "Free, forever", body: "No paywall, no credits, no trial clock. Upload as much as you want." },
+  { icon: "fa-solid fa-wifi", title: "Works offline", body: "Quizzes are built on-device — no tokens, no waiting on an API." },
+  { icon: "fa-solid fa-lock", title: "Your files stay yours", body: "Your PDFs aren’t sold, shared, or used to train anything." },
+  { icon: "fa-solid fa-wand-magic-sparkles", title: "Learns what you miss", body: "Rate the styles you like and every future quiz adapts to you." },
+];
+
 const STEPS = [
-  { n: "01", title: "Upload your material", body: "Drop in a PDF of your notes, readings, or slides. QuizAI reads it carefully — offline, no credits — and pulls out the concepts that matter." },
-  { n: "02", title: "Generate quizzes & summaries", body: "Get multiple-choice, select-all, yes/no, fill-in-the-blank, and flashcards in one balanced set, plus a concise summary with key terms." },
-  { n: "03", title: "Track & improve", body: "Take quizzes, watch your scores and streaks in the dashboard, and thumbs-up the styles you like so future quizzes adapt to you." },
+  { n: "01", title: "Drop in your PDF", body: "Notes, slides, a textbook chapter — anything. QuizAI reads it in seconds and pulls out the concepts that actually get tested." },
+  { n: "02", title: "Get a full study set", body: "Multiple-choice, select-all, yes/no, fill-in-the-blank, matching, and flashcards — plus a clean summary with key terms. One click, balanced mix." },
+  { n: "03", title: "Practice until it sticks", body: "Take the quiz, see your score and streak, and thumbs-up what works. QuizAI keeps sharpening the questions around your weak spots." },
 ];
 
 const FEATURES = [
-  { icon: "fa-solid fa-circle-question", title: "Ten quiz styles", body: "Fill-in-the-blank, direct questions, select-all, yes/no, match, ordering, flashcards, and more — a real mix every time." },
-  { icon: "fa-regular fa-file-lines", title: "Smart summaries", body: "Every document becomes a tight TL;DR with key points and defined terms — grounded only in your source." },
-  { icon: "fa-solid fa-chart-simple", title: "Progress that adapts", body: "Accuracy, streaks, and per-style ratings tune what you get next. The more you use it, the better it fits." },
+  { icon: "fa-solid fa-circle-question", title: "Ten ways to be tested", body: "Real variety — fill-in-the-blank, direct questions, select-all, yes/no, matching, ordering, related-concept, and flashcards. Re-run it and get fresh questions every time." },
+  { icon: "fa-regular fa-file-lines", title: "Summaries without the fluff", body: "Every upload becomes a tight TL;DR with the key points and defined terms — grounded only in your source, never made up." },
+  { icon: "fa-solid fa-chart-simple", title: "Progress you can feel", body: "Accuracy, streaks, and per-style ratings shape what comes next. The more you study, the better it fits how you learn." },
 ];
+
+const FAQS = [
+  { q: "Is QuizAI actually free?", a: "Yes. The offline quiz engine is completely free — no credit card, no credits, no trial timer. Upload as many PDFs as you like and generate unlimited quizzes and summaries." },
+  { q: "Do I need internet or API credits?", a: "No. QuizAI’s offline mode builds your quizzes on-device without using any AI credits. If you ever want the AI-written mode, it’s there too — but you never have to touch it to get great quizzes." },
+  { q: "What can I upload?", a: "Any PDF — lecture slides, class notes, readings, textbook chapters, or study guides. QuizAI reads the text, cleans it up, and focuses on the concepts worth testing." },
+  { q: "Are my documents private?", a: "Completely. Your files belong to you. We don’t sell them, share them, or use them to train models." },
+  { q: "What kinds of questions does it make?", a: "Fill-in-the-blank, multiple choice, select-all, yes/no, matching, ordering, related-concept, short answer, and flashcards — delivered as one balanced set so you’re tested from every angle." },
+  { q: "Will it help me before an exam?", a: "That’s exactly what it’s built for. Turn a chapter into a practice test in seconds, drill your weak spots, and track your recall as the exam gets closer." },
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      name: "QuizAI",
+      applicationCategory: "EducationalApplication",
+      operatingSystem: "Web",
+      description:
+        "QuizAI turns any PDF into quizzes, flashcards, and summaries — instantly, privately, and free. Study smarter and remember more.",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: FAQS.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    },
+  ],
+};
 
 export default function Landing() {
   return (
     <div className="ql" style={{ background: "var(--white)", minHeight: "100vh", fontFamily: "var(--font-display), var(--font-sans)", color: "var(--gray-1)" }}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
       {/* Nav */}
       <nav className="ql-nav" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 40px", position: "sticky", top: 0, background: "rgba(255,255,255,0.85)", backdropFilter: "blur(10px)", borderBottom: "1px solid var(--gray-6)", zIndex: 20 }}>
         <Brand />
         <div className="ql-nav-links" style={{ display: "flex", alignItems: "center", gap: 26 }}>
           <a href="#how" style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 15, color: "var(--gray-2)" }}>How it works</a>
           <a href="#features" style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 15, color: "var(--gray-2)" }}>Features</a>
-          <Link href="/login" style={{ ...btn, padding: "9px 18px", fontSize: 14 }}>Get started</Link>
+          <a href="#faq" style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 15, color: "var(--gray-2)" }}>FAQ</a>
+          <Link href="/login" style={{ ...btn, padding: "9px 18px", fontSize: 14 }}>Start free</Link>
         </div>
       </nav>
 
@@ -73,29 +116,48 @@ export default function Landing() {
       <header className="ql-hero" style={{ maxWidth: 1180, margin: "0 auto", padding: "72px 40px 40px", display: "grid", gridTemplateColumns: "1.05fr 0.95fr", gap: 56, alignItems: "center" }}>
         <div>
           <span style={{ display: "inline-block", fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 13, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--asu-maroon)", background: "var(--surface-gold-tint)", border: "1px solid var(--border-gold-tint)", padding: "6px 14px", borderRadius: 999, marginBottom: 22 }}>
-            Study companion
+            Free · Offline · No credit card
           </span>
           <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 54, lineHeight: 1.08, letterSpacing: "-0.03em", margin: "0 0 18px", color: "var(--gray-1)" }}>
-            Read it once.<br />Remember it properly.
+            Turn any PDF into a quiz that makes it stick.
           </h1>
-          <p style={{ fontSize: 19, lineHeight: 1.6, color: "var(--gray-2)", margin: "0 0 30px", maxWidth: 520 }}>
-            Turn any PDF into quizzes, flashcards, and summaries — instantly and free. QuizAI builds a balanced set of questions from your own material and tracks what actually sticks.
+          <p style={{ fontSize: 19, lineHeight: 1.6, color: "var(--gray-2)", margin: "0 0 26px", maxWidth: 520 }}>
+            Stop re-reading and hoping. Upload your notes, slides, or readings and get quizzes, flashcards, and a summary in seconds — built from your own material and tuned to what you keep getting wrong.
           </p>
-          <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-            <Link href="/login" style={btn}>Get started for free</Link>
+          <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
+            <Link href="/login" style={btn}>Start studying free</Link>
             <a href="#how" style={btnGhost}>See how it works</a>
           </div>
+          <p style={{ fontSize: 14, color: "var(--text-muted)", margin: "16px 0 0", display: "flex", alignItems: "center", gap: 8 }}>
+            <i className="fa-solid fa-check" style={{ color: "var(--asu-maroon)" }} />
+            No credit card. No credits. Just upload and go.
+          </p>
         </div>
         <Mesh height={420} />
       </header>
 
+      {/* Value-prop strip */}
+      <section style={{ maxWidth: 1180, margin: "0 auto", padding: "12px 40px 24px" }}>
+        <div className="ql-benefits" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18 }}>
+          {BENEFITS.map((b) => (
+            <div key={b.title} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <span style={{ width: 40, height: 40, borderRadius: 11, background: "var(--surface-maroon-tint)", color: "var(--asu-maroon)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 17 }}>
+                <i className={b.icon} />
+              </span>
+              <h3 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 16.5, letterSpacing: "-0.01em", margin: "4px 0 0" }}>{b.title}</h3>
+              <p style={{ fontSize: 14.5, lineHeight: 1.55, color: "var(--gray-2)", margin: 0 }}>{b.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* How it works — reference layout: mesh left, numbered steps right */}
-      <section id="how" style={{ maxWidth: 1180, margin: "0 auto", padding: "64px 40px" }}>
+      <section id="how" style={{ maxWidth: 1180, margin: "0 auto", padding: "56px 40px" }}>
         <div className="ql-how" style={{ display: "grid", gridTemplateColumns: "0.95fr 1.05fr", gap: 56, alignItems: "center" }}>
           <Mesh height={520} />
           <div>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 34, letterSpacing: "-0.02em", margin: "0 0 8px" }}>How it works</h2>
-            <p style={{ fontSize: 17, color: "var(--gray-2)", margin: "0 0 34px" }}>From a PDF to a study session in three steps — no credits, no waiting.</p>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 34, letterSpacing: "-0.02em", margin: "0 0 8px" }}>From PDF to practice test in 10 seconds</h2>
+            <p style={{ fontSize: 17, color: "var(--gray-2)", margin: "0 0 34px" }}>Three steps. No credits. No setup. No waiting.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 30 }}>
               {STEPS.map((s) => (
                 <div key={s.n} style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 18 }}>
@@ -108,16 +170,16 @@ export default function Landing() {
               ))}
             </div>
             <div style={{ marginTop: 34 }}>
-              <Link href="/login" style={btn}>Get started for free</Link>
+              <Link href="/login" style={btn}>Start studying free</Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section id="features" style={{ maxWidth: 1180, margin: "0 auto", padding: "40px 40px 90px" }}>
-        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 34, letterSpacing: "-0.02em", textAlign: "center", margin: "0 0 8px" }}>Built around how memory works</h2>
-        <p style={{ fontSize: 17, color: "var(--gray-2)", textAlign: "center", margin: "0 0 44px" }}>Encode, test, reinforce — one loop.</p>
+      <section id="features" style={{ maxWidth: 1180, margin: "0 auto", padding: "40px 40px 80px" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 34, letterSpacing: "-0.02em", textAlign: "center", margin: "0 0 8px" }}>Built around how memory actually works</h2>
+        <p style={{ fontSize: 17, color: "var(--gray-2)", textAlign: "center", margin: "0 0 44px" }}>Encode it, test it, reinforce it — the one loop that beats re-reading.</p>
         <div className="ql-feat" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 22 }}>
           {FEATURES.map((f) => (
             <div key={f.title} style={{ background: "var(--surface-panel)", border: "1px solid var(--gray-6)", borderRadius: 18, padding: 28 }}>
@@ -131,6 +193,22 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* FAQ — objection handling + SEO rich results */}
+      <section id="faq" style={{ maxWidth: 820, margin: "0 auto", padding: "8px 40px 80px" }}>
+        <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 34, letterSpacing: "-0.02em", textAlign: "center", margin: "0 0 8px" }}>Questions, answered</h2>
+        <p style={{ fontSize: 17, color: "var(--gray-2)", textAlign: "center", margin: "0 0 40px" }}>Everything you might be wondering before you start.</p>
+        <div className="ql-faq" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {FAQS.map((f) => (
+            <details key={f.q} style={{ background: "var(--surface-panel)", border: "1px solid var(--gray-6)", borderRadius: 14, padding: "18px 22px" }}>
+              <summary style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 17, color: "var(--gray-1)", cursor: "pointer", listStyle: "none" }}>
+                {f.q}
+              </summary>
+              <p style={{ fontSize: 15.5, lineHeight: 1.65, color: "var(--gray-2)", margin: "12px 0 0" }}>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section style={{ maxWidth: 1180, margin: "0 auto 80px", padding: "0 40px" }}>
         <div className="ql-cta" style={{ position: "relative", borderRadius: 28, overflow: "hidden", padding: "64px 48px", textAlign: "center", background: "#2A1017" }}>
@@ -138,9 +216,10 @@ export default function Landing() {
           <span className="ql-blob ql-b3" />
           <span style={{ position: "absolute", inset: 0, backdropFilter: "blur(40px)", background: "rgba(20,8,12,0.35)" }} />
           <div style={{ position: "relative" }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 38, letterSpacing: "-0.02em", color: "#fff", margin: "0 0 12px" }}>Ready when your brain is</h2>
-            <p style={{ fontSize: 18, color: "rgba(255,255,255,0.82)", margin: "0 0 28px" }}>Turn today&apos;s reading into tomorrow&apos;s recall.</p>
-            <Link href="/login" style={{ ...btn, background: "#fff", color: "var(--asu-maroon)", boxShadow: "0 8px 24px rgba(0,0,0,0.25)" }}>Get started for free</Link>
+            <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 38, letterSpacing: "-0.02em", color: "#fff", margin: "0 0 12px" }}>Your next exam starts here</h2>
+            <p style={{ fontSize: 18, color: "rgba(255,255,255,0.82)", margin: "0 0 28px" }}>Turn today’s reading into tomorrow’s recall — free, in seconds.</p>
+            <Link href="/login" style={{ ...btn, background: "#fff", color: "var(--asu-maroon)", boxShadow: "0 8px 24px rgba(0,0,0,0.25)" }}>Start studying free</Link>
+            <p style={{ fontSize: 13.5, color: "rgba(255,255,255,0.65)", margin: "14px 0 0" }}>No credit card required · Works offline · Private by default</p>
           </div>
         </div>
       </section>
@@ -161,18 +240,25 @@ export default function Landing() {
         @keyframes ql-drift{ from{ transform:translate(0,0) scale(1); } to{ transform:translate(6%,4%) scale(1.12); } }
         @media (prefers-reduced-motion: reduce){ .ql-blob{ animation:none !important; } }
 
+        .ql-faq summary::-webkit-details-marker{ display:none; }
+        .ql-faq summary{ position:relative; padding-right:28px; }
+        .ql-faq summary::after{ content:"+"; position:absolute; right:0; top:-2px; font-size:22px; font-weight:400; color:var(--asu-maroon); line-height:1; }
+        .ql-faq details[open] summary::after{ content:"–"; }
+
         @media (max-width: 900px){
           .ql-nav{ padding:14px 20px !important; }
-          .ql-nav-links a[href="#how"], .ql-nav-links a[href="#features"]{ display:none; }
+          .ql-nav-links a[href="#how"], .ql-nav-links a[href="#features"], .ql-nav-links a[href="#faq"]{ display:none; }
           .ql-hero, .ql-how{ grid-template-columns:1fr !important; gap:32px !important; }
           .ql-hero{ padding:48px 20px 24px !important; }
           .ql-hero h1{ font-size:40px !important; }
           .ql-how img, .ql-how .ql-mesh{ order:-1; }
           .ql-feat{ grid-template-columns:1fr !important; }
+          .ql-benefits{ grid-template-columns:repeat(2, 1fr) !important; gap:24px 18px !important; }
           section{ padding-left:20px !important; padding-right:20px !important; }
         }
         @media (max-width: 480px){
           .ql-hero h1{ font-size:33px !important; }
+          .ql-benefits{ grid-template-columns:1fr !important; }
         }
       `}</style>
     </div>
