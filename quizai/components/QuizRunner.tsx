@@ -175,7 +175,7 @@ export function QuizRunner({ quizId, questions }: { quizId: string; questions: Q
                       style={{ ...optStyle(checked, isAns), display: "flex", alignItems: "center", gap: 10 }}
                     >
                       <span style={{ width: 18, height: 18, borderRadius: 5, border: "1.5px solid", borderColor: isAns ? "var(--success)" : checked ? "var(--asu-maroon)" : "var(--gray-4)", background: checked ? "var(--asu-maroon)" : "transparent", color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, flexShrink: 0 }}>
-                        {checked && <i className="fa-solid fa-check" />}
+                        {checked && <i className="ph ph-check" />}
                       </span>
                       {opt}
                     </button>
@@ -301,8 +301,8 @@ function ModelRatings({ models }: { models: string[] }) {
           <div key={m} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
             <span style={{ font: "var(--text-body)", color: "var(--gray-1)" }}>{MODEL_LABELS[m] ?? m}</span>
             <span style={{ display: "flex", gap: 6 }}>
-              <button onClick={() => rate(m, 1)} style={thumb(rated[m] === 1, "up")}><i className="fa-solid fa-thumbs-up" /></button>
-              <button onClick={() => rate(m, -1)} style={thumb(rated[m] === -1, "down")}><i className="fa-solid fa-thumbs-down" /></button>
+              <button onClick={() => rate(m, 1)} style={thumb(rated[m] === 1, "up")}><i className="ph ph-thumbs-up" /></button>
+              <button onClick={() => rate(m, -1)} style={thumb(rated[m] === -1, "down")}><i className="ph ph-thumbs-down" /></button>
             </span>
           </div>
         ))}

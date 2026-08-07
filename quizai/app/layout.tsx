@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+import "@phosphor-icons/web/regular";
 import "./globals.css";
 import { Analytics } from "@/components/Analytics";
 

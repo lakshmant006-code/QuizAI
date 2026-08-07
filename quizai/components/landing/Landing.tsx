@@ -27,7 +27,7 @@ function Brand({ size = 22 }: { size?: number }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 9, fontFamily: "var(--font-display)", fontWeight: 700, fontSize: size, letterSpacing: "-0.02em", color: "var(--asu-maroon)" }}>
       <span aria-hidden style={{ width: size * 1.45, height: size * 1.45, borderRadius: 9, background: "var(--asu-maroon)", color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.8 }}>
-        <i className="fa-solid fa-brain" />
+        <i className="ph ph-brain" />
       </span>
       QuizAI
     </span>
@@ -46,10 +46,10 @@ const btnGhost: React.CSSProperties = {
 
 /* Value-prop strip — the four objections we kill on sight. */
 const BENEFITS = [
-  { icon: "fa-solid fa-bolt", title: "Free, forever", body: "No paywall, no credits, no trial clock. Upload as much as you want." },
-  { icon: "fa-solid fa-wifi", title: "Works offline", body: "Quizzes are built on-device — no tokens, no waiting on an API." },
-  { icon: "fa-solid fa-lock", title: "Your files stay yours", body: "Your PDFs aren’t sold, shared, or used to train anything." },
-  { icon: "fa-solid fa-wand-magic-sparkles", title: "Learns what you miss", body: "Rate the styles you like and every future quiz adapts to you." },
+  { icon: "ph ph-lightning", title: "Free, forever", body: "No paywall, no credits, no trial clock. Upload as much as you want." },
+  { icon: "ph ph-wifi-high", title: "Works offline", body: "Quizzes are built on-device — no tokens, no waiting on an API." },
+  { icon: "ph ph-lock", title: "Your files stay yours", body: "Your PDFs aren’t sold, shared, or used to train anything." },
+  { icon: "ph ph-magic-wand", title: "Learns what you miss", body: "Rate the styles you like and every future quiz adapts to you." },
 ];
 
 const STEPS = [
@@ -59,9 +59,9 @@ const STEPS = [
 ];
 
 const FEATURES = [
-  { icon: "fa-solid fa-circle-question", title: "Ten ways to be tested", body: "Real variety — fill-in-the-blank, direct questions, select-all, yes/no, matching, ordering, related-concept, and flashcards. Re-run it and get fresh questions every time." },
-  { icon: "fa-regular fa-file-lines", title: "Summaries without the fluff", body: "Every upload becomes a tight TL;DR with the key points and defined terms — grounded only in your source, never made up." },
-  { icon: "fa-solid fa-chart-simple", title: "Progress you can feel", body: "Accuracy, streaks, and per-style ratings shape what comes next. The more you study, the better it fits how you learn." },
+  { icon: "ph ph-question", title: "Ten ways to be tested", body: "Real variety — fill-in-the-blank, direct questions, select-all, yes/no, matching, ordering, related-concept, and flashcards. Re-run it and get fresh questions every time." },
+  { icon: "ph ph-file-text", title: "Summaries without the fluff", body: "Every upload becomes a tight TL;DR with the key points and defined terms — grounded only in your source, never made up." },
+  { icon: "ph ph-chart-bar", title: "Progress you can feel", body: "Accuracy, streaks, and per-style ratings shape what comes next. The more you study, the better it fits how you learn." },
 ];
 
 const FAQS = [
@@ -126,7 +126,7 @@ export default function Landing() {
             <a href="#how" style={btnGhost}>See how it works</a>
           </div>
           <p style={{ fontSize: 14, color: "var(--text-muted)", margin: "16px 0 0", display: "flex", alignItems: "center", gap: 8 }}>
-            <i className="fa-solid fa-check" style={{ color: "var(--asu-maroon)" }} />
+            <i className="ph ph-check" style={{ color: "var(--asu-maroon)" }} />
             No credit card. No credits. Just upload and go.
           </p>
         </div>

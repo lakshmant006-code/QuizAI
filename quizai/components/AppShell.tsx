@@ -6,11 +6,11 @@ import { createClient } from "@/lib/supabase/client";
 import { Avatar } from "@/components/ui";
 
 const NAV = [
-  { href: "/dashboard", label: "Home", icon: "fa-solid fa-house" },
-  { href: "/summaries", label: "Summaries", icon: "fa-regular fa-file-lines" },
-  { href: "/quizzes", label: "Quizzes", icon: "fa-solid fa-circle-question" },
-  { href: "/tasks", label: "Tasks", icon: "fa-solid fa-circle-check" },
-  { href: "/profile", label: "Profile", icon: "fa-regular fa-user" },
+  { href: "/dashboard", label: "Home", icon: "ph ph-house" },
+  { href: "/summaries", label: "Summaries", icon: "ph ph-file-text" },
+  { href: "/quizzes", label: "Quizzes", icon: "ph ph-question" },
+  { href: "/tasks", label: "Tasks", icon: "ph ph-check-circle" },
+  { href: "/profile", label: "Profile", icon: "ph ph-user" },
 ];
 
 export function AppShell({
@@ -39,13 +39,13 @@ export function AppShell({
         <aside className="qa-side">
           <div className="qa-brand">
             <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: "var(--asu-maroon)" }}>
-              <span aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: "var(--surface-maroon-tint)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}><i className="fa-solid fa-brain" /></span>
+              <span aria-hidden style={{ width: 28, height: 28, borderRadius: 8, background: "var(--surface-maroon-tint)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}><i className="ph ph-brain" /></span>
               QuizAI
             </span>
           </div>
 
           <Link href="/dashboard?upload=1" className="qa-new">
-            <i className="fa-solid fa-plus" /> <span className="qa-new-label">New upload</span>
+            <i className="ph ph-plus" /> <span className="qa-new-label">New upload</span>
           </Link>
 
           <nav className="qa-nav">
@@ -69,7 +69,7 @@ export function AppShell({
               </div>
             </div>
             <button onClick={signOut} className="qa-signout" title="Sign out">
-              <i className="fa-solid fa-arrow-right-from-bracket" />
+              <i className="ph ph-sign-out" />
               <span className="qa-signout-label">Sign out</span>
             </button>
           </div>

@@ -64,7 +64,7 @@ export function DeleteButton({
         opacity: busy ? 0.5 : 1,
       }}
     >
-      <i className="fa-regular fa-trash-can" />
+      <i className="ph ph-trash" />
       {label && <span>{label}</span>}
       <style>{`.qa-del:hover{ color: var(--danger) !important; }`}</style>
     </button>

@@ -21,6 +21,18 @@ services:
       # Secret — enter in the Render dashboard, never committed:
       - key: ANTHROPIC_API_KEY
         sync: false
+      # Self-hosted model for the "AI" path (e.g. Gemma via Ollama). When set,
+      # the AI method generates every user's quiz + summary through this server
+      # instead of Claude. Must be an OpenAI-compatible base URL reachable from
+      # Render — e.g. a public tunnel to your Ollama: https://your-host/v1
+      - key: OLLAMA_URL
+        sync: false
+      # Model name/tag on that server (defaults to "gemma3" if unset).
+      - key: OLLAMA_MODEL
+        sync: false
+      # Optional bearer token if you protect the endpoint (recommended if public).
+      - key: OLLAMA_API_KEY
+        sync: false
       # Set to your Render URL after the first deploy (e.g. https://quizai.onrender.com):
       - key: NEXT_PUBLIC_SITE_URL
         sync: false

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
-    "@fortawesome/fontawesome-free": "^7.3.1",
+    "@phosphor-icons/web": "^2.1.2",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.111.0",
     "gsap": "^3.15.0",

@@ -19,7 +19,7 @@ export default async function QuizzesPage() {
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       <RealtimeRefresh userId={user!.id} />
       <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--gray-1)", margin: 0 }}>
-        <i className="fa-solid fa-circle-question" style={{ marginRight: 10, color: "var(--asu-maroon)" }} />Quizzes
+        <i className="ph ph-question" style={{ marginRight: 10, color: "var(--asu-maroon)" }} />Quizzes
       </h1>
 
       {list.length === 0 ? (
@@ -35,7 +35,7 @@ export default async function QuizzesPage() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 8 }}>
                   <h2 style={{ display: "flex", alignItems: "center", gap: 10, font: "var(--text-h3)", color: "var(--gray-1)", margin: 0 }}>
                     <span style={{ width: 34, height: 34, borderRadius: 11, background: "var(--surface-maroon-tint)", color: "var(--asu-maroon)", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <i className="fa-solid fa-circle-question" style={{ fontSize: 14 }} />
+                      <i className="ph ph-question" style={{ fontSize: 14 }} />
                     </span>
                     {q.title}
                   </h2>
