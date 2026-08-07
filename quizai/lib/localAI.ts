@@ -97,10 +97,13 @@ export interface LocalGenerateOptions {
   difficulty: Difficulty;
   numQuestions: number;
   kinds: QuestionKind[];
+  // Optional abort signal — used by the server-side path to bound how long a
+  // slow self-hosted model may run. The browser path leaves it unset.
+  signal?: AbortSignal;
 }
 
 export async function generateWithLocalAI(opts: LocalGenerateOptions): Promise<StudyPack> {
-  const { conn, text, title, difficulty, numQuestions, kinds } = opts;
+  const { conn, text, title, difficulty, numQuestions, kinds, signal } = opts;
   const source = text.slice(0, MAX_CHARS);
   const kindLabel = kinds
     .map((k) => (k === "mcq" ? "multiple-choice" : k === "tf" ? "true/false" : "short-answer"))
@@ -143,6 +146,7 @@ ${source}
     method: "POST",
     headers: authHeaders(conn),
     body: JSON.stringify(body),
+    signal,
   }).catch((e) => {
     throw new Error(reachError(e));
   });
@@ -154,6 +158,7 @@ ${source}
       method: "POST",
       headers: authHeaders(conn),
       body: JSON.stringify(body),
+      signal,
     });
   }
   if (!res.ok) {

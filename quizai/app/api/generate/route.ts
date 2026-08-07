@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { generateStudyPack } from "@/lib/generate";
 import type { Difficulty, QuestionKind } from "@/lib/types";
 
-export const maxDuration = 60; // allow time for PDF parse + model call
+export const maxDuration = 120; // allow time for PDF parse + model call (self-hosted models can be slower)
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();

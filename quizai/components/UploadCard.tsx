@@ -54,7 +54,7 @@ export function UploadCard({ userId }: { userId: string }) {
   const [supabase] = useState(() => createClient());
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [method, setMethod] = useState<Method>("offline");
+  const [method, setMethod] = useState<Method>("ai");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [numQuestions, setNumQuestions] = useState(8);
   const [total, setTotal] = useState(10);
@@ -294,15 +294,15 @@ export function UploadCard({ userId }: { userId: string }) {
 
       {/* Method toggle */}
       <div style={{ display: "flex", background: "var(--surface-panel)", border: "1px solid var(--hairline)", borderRadius: 10, padding: 4, marginBottom: 8, gap: 2 }}>
+        <button onClick={() => setMethod("ai")} style={seg(method === "ai")}>✨ AI</button>
         <button onClick={() => setMethod("offline")} style={seg(method === "offline")}>⚡ Offline</button>
-        <button onClick={() => setMethod("ai")} style={seg(method === "ai")}>✨ AI · Claude</button>
         <button onClick={() => setMethod("local")} style={seg(method === "local")}>🖥️ My AI</button>
       </div>
       <p style={{ font: "var(--text-small)", color: "var(--text-muted)", margin: "0 0 14px" }}>
         {method === "offline"
           ? "10 question styles generated on-device. No credits used."
           : method === "ai"
-          ? "Claude writes a summary + quiz. Uses your API credits."
+          ? "Our AI writes a full summary + quiz from your PDF — the recommended way to study."
           : "Use your own local AI (Ollama, LM Studio, vLLM…). Runs in your browser — nothing goes through our servers."}
       </p>
 
