@@ -10,7 +10,7 @@ function Brand() {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 10, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: "var(--asu-maroon)" }}>
       <span aria-hidden style={{ width: 40, height: 40, borderRadius: 11, background: "var(--surface-maroon-tint)", color: "var(--asu-maroon)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
-        <i className="fa-solid fa-brain" />
+        <i className="ph ph-brain" />
       </span>
       QuizAI
     </span>
@@ -75,7 +75,7 @@ export default function ResetPasswordPage() {
 
         {done ? (
           <div style={{ textAlign: "center", padding: "8px 0" }}>
-            <div style={{ fontSize: 34, color: "var(--success)", marginBottom: 8 }}><i className="fa-solid fa-circle-check" /></div>
+            <div style={{ fontSize: 34, color: "var(--success)", marginBottom: 8 }}><i className="ph ph-check-circle" /></div>
             <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: 0 }}>Password updated. Taking you to your dashboard…</p>
           </div>
         ) : ready === false ? (

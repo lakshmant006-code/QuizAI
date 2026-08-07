@@ -10,7 +10,7 @@ function Brand() {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 10, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: "var(--asu-maroon)" }}>
       <span aria-hidden style={{ width: 40, height: 40, borderRadius: 11, background: "var(--surface-maroon-tint)", color: "var(--asu-maroon)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>
-        <i className="fa-solid fa-brain" />
+        <i className="ph ph-brain" />
       </span>
       QuizAI
     </span>
@@ -126,7 +126,7 @@ function LoginInner() {
 
         {notice ? (
           <div style={{ textAlign: "center", padding: "8px 0" }}>
-            <div style={{ fontSize: 34, color: "var(--asu-maroon)", marginBottom: 8 }}><i className="fa-solid fa-paper-plane" /></div>
+            <div style={{ fontSize: 34, color: "var(--asu-maroon)", marginBottom: 8 }}><i className="ph ph-paper-plane-tilt" /></div>
             <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: 0 }}>{notice}</p>
           </div>
         ) : (
@@ -153,7 +153,7 @@ function LoginInner() {
             </div>
 
             <button type="button" onClick={magicLink} disabled={busy} style={{ width: "100%", padding: "11px 20px", background: "#fff", color: "var(--gray-1)", border: "1px solid var(--gray-5)", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 14, cursor: busy ? "not-allowed" : "pointer" }}>
-              <i className="fa-regular fa-envelope" style={{ marginRight: 8 }} />Email me a magic link
+              <i className="ph ph-envelope" style={{ marginRight: 8 }} />Email me a magic link
             </button>
           </form>
         )}

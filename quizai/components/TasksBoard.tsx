@@ -121,14 +121,14 @@ export function TasksBoard({ userId, initial }: { userId: string; initial: Task[
                 {t.title}
               </span>
               <button onClick={() => star(t)} title="Star" style={{ background: "none", border: "none", fontSize: 15, color: t.starred ? "var(--asu-gold)" : "var(--gray-4)" }}>
-                <i className={t.starred ? "fa-solid fa-star" : "fa-regular fa-star"} />
+                <i className={t.starred ? "ph ph-star" : "ph ph-star"} />
               </button>
               <button
                 onClick={() => remove(t)}
                 title="Delete"
                 style={{ background: "none", border: "none", color: "var(--gray-4)", fontSize: 15 }}
               >
-                <i className="fa-solid fa-xmark" />
+                <i className="ph ph-x" />
               </button>
             </div>
           ))}

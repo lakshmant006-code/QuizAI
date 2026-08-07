@@ -31,7 +31,7 @@ export default async function ProfilePage() {
           <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)" }}>{name}</div>
           <div style={{ font: "var(--text-body)", color: "var(--text-muted)" }}>{email}</div>
           <div style={{ font: "var(--text-small)", color: "var(--text-muted)", marginTop: 4 }}>
-            <i className="fa-regular fa-calendar" style={{ marginRight: 6 }} />
+            <i className="ph ph-calendar" style={{ marginRight: 6 }} />
             Member since {profile ? new Date(profile.created_at).toLocaleDateString() : "—"}
           </div>
         </div>
@@ -39,22 +39,22 @@ export default async function ProfilePage() {
 
       <Tile style={{ gap: 16, padding: 24 }}>
         <h2 style={{ font: "var(--text-h3)", color: "var(--gray-1)", margin: 0 }}>
-          <i className="fa-solid fa-pen" style={{ marginRight: 10, color: "var(--asu-maroon)" }} />Edit profile
+          <i className="ph ph-pencil-simple" style={{ marginRight: 10, color: "var(--asu-maroon)" }} />Edit profile
         </h2>
         <ProfileForm userId={user!.id} initialName={name} email={email} />
       </Tile>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14 }}>
         <Tile style={{ gap: 6 }}>
-          <TileLabel><i className="fa-solid fa-file-pdf" style={{ marginRight: 6, color: "var(--asu-maroon)" }} />Documents</TileLabel>
+          <TileLabel><i className="ph ph-file-pdf" style={{ marginRight: 6, color: "var(--asu-maroon)" }} />Documents</TileLabel>
           <BigNum>{docCount.count ?? 0}</BigNum>
         </Tile>
         <Tile fill="maroon" style={{ gap: 6 }}>
-          <TileLabel on="dark"><i className="fa-solid fa-circle-question" style={{ marginRight: 6 }} />Quizzes</TileLabel>
+          <TileLabel on="dark"><i className="ph ph-question" style={{ marginRight: 6 }} />Quizzes</TileLabel>
           <BigNum on="dark">{quizCount.count ?? 0}</BigNum>
         </Tile>
         <Tile style={{ gap: 6 }}>
-          <TileLabel><i className="fa-solid fa-chart-simple" style={{ marginRight: 6, color: "var(--asu-maroon)" }} />Avg. score</TileLabel>
+          <TileLabel><i className="ph ph-chart-bar" style={{ marginRight: 6, color: "var(--asu-maroon)" }} />Avg. score</TileLabel>
           <BigNum>{avg === null ? "—" : `${avg}%`}</BigNum>
           <div style={{ font: "var(--text-small)", color: "var(--text-muted)" }}>{all.length} attempts</div>
         </Tile>

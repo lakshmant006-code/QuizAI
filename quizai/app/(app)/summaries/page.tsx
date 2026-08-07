@@ -19,7 +19,7 @@ export default async function SummariesPage() {
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       <RealtimeRefresh userId={user!.id} />
       <h1 style={{ fontSize: 28, fontWeight: 700, letterSpacing: "-0.02em", color: "var(--gray-1)", margin: 0 }}>
-        <i className="fa-regular fa-file-lines" style={{ marginRight: 10, color: "var(--asu-maroon)" }} />Summaries
+        <i className="ph ph-file-text" style={{ marginRight: 10, color: "var(--asu-maroon)" }} />Summaries
       </h1>
 
       {summaries.length === 0 ? (
@@ -29,7 +29,7 @@ export default async function SummariesPage() {
           <Tile key={s.id} style={{ padding: 24, gap: 0 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 10 }}>
               <h2 style={{ display: "flex", alignItems: "center", gap: 10, font: "var(--text-h3)", color: "var(--asu-maroon)", margin: 0 }}>
-                <i className="fa-solid fa-file-pdf" />{s.documents?.title ?? "Untitled"}
+                <i className="ph ph-file-pdf" />{s.documents?.title ?? "Untitled"}
               </h2>
               <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ font: "var(--text-label)", fontSize: 12, padding: "4px 10px", borderRadius: 999, background: "var(--surface-gold-tint)", color: "var(--asu-maroon)" }}>{new Date(s.created_at).toLocaleDateString()}</span>

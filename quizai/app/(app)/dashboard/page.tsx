@@ -98,7 +98,7 @@ export default async function DashboardPage() {
             <Tile key={d.id} hover style={{ gap: 12 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <span style={{ width: 40, height: 40, borderRadius: 12, background: "var(--surface-maroon-tint)", color: "var(--asu-maroon)", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <i className="fa-solid fa-file-pdf" />
+                  <i className="ph ph-file-pdf" />
                 </span>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.title}</div>
@@ -130,7 +130,7 @@ export default async function DashboardPage() {
           <div style={{ padding: "18px 0", font: "var(--text-body)", color: "var(--text-muted)" }}>Summaries will appear here after you upload a document.</div>
         ) : (
           summaryList.map((s, i) => (
-            <ListRow key={s.id} icon="fa-regular fa-file-lines" title={s.documents?.title ?? "Summary"} meta={fmtDate(s.created_at)} href="/summaries" last={i === summaryList.length - 1} />
+            <ListRow key={s.id} icon="ph ph-file-text" title={s.documents?.title ?? "Summary"} meta={fmtDate(s.created_at)} href="/summaries" last={i === summaryList.length - 1} />
           ))
         )}
       </Tile>
@@ -145,10 +145,10 @@ export default async function DashboardPage() {
           taskList.slice(0, 5).map((t, i, arr) => (
             <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: i === arr.length - 1 ? "none" : "1px solid rgba(0,0,0,0.06)" }}>
               <span style={{ width: 20, height: 20, borderRadius: 6, border: "1.5px solid", borderColor: t.done ? "var(--asu-maroon)" : "var(--gray-4)", background: t.done ? "var(--asu-maroon)" : "transparent", color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 11, flexShrink: 0 }}>
-                {t.done && <i className="fa-solid fa-check" />}
+                {t.done && <i className="ph ph-check" />}
               </span>
               <span style={{ flex: 1, fontSize: 14, color: t.done ? "var(--gray-4)" : "var(--gray-1)", textDecoration: t.done ? "line-through" : "none" }}>{t.title}</span>
-              {t.starred && <i className="fa-solid fa-star" style={{ color: "var(--asu-gold)", fontSize: 12 }} />}
+              {t.starred && <i className="ph ph-star" style={{ color: "var(--asu-gold)", fontSize: 12 }} />}
             </div>
           ))
         )}

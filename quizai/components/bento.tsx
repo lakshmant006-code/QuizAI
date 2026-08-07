@@ -61,7 +61,7 @@ export function BigNum({ children, on, size = 38 }: { children: React.ReactNode;
 export function TrendPill({ children, on }: { children: React.ReactNode; on?: "dark" }) {
   return (
     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, alignSelf: "flex-start", background: on === "dark" ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.05)", color: on === "dark" ? "#fff" : "var(--gray-2)", fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 700, padding: "5px 11px", borderRadius: 999 }}>
-      <i className="fa-solid fa-arrow-trend-up" style={{ fontSize: 10 }} />
+      <i className="ph ph-trend-up" style={{ fontSize: 10 }} />
       {children}
     </span>
   );

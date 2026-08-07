@@ -4,7 +4,7 @@ export default function NotFound() {
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, background: "var(--surface-maroon-tint)", padding: 24, textAlign: "center" }}>
       <div style={{ fontSize: 44, color: "var(--asu-maroon)" }}>
-        <i className="fa-solid fa-brain" />
+        <i className="ph ph-brain" />
       </div>
       <h1 style={{ font: "var(--text-h1)", color: "var(--text-heading)", margin: 0 }}>Page not found</h1>
       <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: 0, maxWidth: 420 }}>

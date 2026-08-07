@@ -313,7 +313,7 @@ export function UploadCard({ userId }: { userId: string }) {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
               <div style={{ minWidth: 0 }}>
                 <div style={{ font: "var(--text-label)", color: "var(--gray-1)" }}>
-                  <i className="fa-solid fa-circle-check" style={{ color: "var(--success)", marginRight: 6 }} />
+                  <i className="ph ph-check-circle" style={{ color: "var(--success)", marginRight: 6 }} />
                   Using <b>{conn.model}</b>
                 </div>
                 <div style={{ font: "var(--text-small)", color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{conn.base_url}</div>

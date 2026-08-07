@@ -102,7 +102,7 @@ export function Mascot({
             pointerEvents: "auto",
           }}
         >
-          <i className="fa-solid fa-xmark" />
+          <i className="ph ph-x" />
         </button>
       </div>
 

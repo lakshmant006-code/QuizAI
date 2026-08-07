@@ -64,7 +64,7 @@ export function ProfileForm({ userId, initialName, email }: { userId: string; in
         >
           {status === "saving" ? "Saving…" : "Save changes"}
         </button>
-        {status === "saved" && <span style={{ font: "var(--text-small)", color: "var(--success)" }}><i className="fa-solid fa-check" style={{ marginRight: 6 }} />Saved</span>}
+        {status === "saved" && <span style={{ font: "var(--text-small)", color: "var(--success)" }}><i className="ph ph-check" style={{ marginRight: 6 }} />Saved</span>}
         {status === "error" && <span style={{ font: "var(--text-small)", color: "var(--danger)" }}>{error}</span>}
       </div>
     </form>
