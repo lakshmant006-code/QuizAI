@@ -81,15 +81,16 @@ export function AppShell({
       </div>
 
       <style>{`
-        .qa-root{ min-height:100vh; background:var(--surface-app); padding:16px; }
+        .qa-root{ height:100vh; box-sizing:border-box; overflow:hidden; background:var(--surface-app); padding:16px; }
         .qa-shell{
           display:flex; background:#fff; border-radius:var(--radius-xl); overflow:hidden;
-          box-shadow:var(--shadow-elevated); min-height:calc(100vh - 32px);
+          box-shadow:var(--shadow-elevated); height:100%;
           max-width:1600px; margin:0 auto;
         }
         .qa-side{
           width:230px; flex-shrink:0; border-right:1px solid var(--hairline);
           padding:16px; display:flex; flex-direction:column; gap:4px;
+          height:100%; overflow-y:auto; min-height:0;
         }
         .qa-brand{ padding:6px 8px 14px; }
         .qa-new{
@@ -113,7 +114,7 @@ export function AppShell({
           color:var(--gray-2); font:var(--text-label);
           display:flex; align-items:center; justify-content:center; gap:8px;
         }
-        .qa-main{ flex:1; min-width:0; padding:32px; background:var(--surface-panel); overflow:auto; }
+        .qa-main{ flex:1; min-width:0; min-height:0; padding:32px; background:var(--surface-panel); overflow:auto; }
         .qa-main-inner{ max-width:1280px; margin:0 auto; width:100%; }
 
         /* Tablet */
@@ -124,11 +125,11 @@ export function AppShell({
 
         /* Mobile: sidebar becomes a horizontal top bar */
         @media (max-width:760px){
-          .qa-root{ padding:0; }
-          .qa-shell{ flex-direction:column; border-radius:0; min-height:100vh; box-shadow:none; }
+          .qa-root{ padding:0; height:auto; overflow:visible; }
+          .qa-shell{ flex-direction:column; border-radius:0; height:auto; min-height:100vh; box-shadow:none; }
           .qa-side{
-            width:100%; flex-direction:row; align-items:center; gap:8px;
-            overflow-x:auto; border-right:none; border-bottom:1px solid var(--hairline);
+            width:100%; height:auto; flex-direction:row; align-items:center; gap:8px;
+            overflow-x:auto; overflow-y:visible; border-right:none; border-bottom:1px solid var(--hairline);
             padding:10px 12px; position:sticky; top:0; background:rgba(255,255,255,0.96);
             backdrop-filter:blur(8px); z-index:20;
           }
