@@ -276,6 +276,10 @@ export function UploadCard({ userId }: { userId: string }) {
 
   const seg = (active: boolean): React.CSSProperties => ({
     flex: 1,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
     padding: "9px 0",
     borderRadius: 8,
     border: "none",
@@ -294,9 +298,9 @@ export function UploadCard({ userId }: { userId: string }) {
 
       {/* Method toggle */}
       <div style={{ display: "flex", background: "var(--surface-panel)", border: "1px solid var(--hairline)", borderRadius: 10, padding: 4, marginBottom: 8, gap: 2 }}>
-        <button onClick={() => setMethod("ai")} style={seg(method === "ai")}>✨ AI</button>
-        <button onClick={() => setMethod("offline")} style={seg(method === "offline")}>⚡ Offline</button>
-        <button onClick={() => setMethod("local")} style={seg(method === "local")}>🖥️ My AI</button>
+        <button onClick={() => setMethod("ai")} style={seg(method === "ai")}><i className="ph ph-sparkle" aria-hidden />AI</button>
+        <button onClick={() => setMethod("offline")} style={seg(method === "offline")}><i className="ph ph-lightning" aria-hidden />Offline</button>
+        <button onClick={() => setMethod("local")} style={seg(method === "local")}><i className="ph ph-desktop" aria-hidden />My AI</button>
       </div>
       <p style={{ font: "var(--text-small)", color: "var(--text-muted)", margin: "0 0 14px" }}>
         {method === "offline"
@@ -369,7 +373,7 @@ export function UploadCard({ userId }: { userId: string }) {
       >
         <input ref={inputRef} type="file" accept="application/pdf" style={{ display: "none" }}
           onChange={(e) => pick(e.target.files?.[0] ?? null)} />
-        <span style={{ fontSize: 24 }}>📄</span>
+        <i className="ph ph-file-arrow-up" aria-hidden style={{ fontSize: 26, color: "var(--asu-maroon)" }} />
         <span style={{ font: "var(--text-body)", color: "var(--gray-1)" }}>
           {file ? file.name : "Click to choose a PDF or drop it here"}
         </span>
