@@ -138,6 +138,9 @@
     <canonical_map note="the app's current icon vocabulary — reuse these before introducing new glyphs">
       <icon concept="brand / AI" name="ph-brain" />
       <icon concept="AI magic / generate" name="ph-magic-wand" />
+      <icon concept="AI method (hosted model)" name="ph-sparkle" />
+      <icon concept="local / self-hosted model" name="ph-desktop" />
+      <icon concept="upload / drop a PDF" name="ph-file-arrow-up" />
       <icon concept="question / quiz" name="ph-question" />
       <icon concept="summary / document text" name="ph-file-text" />
       <icon concept="PDF file" name="ph-file-pdf" />
