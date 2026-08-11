@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { motion, useReducedMotion, type Variants } from "motion/react";
 
 /* ---- Brand mark ---- */
 function Brand({ size = 20 }: { size?: number }) {
@@ -215,21 +215,37 @@ function ChatDemo() {
 const btnPrimary: React.CSSProperties = { width: "100%", padding: "12px 22px", background: "var(--asu-maroon)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 15, letterSpacing: "-0.01em", boxShadow: "var(--shadow-button)" };
 const btnSecondary: React.CSSProperties = { width: "100%", padding: "12px 22px", background: "#fff", color: "var(--gray-1)", border: "1px solid var(--gray-5)", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 15, letterSpacing: "-0.01em" };
 
+/* ---- Entrance motion (Motion): smooth, staggered reveals ---- */
+const EASE_OUT = [0.22, 1, 0.36, 1] as const; // gentle ease-out, no overshoot
+
+// Hero: the container orchestrates its children, each drifting up + un-blurring in sequence.
+const heroStagger: Variants = {
+  hidden: {},
+  show: { transition: { delayChildren: 0.15, staggerChildren: 0.14 } },
+};
+const heroItem: Variants = {
+  hidden: { y: 30, opacity: 0, filter: "blur(6px)" },
+  show: { y: 0, opacity: 1, filter: "blur(0px)", transition: { duration: 0.75, ease: EASE_OUT } },
+};
+
+// Sections: reveal once as they scroll into view.
+const revealVariants: Variants = {
+  hidden: { y: 36, opacity: 0 },
+  show: { y: 0, opacity: 1, transition: { duration: 0.7, ease: EASE_OUT } },
+};
+
 export default function Landing() {
   const router = useRouter();
-  const heroRef = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
   const go = () => router.push("/login");
 
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    if (heroRef.current) {
-      gsap.fromTo(heroRef.current.querySelectorAll("[data-hero]"), { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, stagger: 0.12, ease: "power3.out" });
-    }
-    document.querySelectorAll("[data-reveal]").forEach((el) => {
-      gsap.fromTo(el, { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 85%" } });
-    });
-    return () => ScrollTrigger.getAll().forEach((s) => s.kill());
-  }, []);
+  // Respect prefers-reduced-motion: show content immediately, skip the entrance.
+  const revealProps = {
+    variants: revealVariants,
+    initial: reduce ? false : "hidden",
+    whileInView: "show" as const,
+    viewport: { once: true, amount: 0.2 },
+  };
 
   const sectionH: React.CSSProperties = { font: "var(--text-h1)", color: "var(--text-heading)", margin: "0 0 12px", textAlign: "center" };
   const featureCard: React.CSSProperties = { flex: 1, background: "var(--white)", border: "1px solid var(--gray-6)", borderRadius: 14, padding: 28 };
@@ -246,26 +262,31 @@ export default function Landing() {
         </div>
       </nav>
 
-      <header ref={heroRef} className="ql-hero" style={{ position: "relative", overflow: "hidden", padding: "96px 40px 110px", textAlign: "center", cursor: "crosshair" }}>
+      <header className="ql-hero" style={{ position: "relative", overflow: "hidden", padding: "96px 40px 110px", textAlign: "center", cursor: "crosshair" }}>
         <NeuralCanvas />
-        <div style={{ position: "relative", maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}>
-          <span data-hero style={{ font: "var(--text-label)", color: "var(--asu-maroon)", background: "var(--surface-gold-tint)", border: "1px solid var(--border-gold-tint)", padding: "6px 16px", borderRadius: 999 }}>
+        <motion.div
+          variants={heroStagger}
+          initial={reduce ? false : "hidden"}
+          animate="show"
+          style={{ position: "relative", maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center", gap: 20 }}
+        >
+          <motion.span variants={heroItem} style={{ font: "var(--text-label)", color: "var(--asu-maroon)", background: "var(--surface-gold-tint)", border: "1px solid var(--border-gold-tint)", padding: "6px 16px", borderRadius: 999 }}>
             <i className="fa-solid fa-brain" style={{ marginRight: 8 }} />Study companion
-          </span>
-          <h1 data-hero style={{ font: "var(--text-display)", fontSize: 56, color: "var(--text-heading)", margin: 0, letterSpacing: "-1px" }}>Read it once. Remember it properly.</h1>
-          <p data-hero style={{ font: "var(--text-body)", fontSize: 18, color: "var(--gray-2)", maxWidth: 560, margin: 0 }}>Bring your notes, readings, and slides. Get quizzes, flashcards, and summaries built from them — and a clear view of what stuck.</p>
-          <div data-hero style={{ display: "flex", gap: 12, marginTop: 8 }}>
+          </motion.span>
+          <motion.h1 variants={heroItem} style={{ font: "var(--text-display)", fontSize: 56, color: "var(--text-heading)", margin: 0, letterSpacing: "-1px" }}>Read it once. Remember it properly.</motion.h1>
+          <motion.p variants={heroItem} style={{ font: "var(--text-body)", fontSize: 18, color: "var(--gray-2)", maxWidth: 560, margin: 0 }}>Bring your notes, readings, and slides. Get quizzes, flashcards, and summaries built from them — and a clear view of what stuck.</motion.p>
+          <motion.div variants={heroItem} style={{ display: "flex", gap: 12, marginTop: 8 }}>
             <Magnetic style={{ width: 190 }}><button onClick={go} style={btnPrimary}>Sign In to QuizAI</button></Magnetic>
             <Magnetic style={{ width: 170 }}><button onClick={go} style={btnSecondary}>Create Account</button></Magnetic>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </header>
 
-      <section data-reveal style={{ maxWidth: 880, margin: "0 auto", padding: "0 40px 90px" }}>
+      <motion.section {...revealProps} style={{ maxWidth: 880, margin: "0 auto", padding: "0 40px 90px" }}>
         <ChatDemo />
-      </section>
+      </motion.section>
 
-      <section id="features" data-reveal style={{ maxWidth: 1120, margin: "0 auto", padding: "0 40px 90px" }}>
+      <motion.section id="features" {...revealProps} style={{ maxWidth: 1120, margin: "0 auto", padding: "0 40px 90px" }}>
         <h2 style={sectionH}>Built around how memory works</h2>
         <p style={{ font: "var(--text-body)", color: "var(--gray-2)", textAlign: "center", margin: "0 0 40px" }}>Three tools, one loop: encode, test, reinforce.</p>
         <div className="ql-row" style={{ display: "flex", gap: 20 }}>
@@ -281,9 +302,9 @@ export default function Landing() {
             </TiltCard>
           ))}
         </div>
-      </section>
+      </motion.section>
 
-      <section id="how" data-reveal style={{ background: "var(--asu-maroon)", padding: "70px 40px" }}>
+      <motion.section id="how" {...revealProps} style={{ background: "var(--asu-maroon)", padding: "70px 40px" }}>
         <div className="ql-row" style={{ maxWidth: 1120, margin: "0 auto", display: "flex", gap: 20, textAlign: "center" }}>
           {[
             ["fa-solid fa-upload", "1. Add your material", "Notes, readings, slides, or a link."],
@@ -297,13 +318,13 @@ export default function Landing() {
             </div>
           ))}
         </div>
-      </section>
+      </motion.section>
 
-      <section data-reveal style={{ textAlign: "center", padding: "90px 40px" }}>
+      <motion.section {...revealProps} style={{ textAlign: "center", padding: "90px 40px" }}>
         <h2 style={sectionH}>Ready when your brain is</h2>
         <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: "0 0 28px" }}>Sign in and turn today&apos;s reading into tomorrow&apos;s recall.</p>
         <Magnetic style={{ width: 220, margin: "0 auto" }}><button onClick={go} style={btnPrimary}>Sign In to QuizAI</button></Magnetic>
-      </section>
+      </motion.section>
 
       <footer style={{ borderTop: "1px solid var(--gray-6)", padding: "24px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
         <Brand size={16} />

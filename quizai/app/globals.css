@@ -13,7 +13,7 @@ body{
   -moz-osx-font-smoothing:grayscale;
 }
 a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer}
+button{font-family:var(--font-roboto),var(--font-sans);cursor:pointer}
 img,video,canvas,svg{max-width:100%}
 :focus-visible{outline:2px solid var(--asu-maroon);outline-offset:2px}
 
