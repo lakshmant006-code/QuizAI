@@ -15,6 +15,9 @@ const jsonLd = {
 
 const SERIF = "var(--font-serif), Georgia, serif";
 
+// Light maroon for the primary CTA buttons.
+const BTN_MAROON = "#A83D5B";
+
 const FEATURES = [
   { icon: "ph-file-arrow-up", title: "Upload anything", body: "PDFs, slide decks, lecture notes, or pasted text. QuizAI reads the material and finds what is testable." },
   { icon: "ph-quotes", title: "Questions that cite the source", body: "Each question points back to the page it came from, so you can check an answer against your own notes." },
@@ -44,7 +47,7 @@ export default function Landing() {
           <a href="#features" className="qai-navlink" style={{ fontSize: 14, color: "var(--gray-2)" }}>Features</a>
           <a href="#mobile" className="qai-navlink" style={{ fontSize: 14, color: "var(--gray-2)" }}>On the go</a>
           <Link href="/login" className="qai-navlink" style={{ fontSize: 14, color: "var(--gray-2)" }}>Sign In</Link>
-          <Link href="/login" className="qai-btn" style={{ display: "inline-block", padding: "9px 18px", borderRadius: 8, background: "var(--gray-1)", color: "#fff", fontSize: 14, fontWeight: 700 }}>Sign Up</Link>
+          <Link href="/login" className="qai-btn" style={{ display: "inline-block", padding: "9px 18px", borderRadius: 8, background: BTN_MAROON, color: "#fff", fontSize: 14, fontWeight: 700 }}>Sign Up</Link>
         </div>
       </nav>
 
@@ -104,7 +107,7 @@ export default function Landing() {
           <h1 style={{ margin: "26px 0 0", fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(46px,7vw,76px)", lineHeight: 1.04, letterSpacing: "-0.02em", textWrap: "balance" }}>Turn your notes into quizzes.</h1>
           <p style={{ margin: "22px auto 0", maxWidth: 600, fontSize: 18, lineHeight: 1.6, color: "var(--gray-2)" }}>Upload a PDF and QuizAI writes the questions and flashcards from the material you are already studying.</p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginTop: 38 }}>
-            <Link href="/login" className="qai-btn" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 28px", borderRadius: 10, background: "var(--gray-1)", color: "#fff", fontSize: 15, fontWeight: 700 }}>
+            <Link href="/login" className="qai-btn" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 28px", borderRadius: 10, background: BTN_MAROON, color: "#fff", fontSize: 15, fontWeight: 700 }}>
               Start a quiz <i className="ph ph-arrow-right" aria-hidden style={{ fontSize: 12 }} />
             </Link>
             <a href="#features" className="qai-ghost" style={{ fontSize: 14, color: "var(--gray-2)", textDecoration: "underline", textUnderlineOffset: 3 }}>See how it works</a>
@@ -161,7 +164,7 @@ export default function Landing() {
                 </div>
               ))}
             </div>
-            <Link href="/login" className="qai-btn" style={{ display: "inline-flex", alignItems: "center", gap: 10, marginTop: 34, padding: "14px 24px", borderRadius: 10, background: "var(--gray-1)", color: "#fff", fontSize: 14.5, fontWeight: 700 }}>
+            <Link href="/login" className="qai-btn" style={{ display: "inline-flex", alignItems: "center", gap: 10, marginTop: 34, padding: "14px 24px", borderRadius: 10, background: BTN_MAROON, color: "#fff", fontSize: 14.5, fontWeight: 700 }}>
               <i className="ph ph-lightning" aria-hidden style={{ fontSize: 16 }} /> Start studying free
             </Link>
           </div>
@@ -212,7 +215,7 @@ export default function Landing() {
         <div style={{ position: "relative", padding: "44px 48px", borderRadius: 16, background: "rgba(25,25,25,0.42)", backdropFilter: "blur(10px)", textAlign: "center", maxWidth: 560 }}>
           <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(32px,4.4vw,44px)", lineHeight: 1.1, color: "#fff" }}>Start studying smarter</h2>
           <p style={{ margin: "14px 0 0", fontSize: 16, lineHeight: 1.6, color: "rgba(255,255,255,0.9)" }}>Bring one PDF. You will have a quiz before you finish your coffee.</p>
-          <Link href="/login" className="qai-btn" style={{ display: "inline-flex", alignItems: "center", gap: 10, marginTop: 26, padding: "14px 26px", borderRadius: 10, background: "var(--gray-1)", color: "#fff", fontSize: 15, fontWeight: 700 }}>
+          <Link href="/login" className="qai-btn" style={{ display: "inline-flex", alignItems: "center", gap: 10, marginTop: 26, padding: "14px 26px", borderRadius: 10, background: BTN_MAROON, color: "#fff", fontSize: 15, fontWeight: 700 }}>
             Create your first quiz <i className="ph ph-arrow-right" aria-hidden style={{ fontSize: 12 }} />
           </Link>
           <div style={{ marginTop: 16, fontSize: 12.5, color: "rgba(255,255,255,0.78)" }}>Free for students · No credit card required</div>
