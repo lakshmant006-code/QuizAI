@@ -17,6 +17,18 @@ button{font-family:inherit;cursor:pointer}
 img,video,canvas,svg{max-width:100%}
 :focus-visible{outline:2px solid var(--asu-maroon);outline-offset:2px}
 
+/* Thin, unobtrusive scrollbars everywhere (drops the chunky default track + arrows). */
+*{scrollbar-width:thin;scrollbar-color:rgba(0,0,0,0.22) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{
+  background:rgba(0,0,0,0.22);border-radius:999px;
+  border:3px solid transparent;background-clip:padding-box;
+}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,0.35);background-clip:padding-box}
+::-webkit-scrollbar-button{display:none;width:0;height:0}
+::-webkit-scrollbar-corner{background:transparent}
+
 @keyframes qa-fade-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .qa-fade-up{animation:qa-fade-up var(--duration-base) var(--ease-standard) both}
 @keyframes qa-spin{to{transform:rotate(360deg)}}
