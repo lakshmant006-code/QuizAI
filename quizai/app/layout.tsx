@@ -1,14 +1,31 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins } from "next/font/google";
+import { Poppins, Playfair_Display, Figtree } from "next/font/google";
 import "@phosphor-icons/web/regular";
 import "./globals.css";
 import { Analytics } from "@/components/Analytics";
 
-// Modern geometric sans for landing headings + buttons (matches the reference).
+// Modern geometric sans for app headings + buttons.
 const display = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-display",
+  display: "swap",
+});
+
+// Editorial serif for the landing display type.
+const serif = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
+  display: "swap",
+});
+
+// Body/UI sans used across the editorial landing.
+const figtree = Figtree({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-figtree",
   display: "swap",
 });
 
@@ -69,7 +86,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={display.variable} suppressHydrationWarning>
+    <html lang="en" className={`${display.variable} ${serif.variable} ${figtree.variable}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
         {children}
         <Analytics />
