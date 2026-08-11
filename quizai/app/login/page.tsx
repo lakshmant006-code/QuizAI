@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { safeNextPath } from "@/lib/safeNext";
 import { NeuralCanvas } from "@/components/effects";
 
 function Brand() {
@@ -34,7 +35,7 @@ type Mode = "signin" | "signup";
 function LoginInner() {
   const params = useSearchParams();
   const router = useRouter();
-  const next = params.get("next") || "/dashboard";
+  const next = safeNextPath(params.get("next"));
 
   const [mode, setMode] = useState<Mode>("signin");
   const [name, setName] = useState("");

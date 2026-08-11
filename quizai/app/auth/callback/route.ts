@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { type EmailOtpType } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+import { safeNextPath } from "@/lib/safeNext";
 
 // Handles the magic-link / password-reset / signup redirect. Exchanges the
 // code (or token_hash) for a session, then sends the user to `next`
@@ -10,7 +11,7 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
-  const next = searchParams.get("next") || "/dashboard";
+  const next = safeNextPath(searchParams.get("next"));
 
   // Build the PUBLIC origin. Behind Render/Vercel the Node server sees an
   // internal origin (e.g. http://localhost:10000), so trust the forwarded host.
