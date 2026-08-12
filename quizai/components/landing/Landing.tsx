@@ -276,12 +276,20 @@ export default function Landing() {
           position:absolute; padding:14px; background:#fff; border:1px solid rgba(0,0,0,0.1);
           border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.06);
           transform: rotate(var(--rot, 0deg));
+          pointer-events:auto; cursor:pointer;
+          transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease;
+        }
+        /* Pick-it-up hover: lift, enlarge, straighten, deepen the shadow, bring to front. */
+        .qai-float:hover{
+          transform: translateY(-10px) scale(1.06) rotate(0deg);
+          box-shadow: 0 26px 55px rgba(0,0,0,0.18);
+          z-index: 5;
         }
         @media (prefers-reduced-motion: no-preference){
           .qai-mascot{ animation: qai-bob 4.5s ease-in-out infinite; }
           @keyframes qai-bob{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-7px); } }
           /* Floating cards fade + rise in, staggered, keeping each card's tilt. */
-          .qai-float{ animation: qai-card-in .7s cubic-bezier(.22,1,.36,1) both; }
+          .qai-float{ animation: qai-card-in .7s cubic-bezier(.22,1,.36,1) backwards; }
           .qai-float:nth-child(1){ animation-delay: .25s; }
           .qai-float:nth-child(2){ animation-delay: .38s; }
           .qai-float:nth-child(3){ animation-delay: .51s; }
