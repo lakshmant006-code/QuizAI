@@ -164,7 +164,7 @@ export function UploadCard({ userId }: { userId: string }) {
   });
 
   return (
-    <Card style={{ padding: 22 }}>
+    <Card style={{ padding: 22, height: "100%", display: "flex", flexDirection: "column" }}>
       <h2 style={{ font: "var(--text-h3)", color: "var(--gray-1)", margin: "0 0 4px" }}>New study material</h2>
       <p style={{ font: "var(--text-small)", color: "var(--text-muted)", margin: "0 0 14px" }}>
         Upload a PDF — generate a quiz instantly.
@@ -186,7 +186,8 @@ export function UploadCard({ userId }: { userId: string }) {
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => { e.preventDefault(); pick(e.dataTransfer.files?.[0] ?? null); }}
         style={{
-          display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
+          flex: 1, minHeight: 150,
           padding: "26px 16px", border: "1.5px dashed var(--hairline-strong)",
           borderRadius: "var(--radius-lg)", background: file ? "var(--surface-maroon-tint)" : "var(--surface-panel)",
           cursor: "pointer", textAlign: "center", transition: "background .18s ease",
