@@ -155,9 +155,9 @@ export default function Landing() {
       </section>
 
       {/* Maroon study-cycle band */}
-      <section style={{ position: "relative", padding: "96px 32px 110px", background: "var(--asu-maroon)", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.14) 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(180deg, rgba(80,16,37,0.35) 0%, rgba(80,16,37,0.15) 45%, rgba(255,255,255,0.9) 96%, #fff 100%)" }} />
+      <section style={{ position: "relative", padding: "96px 32px 110px", backgroundColor: "#2a0a16", backgroundImage: "url('/landing%202.png')", backgroundSize: "cover", backgroundPosition: "center", overflow: "hidden" }}>
+        {/* Darker veil up top keeps the white heading legible; same white gradient fade preserved at the bottom. */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(180deg, rgba(8,5,8,0.6) 0%, rgba(8,5,8,0.28) 45%, rgba(255,255,255,0.9) 96%, #fff 100%)" }} />
         <div style={{ position: "relative", maxWidth: 980, margin: "0 auto", textAlign: "center" }}>
           <Reveal>
             <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(32px,4.6vw,48px)", lineHeight: 1.1, color: "#fff" }}>One canvas for the whole study cycle</h2>
