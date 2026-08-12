@@ -291,20 +291,16 @@ export default function Landing() {
             to{ opacity:1; transform: translateY(0) scale(1) rotate(var(--rot, 0deg)); }
           }
         }
-        /* Scattered cards need wide gutters — hide when they'd collide with the copy. */
-        /* Below the scattered-layout width, drop the cards into a centered
-           in-flow row under the hero copy so iPad/iPhone see them too. */
-        @media (max-width:1200px){
-          .qai-hero{ display:flex; flex-direction:column; align-items:center; }
-          .qai-herocopy{ order:1; width:100%; }
-          .qai-floats{
-            order:2; position:static; inset:auto; pointer-events:auto;
-            display:flex; flex-wrap:wrap; justify-content:center; gap:14px;
-            width:100%; max-width:680px; margin:52px auto 0;
-          }
-          .qai-float{ position:static; top:auto!important; right:auto!important; bottom:auto!important; left:auto!important; }
+        /* The scattered cards need desktop-width gutters. Rather than reflow
+           them, scale the whole hero down so iPad shows the exact desktop
+           composition (same aspect ratio + card arrangement), just smaller. */
+        @media (min-width:561px) and (max-width:1200px){
+          .qai-hero{ zoom: 0.62; }
         }
-        /* Phones: hide the scattered cards entirely (kept on iPad/tablet). */
+        @media (min-width:561px) and (max-width:900px){
+          .qai-hero{ zoom: 0.55; }
+        }
+        /* Phones: full-size hero, scattered cards hidden. */
         @media (max-width:560px){
           .qai-floats{ display:none; }
         }
