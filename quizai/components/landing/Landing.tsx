@@ -233,9 +233,9 @@ export default function Landing() {
       </section>
 
       {/* Closing band */}
-      <section style={{ position: "relative", minHeight: 460, display: "grid", placeItems: "center", padding: "110px 32px", background: "var(--asu-maroon-darker)", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(180deg, rgba(80,16,37,0.3) 0%, rgba(80,16,37,0.1) 50%, rgba(255,255,255,0.92) 96%, #fff 100%)" }} />
+      <section style={{ position: "relative", minHeight: 460, display: "grid", placeItems: "center", padding: "110px 32px", backgroundColor: "#2a0a16", backgroundImage: "url('/landing%201.png')", backgroundSize: "cover", backgroundPosition: "center", overflow: "hidden" }}>
+        {/* Light veil keeps the illustration readable; same white gradient fade preserved at the bottom. */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(180deg, rgba(10,6,10,0.28) 0%, rgba(10,6,10,0.08) 50%, rgba(255,255,255,0.92) 96%, #fff 100%)" }} />
         <Reveal style={{ position: "relative", padding: "44px 48px", borderRadius: 16, background: "rgba(25,25,25,0.42)", backdropFilter: "blur(10px)", textAlign: "center", maxWidth: 560 }}>
           <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(32px,4.4vw,44px)", lineHeight: 1.1, color: "#fff" }}>Start studying smarter</h2>
           <p style={{ margin: "14px 0 0", fontSize: 16, lineHeight: 1.6, color: "rgba(255,255,255,0.9)" }}>Bring one PDF. You will have a quiz before you finish your coffee.</p>
