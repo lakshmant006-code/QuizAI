@@ -304,8 +304,9 @@ export default function Landing() {
           }
           .qai-float{ position:static; top:auto!important; right:auto!important; bottom:auto!important; left:auto!important; }
         }
+        /* Phones: hide the scattered cards entirely (kept on iPad/tablet). */
         @media (max-width:560px){
-          .qai-float{ width:100%!important; max-width:320px; }
+          .qai-floats{ display:none; }
         }
         @media (max-width:640px){
           .qai-nav-links a:not(.qai-btn){ display:none; }
