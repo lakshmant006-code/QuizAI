@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 360" width="320" height="360" role="img" aria-label="QuizAI octopus mascot">
+  <!-- Head / mantle -->
+  <path d="M160,24 C110,24 66,64 66,132 C66,180 72,206 86,246 C96,274 92,300 110,314 C124,325 140,318 152,308 C157,304 163,304 168,308 C182,320 202,324 214,308 C230,288 224,262 236,232 C250,198 254,176 254,132 C254,64 210,24 160,24 Z"
+        fill="#9b2348" stroke="#111" stroke-width="9" stroke-linejoin="round"/>
+
+  <!-- Lens tints -->
+  <circle cx="121" cy="152" r="39" fill="#b67d8d"/>
+  <circle cx="199" cy="152" r="39" fill="#b67d8d"/>
+
+  <!-- Eyes -->
+  <ellipse cx="123" cy="154" rx="16" ry="20" fill="#eef1f3"/>
+  <ellipse cx="201" cy="154" rx="16" ry="20" fill="#eef1f3"/>
+  <circle cx="127" cy="157" r="7.5" fill="#3c464e"/>
+  <circle cx="205" cy="157" r="7.5" fill="#3c464e"/>
+
+  <!-- Glare on the left lens -->
+  <path d="M104,136 L96,152" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+  <path d="M112,134 L107,142" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- Glasses rims (on top) -->
+  <circle cx="121" cy="152" r="39" fill="none" stroke="#111" stroke-width="10"/>
+  <circle cx="199" cy="152" r="39" fill="none" stroke="#111" stroke-width="10"/>
+  <!-- Bridge -->
+  <path d="M152,146 Q160,139 168,146" fill="none" stroke="#111" stroke-width="9" stroke-linecap="round"/>
+  <!-- Right temple -->
+  <path d="M238,150 C252,145 260,150 263,139" fill="none" stroke="#111" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- Smile -->
+  <path d="M144,232 Q160,250 176,232" fill="none" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+</svg>

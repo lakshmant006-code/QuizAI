@@ -98,9 +98,14 @@ export default function Landing() {
 
         {/* Hero copy */}
         <div style={{ position: "relative", maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 14px", borderRadius: 999, background: "#fff", border: "1px solid var(--hairline-strong)", fontSize: 12, color: "var(--gray-2)" }}>
-            <i className="ph ph-graduation-cap" aria-hidden style={{ color: "var(--asu-maroon)", fontSize: 11 }} /> Built at Arizona State University
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/octopus-mascot.svg"
+            alt="QuizAI octopus mascot"
+            width={98}
+            height={110}
+            style={{ display: "block", margin: "0 auto", height: 110, width: "auto" }}
+          />
           <h1 style={{ margin: "26px 0 0", fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(46px,7vw,76px)", lineHeight: 1.04, letterSpacing: "-0.02em", textWrap: "balance" }}>Turn your notes into quizzes.</h1>
           <p style={{ margin: "22px auto 0", maxWidth: 600, fontSize: 18, lineHeight: 1.6, color: "var(--gray-2)" }}>Upload a PDF and QuizAI writes the questions and flashcards from the material you are already studying.</p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginTop: 38 }}>
