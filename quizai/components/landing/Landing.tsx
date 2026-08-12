@@ -56,7 +56,7 @@ export default function Landing() {
 
         {/* Scattered cards (wide screens only) */}
         <div className="qai-floats" aria-hidden>
-          <div className="qai-float" style={{ right: "calc(50% + 436px)", top: 120, width: 236, transform: "rotate(-2.2deg)" }}>
+          <div className="qai-float" style={{ right: "calc(50% + 436px)", top: 120, width: 236, "--rot": "-2.2deg" } as React.CSSProperties}>
             <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
               <i className="ph ph-file-pdf" style={{ color: "var(--asu-maroon)", fontSize: 15 }} />
               <span style={{ fontSize: 12.5, color: "var(--gray-1)" }}>BIO 181 — Lecture 7.pdf</span>
@@ -67,7 +67,7 @@ export default function Landing() {
             <div style={{ marginTop: 7, fontSize: 11, color: "var(--gray-3)" }}>Reading 24 pages…</div>
           </div>
 
-          <div className="qai-float" style={{ right: "calc(50% + 452px)", bottom: 96, width: 212, transform: "rotate(1.6deg)" }}>
+          <div className="qai-float" style={{ right: "calc(50% + 452px)", bottom: 96, width: 212, "--rot": "1.6deg" } as React.CSSProperties}>
             <div style={{ fontSize: 10.5, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--gray-3)" }}>Flashcard 4 of 18</div>
             <div style={{ marginTop: 8, fontSize: 13.5, lineHeight: 1.45 }}>What does the mitochondrial inner membrane do?</div>
             <div style={{ marginTop: 12, display: "flex", gap: 6 }}>
@@ -76,7 +76,7 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="qai-float" style={{ left: "calc(50% + 436px)", top: 104, width: 250, transform: "rotate(2deg)" }}>
+          <div className="qai-float" style={{ left: "calc(50% + 436px)", top: 104, width: 250, "--rot": "2deg" } as React.CSSProperties}>
             <div style={{ fontSize: 12.5, lineHeight: 1.45, color: "var(--gray-1)" }}>Which organelle produces most of the cell&apos;s ATP?</div>
             <div style={{ display: "grid", gap: 6, marginTop: 11 }}>
               <div style={{ padding: "7px 10px", border: "1px solid var(--gray-5)", borderRadius: 7, fontSize: 11.5, color: "var(--gray-2)" }}>Ribosome</div>
@@ -86,7 +86,7 @@ export default function Landing() {
             <div style={{ marginTop: 9, fontSize: 10.5, color: "var(--gray-3)" }}>Source: p. 12 of your upload</div>
           </div>
 
-          <div className="qai-float" style={{ left: "calc(50% + 452px)", bottom: 112, width: "auto", display: "flex", alignItems: "center", gap: 12, transform: "rotate(-1.4deg)" }}>
+          <div className="qai-float" style={{ left: "calc(50% + 452px)", bottom: 112, width: "auto", display: "flex", alignItems: "center", gap: 12, "--rot": "-1.4deg" } as React.CSSProperties}>
             <div style={{ width: 44, height: 44, borderRadius: "50%", background: "conic-gradient(var(--asu-maroon) 0% 84%, var(--gray-6) 84% 100%)", display: "grid", placeItems: "center" }}>
               <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#fff", display: "grid", placeItems: "center", fontSize: 11, fontWeight: 700 }}>84%</div>
             </div>
@@ -273,10 +273,21 @@ export default function Landing() {
         .qai-float{
           position:absolute; padding:14px; background:#fff; border:1px solid rgba(0,0,0,0.1);
           border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.06);
+          transform: rotate(var(--rot, 0deg));
         }
         @media (prefers-reduced-motion: no-preference){
           .qai-mascot{ animation: qai-bob 4.5s ease-in-out infinite; }
           @keyframes qai-bob{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-7px); } }
+          /* Floating cards fade + rise in, staggered, keeping each card's tilt. */
+          .qai-float{ animation: qai-card-in .7s cubic-bezier(.22,1,.36,1) both; }
+          .qai-float:nth-child(1){ animation-delay: .25s; }
+          .qai-float:nth-child(2){ animation-delay: .38s; }
+          .qai-float:nth-child(3){ animation-delay: .51s; }
+          .qai-float:nth-child(4){ animation-delay: .64s; }
+          @keyframes qai-card-in{
+            from{ opacity:0; transform: translateY(16px) scale(.96) rotate(var(--rot, 0deg)); }
+            to{ opacity:1; transform: translateY(0) scale(1) rotate(var(--rot, 0deg)); }
+          }
         }
         /* Scattered cards need wide gutters — hide when they'd collide with the copy. */
         @media (max-width:1200px){ .qai-floats{ display:none; } }
