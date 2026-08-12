@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LandingCanvasTabs } from "./LandingCanvasTabs";
+import { Reveal } from "./Reveal";
 
 /* JSON-LD for search engines (kept from the previous landing). */
 const jsonLd = {
@@ -98,41 +99,54 @@ export default function Landing() {
 
         {/* Hero copy */}
         <div style={{ position: "relative", maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/octopus-mascot.svg"
-            alt="QuizAI octopus mascot"
-            width={98}
-            height={110}
-            style={{ display: "block", margin: "0 auto", height: 110, width: "auto" }}
-          />
-          <h1 style={{ margin: "26px 0 0", fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(46px,7vw,76px)", lineHeight: 1.04, letterSpacing: "-0.02em", textWrap: "balance" }}>Turn your notes into quizzes.</h1>
-          <p style={{ margin: "22px auto 0", maxWidth: 600, fontSize: 18, lineHeight: 1.6, color: "var(--gray-2)" }}>Upload a PDF and QuizAI writes the questions and flashcards from the material you are already studying.</p>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginTop: 38 }}>
-            <Link href="/login" className="qai-btn" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 28px", borderRadius: 10, background: "var(--gray-1)", color: "#fff", fontSize: 15, fontWeight: 700 }}>
-              Start a quiz <i className="ph ph-arrow-right" aria-hidden style={{ fontSize: 12 }} />
-            </Link>
-            <a href="#features" className="qai-ghost" style={{ fontSize: 14, color: "var(--gray-2)", textDecoration: "underline", textUnderlineOffset: 3 }}>See how it works</a>
-          </div>
+          <Reveal delay={0} y={14}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/octopus-mascot.svg"
+              alt="QuizAI octopus mascot"
+              width={98}
+              height={110}
+              className="qai-mascot"
+              style={{ display: "block", margin: "0 auto", height: 110, width: "auto" }}
+            />
+          </Reveal>
+          <Reveal delay={90}>
+            <h1 style={{ margin: "26px 0 0", fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(46px,7vw,76px)", lineHeight: 1.04, letterSpacing: "-0.02em", textWrap: "balance" }}>Turn your notes into quizzes.</h1>
+          </Reveal>
+          <Reveal delay={170}>
+            <p style={{ margin: "22px auto 0", maxWidth: 600, fontSize: 18, lineHeight: 1.6, color: "var(--gray-2)" }}>Upload a PDF and QuizAI writes the questions and flashcards from the material you are already studying.</p>
+          </Reveal>
+          <Reveal delay={250}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, marginTop: 38 }}>
+              <Link href="/login" className="qai-btn" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "14px 28px", borderRadius: 10, background: "var(--gray-1)", color: "#fff", fontSize: 15, fontWeight: 700 }}>
+                Start a quiz <i className="ph ph-arrow-right" aria-hidden style={{ fontSize: 12 }} />
+              </Link>
+              <a href="#features" className="qai-ghost" style={{ fontSize: 14, color: "var(--gray-2)", textDecoration: "underline", textUnderlineOffset: 3 }}>See how it works</a>
+            </div>
+          </Reveal>
         </div>
       </header>
 
       {/* Features */}
       <section id="features" style={{ padding: "110px 32px 120px", background: "var(--gray-7)", borderTop: "1px solid var(--hairline)" }}>
         <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-          <div style={{ textAlign: "center" }}>
-            <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(32px,5vw,50px)", lineHeight: 1.1, letterSpacing: "-0.015em" }}>Studying is faster when the questions come to you</h2>
-            <p style={{ margin: "18px auto 0", maxWidth: 600, fontSize: 17, lineHeight: 1.6, color: "var(--gray-2)" }}>Every part of QuizAI starts from material you already have.</p>
-          </div>
+          <Reveal>
+            <div style={{ textAlign: "center" }}>
+              <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(32px,5vw,50px)", lineHeight: 1.1, letterSpacing: "-0.015em" }}>Studying is faster when the questions come to you</h2>
+              <p style={{ margin: "18px auto 0", maxWidth: 600, fontSize: 17, lineHeight: 1.6, color: "var(--gray-2)" }}>Every part of QuizAI starts from material you already have.</p>
+            </div>
+          </Reveal>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))", gap: 24, marginTop: 58 }}>
-            {FEATURES.map((f) => (
-              <div key={f.title} className="qai-fcard" style={{ padding: 26, background: "#fff", border: "1px solid rgba(0,0,0,0.09)", borderRadius: 12 }}>
-                <div style={{ width: 38, height: 38, borderRadius: 9, background: "var(--surface-gold-tint)", display: "grid", placeItems: "center" }}>
-                  <i className={`ph ${f.icon}`} aria-hidden style={{ color: "var(--asu-maroon)", fontSize: 15 }} />
+            {FEATURES.map((f, i) => (
+              <Reveal key={f.title} delay={i * 80}>
+                <div className="qai-fcard" style={{ height: "100%", padding: 26, background: "#fff", border: "1px solid rgba(0,0,0,0.09)", borderRadius: 12 }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 9, background: "var(--surface-gold-tint)", display: "grid", placeItems: "center" }}>
+                    <i className={`ph ${f.icon}`} aria-hidden style={{ color: "var(--asu-maroon)", fontSize: 15 }} />
+                  </div>
+                  <h3 style={{ margin: "20px 0 0", fontSize: 19, lineHeight: 1.3 }}>{f.title}</h3>
+                  <p style={{ margin: "12px 0 0", fontSize: 14.5, lineHeight: 1.65, color: "var(--gray-2)" }}>{f.body}</p>
                 </div>
-                <h3 style={{ margin: "20px 0 0", fontSize: 19, lineHeight: 1.3 }}>{f.title}</h3>
-                <p style={{ margin: "12px 0 0", fontSize: 14.5, lineHeight: 1.65, color: "var(--gray-2)" }}>{f.body}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -143,16 +157,20 @@ export default function Landing() {
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.14) 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(180deg, rgba(80,16,37,0.35) 0%, rgba(80,16,37,0.15) 45%, rgba(255,255,255,0.9) 96%, #fff 100%)" }} />
         <div style={{ position: "relative", maxWidth: 980, margin: "0 auto", textAlign: "center" }}>
-          <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(32px,4.6vw,48px)", lineHeight: 1.1, color: "#fff" }}>One canvas for the whole study cycle</h2>
-          <p style={{ margin: "16px auto 0", maxWidth: 560, fontSize: 16.5, lineHeight: 1.6, color: "rgba(255,255,255,0.88)" }}>Upload, generate, practice, review. Each step hands off to the next.</p>
-          <LandingCanvasTabs />
+          <Reveal>
+            <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(32px,4.6vw,48px)", lineHeight: 1.1, color: "#fff" }}>One canvas for the whole study cycle</h2>
+            <p style={{ margin: "16px auto 0", maxWidth: 560, fontSize: 16.5, lineHeight: 1.6, color: "rgba(255,255,255,0.88)" }}>Upload, generate, practice, review. Each step hands off to the next.</p>
+          </Reveal>
+          <Reveal delay={120}>
+            <LandingCanvasTabs />
+          </Reveal>
         </div>
       </section>
 
       {/* On the go */}
       <section id="mobile" style={{ padding: "110px 32px", background: "var(--gray-7)", borderTop: "1px solid var(--hairline)" }}>
         <div style={{ maxWidth: 1120, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: 64, alignItems: "center" }}>
-          <div>
+          <Reveal>
             <span style={{ display: "inline-block", padding: "5px 13px", borderRadius: 999, border: "1px solid var(--hairline-strong)", background: "#fff", fontSize: 12, color: "var(--gray-2)" }}>Study anywhere</span>
             <h2 style={{ margin: "22px 0 0", fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(34px,4.4vw,46px)", lineHeight: 1.08, letterSpacing: "-0.015em" }}>Study in the gaps in your day</h2>
             <p style={{ margin: "18px 0 0", maxWidth: 520, fontSize: 16.5, lineHeight: 1.65, color: "var(--gray-2)" }}>Ten minutes between classes is enough for a set of flashcards. QuizAI runs in any browser and keeps your last upload one tap away.</p>
@@ -169,10 +187,11 @@ export default function Landing() {
             <Link href="/login" className="qai-btn" style={{ display: "inline-flex", alignItems: "center", gap: 10, marginTop: 34, padding: "14px 24px", borderRadius: 10, background: "var(--gray-1)", color: "#fff", fontSize: 14.5, fontWeight: 700 }}>
               <i className="ph ph-lightning" aria-hidden style={{ fontSize: 16 }} /> Start studying free
             </Link>
-          </div>
+          </Reveal>
 
           {/* Phone mockup */}
-          <div style={{ justifySelf: "center", width: 320, padding: 12, background: "var(--gray-1)", borderRadius: 40, boxShadow: "0 30px 60px rgba(0,0,0,0.16)" }}>
+          <Reveal delay={120} y={28} style={{ justifySelf: "center" }}>
+          <div style={{ width: 320, padding: 12, background: "var(--gray-1)", borderRadius: 40, boxShadow: "0 30px 60px rgba(0,0,0,0.16)" }}>
             <div style={{ background: "#fff", borderRadius: 30, overflow: "hidden" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 20px 10px", fontSize: 11.5, color: "var(--gray-2)" }}>
                 <span>9:41</span>
@@ -207,6 +226,7 @@ export default function Landing() {
               </div>
             </div>
           </div>
+          </Reveal>
         </div>
       </section>
 
@@ -214,14 +234,14 @@ export default function Landing() {
       <section style={{ position: "relative", minHeight: 460, display: "grid", placeItems: "center", padding: "110px 32px", background: "var(--asu-maroon-darker)", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
         <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(180deg, rgba(80,16,37,0.3) 0%, rgba(80,16,37,0.1) 50%, rgba(255,255,255,0.92) 96%, #fff 100%)" }} />
-        <div style={{ position: "relative", padding: "44px 48px", borderRadius: 16, background: "rgba(25,25,25,0.42)", backdropFilter: "blur(10px)", textAlign: "center", maxWidth: 560 }}>
+        <Reveal style={{ position: "relative", padding: "44px 48px", borderRadius: 16, background: "rgba(25,25,25,0.42)", backdropFilter: "blur(10px)", textAlign: "center", maxWidth: 560 }}>
           <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: "clamp(32px,4.4vw,44px)", lineHeight: 1.1, color: "#fff" }}>Start studying smarter</h2>
           <p style={{ margin: "14px 0 0", fontSize: 16, lineHeight: 1.6, color: "rgba(255,255,255,0.9)" }}>Bring one PDF. You will have a quiz before you finish your coffee.</p>
           <Link href="/login" className="qai-btn" style={{ display: "inline-flex", alignItems: "center", gap: 10, marginTop: 26, padding: "14px 26px", borderRadius: 10, background: "var(--gray-1)", color: "#fff", fontSize: 15, fontWeight: 700 }}>
             Create your first quiz <i className="ph ph-arrow-right" aria-hidden style={{ fontSize: 12 }} />
           </Link>
           <div style={{ marginTop: 16, fontSize: 12.5, color: "rgba(255,255,255,0.78)" }}>Free for students · No credit card required</div>
-        </div>
+        </Reveal>
       </section>
 
       {/* Giant wordmark */}
@@ -232,7 +252,7 @@ export default function Landing() {
       {/* Footer */}
       <footer style={{ padding: "40px 32px 56px", background: "#fff" }}>
         <div style={{ maxWidth: 1180, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center", justifyContent: "space-between", borderTop: "1px solid var(--hairline)", paddingTop: 26 }}>
-          <span style={{ fontSize: 13, color: "var(--gray-3)" }}>© 2026 QuizAI · Arizona State University</span>
+          <span style={{ fontSize: 13, color: "var(--gray-3)" }}>© 2026 QuizAI</span>
           <div style={{ display: "flex", gap: 22 }}>
             <Link href="/login" style={{ fontSize: 13, color: "var(--gray-2)" }}>Sign in</Link>
             <a href="#features" style={{ fontSize: 13, color: "var(--gray-2)" }}>Features</a>
@@ -253,6 +273,10 @@ export default function Landing() {
         .qai-float{
           position:absolute; padding:14px; background:#fff; border:1px solid rgba(0,0,0,0.1);
           border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.06);
+        }
+        @media (prefers-reduced-motion: no-preference){
+          .qai-mascot{ animation: qai-bob 4.5s ease-in-out infinite; }
+          @keyframes qai-bob{ 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-7px); } }
         }
         /* Scattered cards need wide gutters — hide when they'd collide with the copy. */
         @media (max-width:1200px){ .qai-floats{ display:none; } }
