@@ -37,7 +37,9 @@ export default function Landing() {
 
       {/* Nav */}
       <nav style={{ position: "sticky", top: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 32px", background: "rgba(255,255,255,0.82)", backdropFilter: "blur(12px)", borderBottom: "1px solid var(--hairline)" }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/octopus%20icon.png" alt="" width={30} height={30} style={{ height: 30, width: "auto", display: "block" }} />
           <span style={{ fontFamily: SERIF, fontSize: 27, letterSpacing: "-0.01em" }}>quizai</span>
           <span style={{ fontFamily: SERIF, fontSize: 14, color: "var(--asu-maroon)" }}>beta</span>
         </div>
@@ -50,7 +52,7 @@ export default function Landing() {
       </nav>
 
       {/* Hero */}
-      <header style={{ position: "relative", overflow: "hidden", padding: "120px 32px 132px", background: "#fff" }}>
+      <header className="qai-hero" style={{ position: "relative", overflow: "hidden", padding: "120px 32px 132px", background: "#fff" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(0,0,0,0.14) 1px, transparent 1px)", backgroundSize: "26px 26px", opacity: 0.55 }} />
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(60% 55% at 50% 45%, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.35) 60%, rgba(255,255,255,0) 100%)" }} />
 
@@ -98,16 +100,16 @@ export default function Landing() {
         </div>
 
         {/* Hero copy */}
-        <div style={{ position: "relative", maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
+        <div className="qai-herocopy" style={{ position: "relative", maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
           <Reveal delay={0} y={14}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/octopus-mascot.svg"
+              src="/octopus%20icon.png"
               alt="QuizAI octopus mascot"
-              width={98}
+              width={112}
               height={110}
               className="qai-mascot"
-              style={{ display: "block", margin: "0 auto", height: 110, width: "auto" }}
+              style={{ display: "block", margin: "0 auto", height: 118, width: "auto" }}
             />
           </Reveal>
           <Reveal delay={90}>
@@ -290,7 +292,21 @@ export default function Landing() {
           }
         }
         /* Scattered cards need wide gutters — hide when they'd collide with the copy. */
-        @media (max-width:1200px){ .qai-floats{ display:none; } }
+        /* Below the scattered-layout width, drop the cards into a centered
+           in-flow row under the hero copy so iPad/iPhone see them too. */
+        @media (max-width:1200px){
+          .qai-hero{ display:flex; flex-direction:column; align-items:center; }
+          .qai-herocopy{ order:1; width:100%; }
+          .qai-floats{
+            order:2; position:static; inset:auto; pointer-events:auto;
+            display:flex; flex-wrap:wrap; justify-content:center; gap:14px;
+            width:100%; max-width:680px; margin:52px auto 0;
+          }
+          .qai-float{ position:static; top:auto!important; right:auto!important; bottom:auto!important; left:auto!important; }
+        }
+        @media (max-width:560px){
+          .qai-float{ width:100%!important; max-width:320px; }
+        }
         @media (max-width:640px){
           .qai-nav-links a:not(.qai-btn){ display:none; }
         }
