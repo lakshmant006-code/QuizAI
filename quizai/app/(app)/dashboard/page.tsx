@@ -3,8 +3,8 @@ import { UploadCard } from "@/components/UploadCard";
 import { RealtimeRefresh } from "@/components/RealtimeRefresh";
 import { Tile, TileLabel, BigNum, TrendPill, MiniBars, ListRow, BandHead } from "@/components/bento";
 import { DashMascotCard } from "@/components/DashMascotCard";
-import { DeleteButton } from "@/components/DeleteButton";
-import type { Document, QuizAttempt, Summary, Task } from "@/lib/types";
+import { FilesGrid } from "@/components/FilesGrid";
+import type { Document, Folder, QuizAttempt, Summary, Task } from "@/lib/types";
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, { month: "numeric", day: "numeric", year: "numeric" });
@@ -15,15 +15,17 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser();
   const userId = user!.id;
 
-  const [{ data: docs }, { data: attempts }, quizzesCount, { data: summaries }, { data: tasks }] = await Promise.all([
+  const [{ data: docs }, { data: attempts }, quizzesCount, { data: summaries }, { data: tasks }, { data: folderRows }] = await Promise.all([
     supabase.from("documents").select("*").order("created_at", { ascending: false }),
     supabase.from("quiz_attempts").select("score,total,created_at,quiz_id").order("created_at", { ascending: false }),
     supabase.from("quizzes").select("id", { count: "exact", head: true }),
     supabase.from("summaries").select("id, overview, created_at, documents(title)").order("created_at", { ascending: false }).limit(4),
     supabase.from("tasks").select("*").order("created_at", { ascending: false }),
+    supabase.from("folders").select("*").order("created_at", { ascending: false }),
   ]);
 
   const documents = (docs ?? []) as Document[];
+  const folders = (folderRows ?? []) as Folder[];
   const allAttempts = (attempts ?? []) as (Pick<QuizAttempt, "score" | "total" | "created_at"> & { quiz_id: string })[];
   const summaryList = (summaries ?? []) as unknown as (Pick<Summary, "id" | "overview" | "created_at"> & { documents: { title: string } | null })[];
   const taskList = (tasks ?? []) as Task[];
@@ -90,28 +92,10 @@ export default async function DashboardPage() {
 
       {/* Documents */}
       <div style={{ gridColumn: "1 / -1", marginTop: 8 }}><TileLabel>Your documents</TileLabel></div>
-      {documents.length === 0 ? (
+      {documents.length === 0 && folders.length === 0 ? (
         <Tile span={12}><span style={{ font: "var(--text-body)", color: "var(--text-muted)" }}>No documents yet — upload a PDF above to generate your first quiz and summary.</span></Tile>
       ) : (
-        <div className="dash-decks" style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))", gap: 14 }}>
-          {documents.slice(0, 6).map((d) => (
-            <Tile key={d.id} hover style={{ gap: 12 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ width: 40, height: 40, borderRadius: 12, background: "var(--surface-maroon-tint)", color: "var(--asu-maroon)", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                  <i className="ph ph-file-pdf" />
-                </span>
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em", color: "var(--gray-1)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.title}</div>
-                  <div style={{ font: "var(--text-small)", color: "var(--gray-3)" }}>{fmtDate(d.created_at)}{d.page_count ? ` · ${d.page_count} pp` : ""}</div>
-                </div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <span style={{ font: "var(--text-label)", fontSize: 11, padding: "3px 9px", borderRadius: 999, background: d.status === "ready" ? "var(--success-bg)" : d.status === "failed" ? "var(--danger-bg)" : "var(--surface-gold-tint)", color: d.status === "ready" ? "var(--success)" : d.status === "failed" ? "var(--danger)" : "var(--asu-maroon)" }}>{d.status}</span>
-                <DeleteButton kind="document" id={d.id} storagePath={d.storage_path} />
-              </div>
-            </Tile>
-          ))}
-        </div>
+        <FilesGrid documents={documents} folders={folders} userId={userId} />
       )}
 
       {/* ---------- Band 2 · Summaries ---------- */}

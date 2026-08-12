@@ -186,3 +186,36 @@ exception when duplicate_object then
   -- tables already in the publication; ignore.
   null;
 end $$;
+
+-- ============================================================================
+-- Folders  (iOS-style: drag one file onto another to create a folder)
+-- Added after the initial schema — idempotent, safe to run on an existing DB.
+-- ============================================================================
+create table if not exists public.folders (
+  id         uuid primary key default gen_random_uuid(),
+  user_id    uuid not null references auth.users(id) on delete cascade,
+  name       text not null default 'New Folder',
+  created_at timestamptz not null default now()
+);
+create index if not exists folders_user_idx on public.folders(user_id, created_at desc);
+
+-- A document belongs to at most one folder; deleting a folder frees its files.
+alter table public.documents
+  add column if not exists folder_id uuid references public.folders(id) on delete set null;
+create index if not exists documents_folder_idx on public.documents(folder_id);
+
+alter table public.folders enable row level security;
+drop policy if exists "owner all" on public.folders;
+create policy "owner all" on public.folders for all
+  using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Realtime: broadcast folder changes so the files grid updates live.
+do $$
+begin
+  perform 1 from pg_publication where pubname = 'supabase_realtime';
+  if found then
+    alter publication supabase_realtime add table public.folders;
+  end if;
+exception when duplicate_object then
+  null;
+end $$;
