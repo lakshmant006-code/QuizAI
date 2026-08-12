@@ -23,6 +23,22 @@ const MODEL_LABELS: Record<string, string> = {
 function norm(s: string) {
   return s.trim().toLowerCase().replace(/\s+/g, " ");
 }
+// Lenient — but not a free pass. The old `answer.includes(given)` check marked
+// any substring correct (e.g. "o" counted for "Photosynthesis"). Accept an exact
+// match, a response that spells out the full expected answer, or one that covers
+// most of the answer's meaningful words.
+function shortAnswerCorrect(given: string, answer: string) {
+  const g = norm(given);
+  const a = norm(answer);
+  if (!g || !a) return false;
+  if (g === a) return true;
+  if (a.length >= 3 && g.includes(a)) return true; // response contains the full answer
+  const aWords = a.split(" ").filter((w) => w.length > 2);
+  if (aWords.length < 2) return false; // single-word answers must match (near-)exactly
+  const gWords = new Set(g.split(" "));
+  const hits = aWords.filter((w) => gWords.has(w)).length;
+  return hits / aWords.length >= 0.8;
+}
 function parse<T>(s: string, fallback: T): T {
   try {
     return JSON.parse(s) as T;
@@ -89,7 +105,7 @@ export function QuizRunner({ quizId, questions }: { quizId: string; questions: Q
     }
     const given = answers[q.id];
     if (!given) return false;
-    if (q.kind === "short") return norm(given) === norm(q.answer) || norm(q.answer).includes(norm(given));
+    if (q.kind === "short") return shortAnswerCorrect(given, q.answer);
     return norm(given) === norm(q.answer);
   }
 
