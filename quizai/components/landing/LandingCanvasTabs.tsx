@@ -4,11 +4,11 @@ import { useState } from "react";
 
 type TabKey = "upload" | "generate" | "practice" | "track";
 
-const TABS: { key: TabKey; icon: string; label: string; title: string; desc: string }[] = [
-  { key: "upload", icon: "ph-file-arrow-up", label: "Upload", title: "Drop in the material", desc: "A syllabus, a lecture PDF, or a photo of your notes." },
-  { key: "generate", icon: "ph-magic-wand", label: "Generate", title: "Generate a quiz", desc: "Pick length and difficulty; questions come back with page citations." },
+const TABS: { key: TabKey; icon: string; label: string; title: string; desc: string; video?: string }[] = [
+  { key: "upload", icon: "ph-file-arrow-up", label: "Upload", title: "Drop in the material", desc: "A syllabus, a lecture PDF, or a photo of your notes.", video: "/PDF%20Upload.mp4" },
+  { key: "generate", icon: "ph-magic-wand", label: "Generate", title: "Generate a quiz", desc: "Pick length and difficulty; questions come back with page citations.", video: "/quiz%20generation.mp4" },
   { key: "practice", icon: "ph-check-circle", label: "Practice", title: "Practice and review", desc: "Answer, check the source, and send missed items to flashcards." },
-  { key: "track", icon: "ph-chart-bar", label: "Track", title: "Track what is sticking", desc: "Topic-level scores across attempts, so revision has a target." },
+  { key: "track", icon: "ph-chart-bar", label: "Track", title: "Track what is sticking", desc: "Topic-level scores across attempts, so revision has a target.", video: "/task%20tracking.mp4" },
 ];
 
 /**
@@ -52,8 +52,22 @@ export function LandingCanvasTabs() {
           <div style={{ fontSize: 19, fontWeight: 700, color: "var(--gray-1)" }}>{active.title}</div>
           <div style={{ marginTop: 6, fontSize: 14, color: "var(--gray-2)" }}>{active.desc}</div>
         </div>
-        <div style={{ padding: 24, background: "var(--surface-app)", minHeight: 300 }}>
-          <Mock tab={tab} />
+        <div style={{ padding: 24, background: "var(--surface-app)", minHeight: 300, display: "grid", placeItems: "center" }}>
+          {active.video ? (
+            <video
+              key={active.key}
+              src={active.video}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-label={active.title}
+              style={{ display: "block", width: "100%", maxWidth: 760, borderRadius: 12, border: "1px solid rgba(0,0,0,0.08)", background: "#000" }}
+            />
+          ) : (
+            <Mock tab={tab} />
+          )}
         </div>
       </div>
     </>
