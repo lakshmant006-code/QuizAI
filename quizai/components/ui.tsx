@@ -73,7 +73,7 @@ export function Button({
     transition: "background .2s var(--ease-standard), transform .1s",
   };
   const variants: Record<string, React.CSSProperties> = {
-    primary: { background: "var(--asu-maroon)", color: "#fff", boxShadow: "var(--shadow-button)" },
+    primary: { background: "var(--btn-primary)", color: "#fff", boxShadow: "var(--shadow-button)" },
     secondary: { background: "#fff", color: "var(--gray-1)", border: "1px solid var(--gray-5)" },
     ghost: { background: "transparent", color: "var(--gray-2)" },
     danger: { background: "var(--danger)", color: "#fff" },

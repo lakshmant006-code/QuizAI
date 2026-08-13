@@ -10,7 +10,7 @@ export default function NotFound() {
       <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: 0, maxWidth: 420 }}>
         That page doesn&apos;t exist. Head back and keep studying.
       </p>
-      <Link href="/" style={{ padding: "11px 22px", background: "var(--asu-maroon)", color: "#fff", borderRadius: "var(--radius-md)", fontWeight: 700, boxShadow: "var(--shadow-button)" }}>
+      <Link href="/" style={{ padding: "11px 22px", background: "var(--btn-primary)", color: "#fff", borderRadius: "var(--radius-md)", fontWeight: 700, boxShadow: "var(--shadow-button)" }}>
         Back to QuizAI
       </Link>
     </div>

@@ -143,7 +143,7 @@ function LoginInner() {
               </button>
             )}
             {error && <p style={{ font: "var(--text-small)", color: "var(--danger)", margin: 0 }}>{error}</p>}
-            <button type="submit" disabled={busy} style={{ width: "100%", padding: "12px 20px", background: "var(--asu-maroon)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 15, cursor: busy ? "not-allowed" : "pointer", opacity: busy ? 0.7 : 1, boxShadow: "var(--shadow-button)" }}>
+            <button type="submit" disabled={busy} style={{ width: "100%", padding: "12px 20px", background: "var(--btn-primary)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 15, cursor: busy ? "not-allowed" : "pointer", opacity: busy ? 0.7 : 1, boxShadow: "var(--shadow-button)" }}>
               {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
             </button>
 

@@ -14,7 +14,7 @@
   --danger:#C62828;--danger-bg:#FBEAEA;
   --accent-badge-bg:var(--surface-gold-tint);--accent-badge-text:var(--asu-maroon);
   --text-heading:var(--asu-maroon);--text-body:var(--gray-1);--text-muted:var(--gray-3);
-  --brand-primary:var(--asu-maroon);--brand-primary-hover:var(--asu-maroon-dark);--brand-primary-active:var(--asu-maroon-darker);
+  --brand-primary:var(--asu-maroon);--brand-primary-hover:var(--asu-maroon-dark);--brand-primary-active:var(--asu-maroon-darker);--btn-primary:var(--gray-1);
   --border-default:var(--gray-4);--border-subtle:var(--gray-6);
   --bg-page:var(--surface-app);--bg-surface:var(--white);
 
@@ -41,7 +41,7 @@
   --shadow-raised:0 8px 24px rgba(0,0,0,0.07);
   --shadow-elevated:0 1px 3px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.05);
   --shadow-modal:0 24px 60px rgba(0,0,0,0.22);
-  --shadow-button:0 2px 6px rgba(140,29,64,0.18);
+  --shadow-button:0 2px 8px rgba(0,0,0,0.20);
   --ease-standard:cubic-bezier(.4,0,.2,1);
   --ease-out-back:cubic-bezier(.34,1.56,.64,1);
   --duration-fast:150ms;--duration-base:240ms;--duration-slow:420ms;
