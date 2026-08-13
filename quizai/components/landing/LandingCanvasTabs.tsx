@@ -4,9 +4,9 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const VIDEOS = [
-  { src: "/PDF%20Upload.mp4", label: "Uploading a PDF" },
-  { src: "/quiz%20generation.mp4", label: "Generating a quiz" },
-  { src: "/task%20tracking.mp4", label: "Tracking your tasks" },
+  { src: "/PDF%20Upload.mp4", tab: "Upload", icon: "ph-file-arrow-up", label: "Uploading a PDF" },
+  { src: "/quiz%20generation.mp4", tab: "Generate", icon: "ph-magic-wand", label: "Generating a quiz" },
+  { src: "/task%20tracking.mp4", tab: "Track", icon: "ph-chart-bar", label: "Tracking your tasks" },
 ];
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -25,6 +25,27 @@ export function LandingCanvasTabs() {
 
   return (
     <div style={{ marginTop: 34, width: "100%", maxWidth: 940, marginLeft: "auto", marginRight: "auto" }}>
+      {/* Small tab: which screen this clip shows */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={current.tab}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -6 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 16px",
+              borderRadius: 999, background: "#fff", color: "var(--asu-maroon)",
+              fontSize: 13.5, fontWeight: 700, boxShadow: "0 6px 20px rgba(0,0,0,0.18)",
+            }}
+          >
+            <i className={`ph ${current.icon}`} aria-hidden style={{ fontSize: 14 }} />
+            {current.tab}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Arrow side="left" onClick={() => go(-1)} />
 
