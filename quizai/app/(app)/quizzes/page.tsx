@@ -47,7 +47,7 @@ export default async function QuizzesPage() {
                 <div style={{ font: "var(--text-small)", color: "var(--text-muted)" }}>
                   {count} questions{best !== null && <> · best {best}%</>}
                 </div>
-                <Link href={`/quizzes/${q.id}`} style={{ marginTop: "auto", display: "inline-block", textAlign: "center", padding: "9px 14px", background: "var(--asu-maroon)", color: "#fff", borderRadius: "var(--radius-md)", font: "var(--text-label)", boxShadow: "var(--shadow-button)" }}>
+                <Link href={`/quizzes/${q.id}`} style={{ marginTop: "auto", display: "inline-block", textAlign: "center", padding: "9px 14px", background: "var(--btn-primary)", color: "#fff", borderRadius: "var(--radius-md)", font: "var(--text-label)", boxShadow: "var(--shadow-button)" }}>
                   {attempts.length ? "Retake quiz" : "Start quiz"}
                 </Link>
               </Tile>

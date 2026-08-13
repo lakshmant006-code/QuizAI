@@ -95,7 +95,7 @@ export function AppShell({
         .qa-brand{ padding:6px 8px 14px; }
         .qa-new{
           display:flex; align-items:center; justify-content:center; gap:8px;
-          padding:10px 12px; background:var(--asu-maroon); color:#fff;
+          padding:10px 12px; background:var(--btn-primary); color:#fff;
           border-radius:var(--radius-md); font:var(--text-label); margin-bottom:8px;
           box-shadow:var(--shadow-button); white-space:nowrap;
         }

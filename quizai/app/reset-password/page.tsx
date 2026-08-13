@@ -83,7 +83,7 @@ export default function ResetPasswordPage() {
             <p style={{ font: "var(--text-body)", color: "var(--gray-2)", margin: "0 0 14px" }}>
               This page opens from the password-reset link in your email. Request one from the sign-in page.
             </p>
-            <Link href="/login" style={{ display: "inline-block", padding: "10px 20px", background: "var(--asu-maroon)", color: "#fff", borderRadius: "var(--radius-md)", fontWeight: 700 }}>
+            <Link href="/login" style={{ display: "inline-block", padding: "10px 20px", background: "var(--btn-primary)", color: "#fff", borderRadius: "var(--radius-md)", fontWeight: 700 }}>
               Back to sign in
             </Link>
           </div>
@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
             <input type="password" required minLength={6} placeholder="New password (min 6 characters)" value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} />
             <input type="password" required minLength={6} placeholder="Confirm new password" value={confirm} onChange={(e) => setConfirm(e.target.value)} style={inputStyle} />
             {error && <p style={{ font: "var(--text-small)", color: "var(--danger)", margin: 0 }}>{error}</p>}
-            <button type="submit" disabled={busy || ready === null} style={{ width: "100%", padding: "12px 20px", background: "var(--asu-maroon)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 15, cursor: busy ? "not-allowed" : "pointer", opacity: busy || ready === null ? 0.7 : 1, boxShadow: "var(--shadow-button)" }}>
+            <button type="submit" disabled={busy || ready === null} style={{ width: "100%", padding: "12px 20px", background: "var(--btn-primary)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 15, cursor: busy ? "not-allowed" : "pointer", opacity: busy || ready === null ? 0.7 : 1, boxShadow: "var(--shadow-button)" }}>
               {busy ? "Updating…" : "Update password"}
             </button>
           </form>

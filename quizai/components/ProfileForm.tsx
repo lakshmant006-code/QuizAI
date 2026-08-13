@@ -60,7 +60,7 @@ export function ProfileForm({ userId, initialName, email }: { userId: string; in
         <button
           type="submit"
           disabled={status === "saving" || name.trim() === initialName || !name.trim()}
-          style={{ padding: "10px 22px", background: "var(--asu-maroon)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: "var(--fs-base)", cursor: status === "saving" ? "not-allowed" : "pointer", opacity: status === "saving" || name.trim() === initialName || !name.trim() ? 0.6 : 1, boxShadow: "var(--shadow-button)" }}
+          style={{ padding: "10px 22px", background: "var(--btn-primary)", color: "#fff", border: "none", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: "var(--fs-base)", cursor: status === "saving" ? "not-allowed" : "pointer", opacity: status === "saving" || name.trim() === initialName || !name.trim() ? 0.6 : 1, boxShadow: "var(--shadow-button)" }}
         >
           {status === "saving" ? "Saving…" : "Save changes"}
         </button>
