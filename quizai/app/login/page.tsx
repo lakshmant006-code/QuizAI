@@ -42,7 +42,8 @@ function LoginInner() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
+  // Seed from an error handed back by /auth/callback (e.g. a cancelled Google sign-in).
+  const [error, setError] = useState(() => params.get("error") || "");
   const [notice, setNotice] = useState("");
 
   const supabase = createClient();
@@ -72,6 +73,24 @@ function LoginInner() {
       else setNotice("Account created! Check your inbox to confirm your email, then sign in.");
     }
     setBusy(false);
+  }
+
+  async function signInWithGoogle() {
+    setBusy(true);
+    setError("");
+    setNotice("");
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${siteUrl()}/auth/callback?next=${encodeURIComponent(next)}`,
+        queryParams: { prompt: "select_account" },
+      },
+    });
+    // On success the browser navigates to Google; only reset on error.
+    if (error) {
+      setError(error.message);
+      setBusy(false);
+    }
   }
 
   async function magicLink() {
@@ -153,8 +172,12 @@ function LoginInner() {
               <span style={{ flex: 1, height: 1, background: "var(--hairline)" }} />
             </div>
 
-            <button type="button" onClick={magicLink} disabled={busy} style={{ width: "100%", padding: "11px 20px", background: "#fff", color: "var(--gray-1)", border: "1px solid var(--gray-5)", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 14, cursor: busy ? "not-allowed" : "pointer" }}>
-              <i className="ph ph-envelope" style={{ marginRight: 8 }} />Email me a magic link
+            <button type="button" onClick={signInWithGoogle} disabled={busy} style={{ width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "11px 20px", background: "#fff", color: "var(--gray-1)", border: "1px solid var(--gray-5)", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 14, cursor: busy ? "not-allowed" : "pointer" }}>
+              <i className="ph ph-google-logo" style={{ fontSize: 17 }} aria-hidden />Continue with Google
+            </button>
+
+            <button type="button" onClick={magicLink} disabled={busy} style={{ width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "11px 20px", background: "#fff", color: "var(--gray-1)", border: "1px solid var(--gray-5)", borderRadius: "var(--radius-md)", fontWeight: 700, fontSize: 14, cursor: busy ? "not-allowed" : "pointer" }}>
+              <i className="ph ph-envelope" aria-hidden />Email me a magic link
             </button>
           </form>
         )}
