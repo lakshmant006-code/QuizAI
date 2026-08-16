@@ -12,6 +12,9 @@ export async function GET(request: NextRequest) {
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
   const next = safeNextPath(searchParams.get("next"));
+  // OAuth providers (e.g. Google) redirect back with an error when the user
+  // cancels or consent fails — surface it instead of a generic message.
+  const oauthError = searchParams.get("error_description") || searchParams.get("error");
 
   // Build the PUBLIC origin. Behind Render/Vercel the Node server sees an
   // internal origin (e.g. http://localhost:10000), so trust the forwarded host.
@@ -20,6 +23,12 @@ export async function GET(request: NextRequest) {
   const publicOrigin = forwardedHost
     ? `${forwardedProto}://${forwardedHost}`
     : process.env.NEXT_PUBLIC_SITE_URL || request.nextUrl.origin;
+
+  if (oauthError) {
+    return NextResponse.redirect(
+      `${publicOrigin}/login?error=${encodeURIComponent(oauthError)}`,
+    );
+  }
 
   const supabase = await createClient();
   let ok = false;
