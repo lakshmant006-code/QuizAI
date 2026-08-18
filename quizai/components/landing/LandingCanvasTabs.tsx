@@ -12,16 +12,15 @@ const VIDEOS = [
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 /**
- * The study-cycle band's video showcase: the raw uploaded clips, no frame or
- * captions, with side arrows that slide between them (Motion transition).
+ * Study-cycle band video showcase. All clips stay mounted in a sliding track,
+ * so the arrows just translate between them — the videos never reload or
+ * restart. Raw video, no frame or captions; a small tab names the screen.
  */
 export function LandingCanvasTabs() {
   const reduce = useReducedMotion();
-  const [[index, dir], setState] = useState<[number, number]>([0, 0]);
-  const go = (d: number) => setState(([cur]) => [(cur + d + VIDEOS.length) % VIDEOS.length, d]);
-  const jump = (n: number) => setState(([cur]) => [n, n >= cur ? 1 : -1]);
+  const [index, setIndex] = useState(0);
+  const go = (d: number) => setIndex((i) => (i + d + VIDEOS.length) % VIDEOS.length);
   const current = VIDEOS[index];
-  const shift = reduce ? 0 : 64;
 
   return (
     <div style={{ marginTop: 34, width: "100%", maxWidth: 940, marginLeft: "auto", marginRight: "auto" }}>
@@ -49,34 +48,28 @@ export function LandingCanvasTabs() {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
         <Arrow side="left" onClick={() => go(-1)} />
 
+        {/* Viewport — the track slides inside it; every video stays mounted. */}
         <div style={{ position: "relative", flex: 1, minWidth: 0, borderRadius: 16, overflow: "hidden", boxShadow: "0 30px 70px rgba(0,0,0,0.28)" }}>
-          <AnimatePresence mode="popLayout" custom={dir} initial={false}>
-            <motion.div
-              key={current.src}
-              custom={dir}
-              variants={{
-                enter: (d: number) => ({ x: d >= 0 ? shift : -shift, opacity: 0 }),
-                center: { x: 0, opacity: 1 },
-                exit: (d: number) => ({ x: d >= 0 ? -shift : shift, opacity: 0 }),
-              }}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: reduce ? 0.2 : 0.45, ease: EASE }}
-              style={{ width: "100%" }}
-            >
-              <video
-                src={current.src}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                aria-label={current.label}
-                style={{ display: "block", width: "100%", height: "auto", background: "#000" }}
-              />
-            </motion.div>
-          </AnimatePresence>
+          <motion.div
+            style={{ display: "flex" }}
+            animate={{ x: `-${index * 100}%` }}
+            transition={{ duration: reduce ? 0 : 0.5, ease: EASE }}
+          >
+            {VIDEOS.map((v) => (
+              <div key={v.src} style={{ flex: "0 0 100%", width: "100%" }}>
+                <video
+                  src={v.src}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                  aria-label={v.label}
+                  style={{ display: "block", width: "100%", height: "auto", background: "#000" }}
+                />
+              </div>
+            ))}
+          </motion.div>
         </div>
 
         <Arrow side="right" onClick={() => go(1)} />
@@ -87,7 +80,7 @@ export function LandingCanvasTabs() {
         {VIDEOS.map((v, n) => (
           <button
             key={v.src}
-            onClick={() => jump(n)}
+            onClick={() => setIndex(n)}
             aria-label={`Show ${v.label}`}
             style={{
               width: n === index ? 24 : 8, height: 8, borderRadius: 999, border: "none", cursor: "pointer",
