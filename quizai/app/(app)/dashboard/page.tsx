@@ -15,13 +15,14 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser();
   const userId = user!.id;
 
-  const [{ data: docs }, { data: attempts }, quizzesCount, { data: summaries }, { data: tasks }, { data: folderRows }] = await Promise.all([
+  const [{ data: docs }, { data: attempts }, quizzesCount, { data: summaries }, { data: tasks }, { data: folderRows }, { data: profile }] = await Promise.all([
     supabase.from("documents").select("*").order("created_at", { ascending: false }),
     supabase.from("quiz_attempts").select("score,total,created_at,quiz_id").order("created_at", { ascending: false }),
     supabase.from("quizzes").select("id", { count: "exact", head: true }),
     supabase.from("summaries").select("id, overview, created_at, documents(title)").order("created_at", { ascending: false }).limit(4),
     supabase.from("tasks").select("*").order("created_at", { ascending: false }),
     supabase.from("folders").select("*").order("created_at", { ascending: false }),
+    supabase.from("profiles").select("full_name").eq("id", userId).maybeSingle(),
   ]);
 
   const documents = (docs ?? []) as Document[];
@@ -47,7 +48,8 @@ export default async function DashboardPage() {
 
   const done = taskList.filter((t) => t.done).length;
   const pct = taskList.length ? Math.round((done / taskList.length) * 100) : 0;
-  const name = (user!.email || "there").split("@")[0];
+  const fullName = (profile as { full_name: string | null } | null)?.full_name?.trim();
+  const name = fullName || (user!.email || "there").split("@")[0];
 
   return (
     <div className="dash-grid" style={{ display: "grid", gridTemplateColumns: "repeat(12,minmax(0,1fr))", gap: 14, alignContent: "start" }}>
