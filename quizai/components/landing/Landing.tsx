@@ -38,8 +38,7 @@ export default function Landing() {
       {/* Nav */}
       <nav style={{ position: "sticky", top: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 32px", background: "rgba(255,255,255,0.82)", backdropFilter: "blur(12px)", borderBottom: "1px solid var(--hairline)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/octopus%20icon.png" alt="" width={30} height={30} style={{ height: 30, width: "auto", display: "block" }} />
+          <video src="/icon%20animated.mp4" autoPlay muted loop playsInline aria-hidden style={{ height: 30, width: "auto", display: "block", borderRadius: 6 }} />
           <span style={{ fontFamily: SERIF, fontSize: 27, letterSpacing: "-0.01em" }}>quizai</span>
           <span style={{ fontFamily: SERIF, fontSize: 14, color: "var(--asu-maroon)" }}>beta</span>
         </div>
@@ -102,14 +101,15 @@ export default function Landing() {
         {/* Hero copy */}
         <div className="qai-herocopy" style={{ position: "relative", maxWidth: 820, margin: "0 auto", textAlign: "center" }}>
           <Reveal delay={0} y={14}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/octopus%20icon.png"
-              alt="QuizAI octopus mascot"
-              width={112}
-              height={110}
+            <video
+              src="/icon%20animated.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              aria-label="QuizAI mascot"
               className="qai-mascot"
-              style={{ display: "block", margin: "0 auto", height: 118, width: "auto" }}
+              style={{ display: "block", margin: "0 auto", height: 118, width: "auto", borderRadius: 12 }}
             />
           </Reveal>
           <Reveal delay={90}>
